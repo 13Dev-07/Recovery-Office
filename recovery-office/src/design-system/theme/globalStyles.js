@@ -5,17 +5,123 @@
  * This file defines the global styles applied to the entire application.
  * It sets up CSS variables, resets, and base styles following sacred geometry principles.
  */
-var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.GlobalStyles = void 0;
-var styled_components_1 = require("styled-components");
-var sacredGeometry_1 = require("../../utils/sacredGeometry");
+import { createGlobalStyle } from 'styled-components';
+
+// Define sacred geometry constants
+const PHI = 1.618033988749895;
+const PHI_INVERSE = 0.618033988749895;
+
 /**
  * Global styles component using styled-components
  */
-exports.GlobalStyles = (0, styled_components_1.createGlobalStyle)(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  /* CSS Variables for theme values */\n  :root {\n    /* Colors */\n    --primary-50: ", ";\n    --primary-100: ", ";\n    --primary-200: ", ";\n    --primary-300: ", ";\n    --primary-400: ", ";\n    --primary-500: ", ";\n    --primary-600: ", ";\n    --primary-700: ", ";\n    --primary-800: ", ";\n    --primary-900: ", ";\n    --primary-950: ", ";\n    \n    --secondary-50: ", ";\n    --secondary-100: ", ";\n    --secondary-200: ", ";\n    --secondary-300: ", ";\n    --secondary-400: ", ";\n    --secondary-500: ", ";\n    --secondary-600: ", ";\n    --secondary-700: ", ";\n    --secondary-800: ", ";\n    --secondary-900: ", ";\n    --secondary-950: ", ";\n    \n    --background-50: ", ";\n    --background-100: ", ";\n    --background-200: ", ";\n    --background-300: ", ";\n    --background-400: ", ";\n    --background-500: ", ";\n    --background-600: ", ";\n    --background-700: ", ";\n    --background-800: ", ";\n    --background-900: ", ";\n    --background-950: ", ";\n    \n    --text-primary: ", ";\n    --text-secondary: ", ";\n    --text-tertiary: ", ";\n    --text-light: ", ";\n    --text-dark: ", ";\n    --text-disabled: ", ";\n    \n    /* Spacing */\n    --spacing-none: ", "px;\n    --spacing-xxxs: ", "px;\n    --spacing-xxs: ", "px;\n    --spacing-xs: ", "px;\n    --spacing-sm: ", "px;\n    --spacing-md: ", "px;\n    --spacing-lg: ", "px;\n    --spacing-xl: ", "px;\n    --spacing-xxl: ", "px;\n    --spacing-xxxl: ", "px;\n    \n    /* Typography */\n    --font-family-heading: ", ";\n    --font-family-body: ", ";\n    --font-family-mono: ", ";\n    \n    --font-size-xs: ", ";\n    --font-size-sm: ", ";\n    --font-size-base: ", ";\n    --font-size-md: ", ";\n    --font-size-lg: ", ";\n    --font-size-xl: ", ";\n    --font-size-xxl: ", ";\n    \n    /* Radius */\n    --radius-none: ", "px;\n    --radius-xs: ", "px;\n    --radius-sm: ", "px;\n    --radius-md: ", "px;\n    --radius-lg: ", "px;\n    --radius-xl: ", "px;\n    --radius-circle: ", ";\n    \n    /* Sacred Geometry Constants */\n    --phi: ", ";\n    --phi-inverse: ", ";\n  }\n  \n  /* Reset and Base Styles */\n  *, *::before, *::after {\n    box-sizing: border-box;\n    margin: 0;\n    padding: 0;\n  }\n  \n  html {\n    font-size: ", "px;\n    line-height: ", ";\n    -webkit-font-smoothing: antialiased;\n    -moz-osx-font-smoothing: grayscale;\n  }\n  \n  body {\n    font-family: ", ";\n    color: ", ";\n    background-color: ", ";\n    margin: 0;\n    padding: 0;\n    transition: background-color 0.3s ease;\n  }\n  \n  h1, h2, h3, h4, h5, h6 {\n    font-family: ", ";\n    font-weight: ", ";\n    line-height: ", ";\n    margin-bottom: ", "px;\n  }\n  \n  h1 {\n    font-size: ", ";\n  }\n  \n  h2 {\n    font-size: ", ";\n  }\n  \n  h3 {\n    font-size: ", ";\n  }\n  \n  h4 {\n    font-size: ", ";\n  }\n  \n  h5 {\n    font-size: ", ";\n  }\n  \n  h6 {\n    font-size: ", ";\n  }\n  \n  p {\n    margin-bottom: ", "px;\n    max-width: 70ch; /* Optimal reading width based on Golden Ratio */\n  }\n  \n  a {\n    color: ", ";\n    text-decoration: none;\n    transition: color 0.3s ease;\n    \n    &:hover {\n      color: ", ";\n    }\n    \n    &:focus {\n      outline: ", "px solid ", ";\n      outline-offset: 2px;\n    }\n  }\n  \n  img, svg {\n    max-width: 100%;\n    height: auto;\n  }\n  \n  button, input, select, textarea {\n    font-family: ", ";\n    font-size: ", ";\n  }\n  \n  button {\n    cursor: pointer;\n    border: none;\n    background: none;\n    \n    &:focus {\n      outline: ", "px solid ", ";\n      outline-offset: 2px;\n    }\n  }\n  \n  ul, ol {\n    margin-bottom: ", "px;\n    padding-left: ", "px;\n  }\n  \n  /* Accessibility */\n  .sr-only {\n    position: absolute;\n    width: 1px;\n    height: 1px;\n    padding: 0;\n    margin: -1px;\n    overflow: hidden;\n    clip: rect(0, 0, 0, 0);\n    white-space: nowrap;\n    border-width: 0;\n  }\n  \n  /* Focus visible utility for better keyboard navigation */\n  .js-focus-visible :focus:not(.focus-visible) {\n    outline: none;\n  }\n  \n  /* Reduced motion preferences */\n  @media (prefers-reduced-motion: reduce) {\n    *, *::before, *::after {\n      animation-duration: 0.01ms !important;\n      animation-iteration-count: 1 !important;\n      transition-duration: 0.01ms !important;\n      scroll-behavior: auto !important;\n    }\n  }\n"], ["\n  /* CSS Variables for theme values */\n  :root {\n    /* Colors */\n    --primary-50: ", ";\n    --primary-100: ", ";\n    --primary-200: ", ";\n    --primary-300: ", ";\n    --primary-400: ", ";\n    --primary-500: ", ";\n    --primary-600: ", ";\n    --primary-700: ", ";\n    --primary-800: ", ";\n    --primary-900: ", ";\n    --primary-950: ", ";\n    \n    --secondary-50: ", ";\n    --secondary-100: ", ";\n    --secondary-200: ", ";\n    --secondary-300: ", ";\n    --secondary-400: ", ";\n    --secondary-500: ", ";\n    --secondary-600: ", ";\n    --secondary-700: ", ";\n    --secondary-800: ", ";\n    --secondary-900: ", ";\n    --secondary-950: ", ";\n    \n    --background-50: ", ";\n    --background-100: ", ";\n    --background-200: ", ";\n    --background-300: ", ";\n    --background-400: ", ";\n    --background-500: ", ";\n    --background-600: ", ";\n    --background-700: ", ";\n    --background-800: ", ";\n    --background-900: ", ";\n    --background-950: ", ";\n    \n    --text-primary: ", ";\n    --text-secondary: ", ";\n    --text-tertiary: ", ";\n    --text-light: ", ";\n    --text-dark: ", ";\n    --text-disabled: ", ";\n    \n    /* Spacing */\n    --spacing-none: ", "px;\n    --spacing-xxxs: ", "px;\n    --spacing-xxs: ", "px;\n    --spacing-xs: ", "px;\n    --spacing-sm: ", "px;\n    --spacing-md: ", "px;\n    --spacing-lg: ", "px;\n    --spacing-xl: ", "px;\n    --spacing-xxl: ", "px;\n    --spacing-xxxl: ", "px;\n    \n    /* Typography */\n    --font-family-heading: ", ";\n    --font-family-body: ", ";\n    --font-family-mono: ", ";\n    \n    --font-size-xs: ", ";\n    --font-size-sm: ", ";\n    --font-size-base: ", ";\n    --font-size-md: ", ";\n    --font-size-lg: ", ";\n    --font-size-xl: ", ";\n    --font-size-xxl: ", ";\n    \n    /* Radius */\n    --radius-none: ", "px;\n    --radius-xs: ", "px;\n    --radius-sm: ", "px;\n    --radius-md: ", "px;\n    --radius-lg: ", "px;\n    --radius-xl: ", "px;\n    --radius-circle: ", ";\n    \n    /* Sacred Geometry Constants */\n    --phi: ", ";\n    --phi-inverse: ", ";\n  }\n  \n  /* Reset and Base Styles */\n  *, *::before, *::after {\n    box-sizing: border-box;\n    margin: 0;\n    padding: 0;\n  }\n  \n  html {\n    font-size: ", "px;\n    line-height: ", ";\n    -webkit-font-smoothing: antialiased;\n    -moz-osx-font-smoothing: grayscale;\n  }\n  \n  body {\n    font-family: ", ";\n    color: ", ";\n    background-color: ", ";\n    margin: 0;\n    padding: 0;\n    transition: background-color 0.3s ease;\n  }\n  \n  h1, h2, h3, h4, h5, h6 {\n    font-family: ", ";\n    font-weight: ", ";\n    line-height: ", ";\n    margin-bottom: ", "px;\n  }\n  \n  h1 {\n    font-size: ", ";\n  }\n  \n  h2 {\n    font-size: ", ";\n  }\n  \n  h3 {\n    font-size: ", ";\n  }\n  \n  h4 {\n    font-size: ", ";\n  }\n  \n  h5 {\n    font-size: ", ";\n  }\n  \n  h6 {\n    font-size: ", ";\n  }\n  \n  p {\n    margin-bottom: ", "px;\n    max-width: 70ch; /* Optimal reading width based on Golden Ratio */\n  }\n  \n  a {\n    color: ", ";\n    text-decoration: none;\n    transition: color 0.3s ease;\n    \n    &:hover {\n      color: ", ";\n    }\n    \n    &:focus {\n      outline: ", "px solid ", ";\n      outline-offset: 2px;\n    }\n  }\n  \n  img, svg {\n    max-width: 100%;\n    height: auto;\n  }\n  \n  button, input, select, textarea {\n    font-family: ", ";\n    font-size: ", ";\n  }\n  \n  button {\n    cursor: pointer;\n    border: none;\n    background: none;\n    \n    &:focus {\n      outline: ", "px solid ", ";\n      outline-offset: 2px;\n    }\n  }\n  \n  ul, ol {\n    margin-bottom: ", "px;\n    padding-left: ", "px;\n  }\n  \n  /* Accessibility */\n  .sr-only {\n    position: absolute;\n    width: 1px;\n    height: 1px;\n    padding: 0;\n    margin: -1px;\n    overflow: hidden;\n    clip: rect(0, 0, 0, 0);\n    white-space: nowrap;\n    border-width: 0;\n  }\n  \n  /* Focus visible utility for better keyboard navigation */\n  .js-focus-visible :focus:not(.focus-visible) {\n    outline: none;\n  }\n  \n  /* Reduced motion preferences */\n  @media (prefers-reduced-motion: reduce) {\n    *, *::before, *::after {\n      animation-duration: 0.01ms !important;\n      animation-iteration-count: 1 !important;\n      transition-duration: 0.01ms !important;\n      scroll-behavior: auto !important;\n    }\n  }\n"])), function (props) { var _a; return (_a = props.theme.colors.primary[50]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.primary[100]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.primary[200]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.primary[300]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.primary[400]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.primary[500]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.primary[600]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.primary[700]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.primary[800]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.primary[900]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.primary[950]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.secondary[50]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.secondary[100]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.secondary[200]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.secondary[300]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.secondary[400]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.secondary[500]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.secondary[600]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.secondary[700]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.secondary[800]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.secondary[900]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.secondary[950]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.background[50]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.background[100]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.background[200]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.background[300]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.background[400]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.background[500]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.background[600]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.background[700]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.background[800]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.background[900]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.background[950]) !== null && _a !== void 0 ? _a : 1; }, function (props) { return props.theme.colors.text.primary; }, function (props) { return props.theme.colors.text.secondary; }, function (props) { return props.theme.colors.text.tertiary; }, function (props) { return props.theme.colors.text.light; }, function (props) { return props.theme.colors.text.dark; }, function (props) { return props.theme.colors.text.disabled; }, function (props) { return props.theme.spacing.none; }, function (props) { return props.theme.spacing.xxxs; }, function (props) { return props.theme.spacing.xxs; }, function (props) { return props.theme.spacing.xs; }, function (props) { return props.theme.spacing.sm; }, function (props) { return props.theme.spacing.md; }, function (props) { return props.theme.spacing.lg; }, function (props) { return props.theme.spacing.xl; }, function (props) { return props.theme.spacing.xxl; }, function (props) { return props.theme.spacing.xxxl; }, function (props) { return props.theme.typography.fontFamily.heading; }, function (props) { return props.theme.typography.fontFamily.body; }, function (props) { return props.theme.typography.fontFamily.mono; }, function (props) { return (0, sacredGeometry_1.pxToRem)(props.theme.typography.fontSize.xs); }, function (props) { return (0, sacredGeometry_1.pxToRem)(props.theme.typography.fontSize.sm); }, function (props) { return (0, sacredGeometry_1.pxToRem)(props.theme.typography.fontSize.base); }, function (props) { return (0, sacredGeometry_1.pxToRem)(props.theme.typography.fontSize.md); }, function (props) { return (0, sacredGeometry_1.pxToRem)(props.theme.typography.fontSize.lg); }, function (props) { return (0, sacredGeometry_1.pxToRem)(props.theme.typography.fontSize.xl); }, function (props) { return (0, sacredGeometry_1.pxToRem)(props.theme.typography.fontSize.xxl); }, function (props) { return props.theme.radius.none; }, function (props) { return props.theme.radius.xs; }, function (props) { return props.theme.radius.sm; }, function (props) { return props.theme.radius.md; }, function (props) { return props.theme.radius.lg; }, function (props) { return props.theme.radius.xl; }, function (props) { return props.theme.radius.circle; }, function (props) { return props.theme.sacredGeometry.PHI; }, function (props) { return props.theme.sacredGeometry.PHI_INVERSE; }, function (props) { return props.theme.typography.fontSize.base; }, function (props) { return props.theme.typography.lineHeight.base; }, function (props) { return props.theme.typography.fontFamily.body; }, function (props) { return props.theme.colors.text.primary; }, function (props) { var _a; return (_a = props.theme.colors.background[500]) !== null && _a !== void 0 ? _a : 1; }, function (props) { return props.theme.typography.fontFamily.heading; }, function (props) { return props.theme.typography.fontWeight.bold; }, function (props) { return props.theme.typography.lineHeight.tight; }, function (props) { return props.theme.spacing.md; }, function (props) { return props.theme.typography.fontSize.rem.xxl; }, function (props) { return props.theme.typography.fontSize.rem.xl; }, function (props) { return props.theme.typography.fontSize.rem.lg; }, function (props) { return props.theme.typography.fontSize.rem.md; }, function (props) { return props.theme.typography.fontSize.rem.base; }, function (props) { return props.theme.typography.fontSize.rem.sm; }, function (props) { return props.theme.spacing.md; }, function (props) { var _a; return (_a = props.theme.colors.primary[600]) !== null && _a !== void 0 ? _a : 1; }, function (props) { var _a; return (_a = props.theme.colors.primary[800]) !== null && _a !== void 0 ? _a : 1; }, function (props) { return props.theme.radius.xs; }, function (props) { var _a; return (_a = props.theme.colors.primary[300]) !== null && _a !== void 0 ? _a : 1; }, function (props) { return props.theme.typography.fontFamily.body; }, function (props) { return props.theme.typography.fontSize.rem.base; }, function (props) { return props.theme.radius.xs; }, function (props) { var _a; return (_a = props.theme.colors.primary[300]) !== null && _a !== void 0 ? _a : 1; }, function (props) { return props.theme.spacing.md; }, function (props) { return props.theme.spacing.lg; });
-exports.default = exports.GlobalStyles;
-var templateObject_1;
+const GlobalStyles = createGlobalStyle`
+  /* CSS Variables for theme values */
+  :root {
+    /* Sacred Geometry Constants */
+    --phi: ${PHI};
+    --phi-inverse: ${PHI_INVERSE};
+    
+    /* Colors */
+    --primary-color: #81976F;
+    --secondary-color: #7A9EA7;
+    --background-color: #FCFBF8;
+    --text-color: #353632;
+    
+    /* Spacing */
+    --spacing-base: 8px;
+  }
+  
+  /* Reset and Base Styles */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  html {
+    font-size: 16px;
+    line-height: var(--phi);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s ease;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: bold;
+    line-height: 1.4;
+    margin-bottom: calc(var(--spacing-base) * 2);
+  }
+  
+  h1 {
+    font-size: calc(1rem * var(--phi) * var(--phi));
+  }
+  
+  h2 {
+    font-size: calc(1rem * var(--phi));
+  }
+  
+  h3 {
+    font-size: calc(1rem * var(--phi-inverse) * var(--phi));
+  }
+  
+  p {
+    margin-bottom: calc(var(--spacing-base) * 2);
+    max-width: 70ch; /* Optimal reading width based on Golden Ratio */
+  }
+  
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  a:hover {
+    color: #6c8255;
+  }
+  
+  img, svg {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  button {
+    cursor: pointer;
+    border: none;
+    background: none;
+  }
+  
+  /* Accessibility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  /* Reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+`;
+
+export { GlobalStyles };
+export default GlobalStyles;
