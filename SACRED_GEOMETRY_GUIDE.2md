@@ -1,0 +1,215 @@
+# Sacred Geometry Guide for Recovery Office
+
+## Introduction to Sacred Geometry
+
+Sacred geometry is the study of geometric patterns and proportions that recur throughout nature and have been used in art, architecture, and design for thousands of years. These patterns are believed to be the fundamental building blocks of the universe and carry inherent aesthetic harmony and balance.
+
+In the Recovery Office project, sacred geometry principles are integrated extensively to create a design that subconsciously communicates trust, harmony, and professionalism. This guide explains the key sacred geometry concepts implemented throughout the codebase.
+
+## Core Sacred Geometry Principles
+
+### 1. The Golden Ratio (φ ≈ 1.618)
+
+The Golden Ratio (also known as Phi or φ) is a special mathematical relationship where a line is divided so that the ratio of the whole line to the larger segment equals the ratio of the larger segment to the smaller segment.
+
+In the Recovery Office codebase, this is represented as:
+
+```typescript
+export const PHI = 1.618033988749895; // Golden Ratio (φ)
+export const GOLDEN_RATIO = PHI; // Alias for PHI
+export const PHI_INVERSE = 0.618033988749895; // Golden Ratio Inverse (1/φ)
+export const PHI_SQUARED = 2.618033988749895; // φ²
+export const PHI_SQRT = 1.272019649514069; // √φ
+```
+
+**Implementation Examples:**
+- Container proportions: width/height ratios of 1.618
+- Typography scale: Each font size is 1.618 times the previous size
+- Layout divisions: Content areas divided at 61.8% and 38.2% points
+
+### 2. Fibonacci Sequence
+
+The Fibonacci sequence (0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144...) is a series where each number is the sum of the two preceding ones. This sequence is closely related to the Golden Ratio, as the ratio of consecutive Fibonacci numbers approximates φ.
+
+In the Recovery Office codebase:
+
+```typescript
+export const FIBONACCI = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584];
+```
+
+**Implementation Examples:**
+- Spacing system: 8px → 13px → 21px → 34px → 55px → 89px
+- Animation timing: Durations based on Fibonacci numbers (300ms, 500ms, 800ms)
+- Z-index scale: Layer management using Fibonacci numbers
+
+### 3. Golden Angle (≈ 137.5°)
+
+The Golden Angle is derived from the Golden Ratio and represents the most efficient packing of elements in a spiral arrangement, commonly found in plants (like sunflower seed arrangements).
+
+In code:
+
+```typescript
+export const GOLDEN_ANGLE = 137.5077640500378; // Golden Angle in degrees (360° * φ⁻²)
+```
+
+**Implementation Examples:**
+- Positioning of botanical elements
+- Staggered animation timing
+- Spiral arrangements in decorative elements
+
+### 4. Sacred Geometry Shapes
+
+#### Vesica Piscis
+
+The Vesica Piscis is formed by the intersection of two circles of the same radius, where the center of each circle lies on the circumference of the other.
+
+```typescript
+export const VESICA_PISCIS_RATIO = 0.866025403784439; // Height/Width ratio of the Vesica Piscis
+```
+
+**Implementation Examples:**
+- Button shapes
+- Form field outlines
+- Badge designs
+
+#### Flower of Life
+
+A pattern formed by multiple evenly-spaced, overlapping circles arranged in a flower-like pattern with six-fold symmetry.
+
+**Implementation Examples:**
+- Background patterns
+- Loading animations
+- Decorative elements in testimonials
+
+### 5. Golden Spirals
+
+A logarithmic spiral that grows by a factor equal to the Golden Ratio for every quarter turn it makes.
+
+**Implementation Examples:**
+- Animation paths for botanical elements
+- Page layout flow
+- Logo design elements
+
+## Sacred Geometry in Animation
+
+The Recovery Office project uses sacred geometry principles to create natural-feeling animations:
+
+### Easing Curves
+
+Easing functions based on the Golden Ratio create more natural, pleasing transitions:
+
+```typescript
+export const SACRED_EASINGS = {
+  // Standard golden ratio cubic-bezier
+  standard: [PHI_INVERSE, 0, 1 - PHI_INVERSE, 1], // [0.618, 0, 0.382, 1]
+  
+  // Golden ratio inspired easings
+  easeIn: [PHI_INVERSE, 0, 1, 1], // [0.618, 0, 1, 1]
+  easeOut: [0, 0, PHI_INVERSE, 1], // [0, 0, 0.618, 1]
+  easeInOut: [PHI_INVERSE, 0, PHI_INVERSE, 1], // [0.618, 0, 0.618, 1]
+  
+  // Additional variants
+  spring: [PHI_INVERSE, PHI_INVERSE - 1, 1 - PHI_INVERSE, 1], // [0.618, -0.382, 0.382, 1]
+  anticipate: [PHI_INVERSE, -0.5, 1, 1], // [0.618, -0.5, 1, 1]
+  overshoot: [0, 0, PHI_INVERSE + 0.5, 1], // [0, 0, 1.118, 1]
+}
+```
+
+### Animation Durations
+
+Animation timing based on Fibonacci sequence for natural rhythm:
+
+```typescript
+export const ANIMATION_DURATIONS = {
+  instant: FIBONACCI[3], // 2ms
+  faster: FIBONACCI[5], // 5ms
+  fast: FIBONACCI[6] * 10, // 80ms
+  normal: FIBONACCI[7] * 10, // 130ms
+  slow: FIBONACCI[8] * 10, // 210ms
+  slower: FIBONACCI[9] * 10, // 340ms
+  slowest: FIBONACCI[10] * 10, // 550ms
+}
+```
+
+## Sacred Geometry in Layout
+
+### Golden Section Grid System
+
+Layout systems based on the Golden Ratio divisions:
+
+```typescript
+export const GOLDEN_SECTIONS = {
+  major: PHI_INVERSE, // 0.618... (61.8%)
+  minor: 1 - PHI_INVERSE, // 0.382... (38.2%)
+}
+```
+
+### Spacing System
+
+A spacing system derived from the Fibonacci sequence:
+
+```typescript
+export const SPACING = {
+  0: 0,
+  1: 5 * FIBONACCI[1], // 5px
+  2: 5 * FIBONACCI[2], // 5px
+  3: 5 * FIBONACCI[3], // 10px
+  // ...and so on
+}
+```
+
+### Typography Scale
+
+Font sizes based on the Golden Ratio:
+
+```typescript
+export const TYPOGRAPHY = {
+  xs: 16 / PHI / PHI, // ~6.1px
+  sm: 16 / PHI, // ~9.9px
+  base: 16, // 16px
+  md: 16 * PHI_SQRT, // ~20.4px
+  lg: 16 * PHI, // ~25.9px
+  // ...and so on
+}
+```
+
+## Sacred Geometry Utility Functions
+
+The project includes utility functions for applying sacred geometry principles:
+
+```typescript
+export const sacredGeometry = {
+  // Calculate golden ratio of a value
+  phi: (value: number): number => value * PHI,
+  
+  // Calculate inverse golden ratio of a value
+  phiInverse: (value: number): number => value * PHI_INVERSE,
+  
+  // Divide a value according to the golden ratio
+  divide: (value: number): { larger: number; smaller: number } => ({
+    larger: value * PHI_INVERSE,
+    smaller: value * (1 - PHI_INVERSE),
+  }),
+  
+  // Create a spiral path based on golden angle
+  spiralCoordinates: (steps: number, radius: number, centerX: number, centerY: number): Array<[number, number]> => {
+    // Implementation creates points along a golden spiral
+  },
+  
+  // And other utility functions...
+}
+```
+
+## Implementing Sacred Geometry in Components
+
+When rebuilding components, follow these key principles:
+
+1. **Proportional Relationships**: Maintain golden ratio relationships between width/height
+2. **Spacing Consistency**: Use the Fibonacci-based spacing system for all margins and padding
+3. **Animation Harmony**: Apply sacred geometry easing curves and durations
+4. **Visual Hierarchy**: Position key elements at golden ratio points (61.8% and 38.2%)
+5. **Aesthetic Balance**: Use sacred geometry symbols and patterns as visual elements
+
+## Conclusion
+
+Sacred geometry is more than just decoration in the Recovery Office project - it's a foundational design principle that creates harmony, balance, and trust throughout the user experience. By carefully implementing these mathematical relationships, the rebuilt website will maintain its unique aesthetic appeal and subconscious trust factors. 
