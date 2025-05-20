@@ -183,12 +183,6 @@ const Home: React.FC = () => {
       <ScrollReveal>
         <Section backgroundColor="#f8f9fa">
           <Container>
-            <SectionTitle 
-              title="Our Services" 
-              subtitle="Specialized financial recovery solutions"
-              decoratorBefore={<SecurityShield size="sm" opacity={0.15} />}
-              decoratorAfter={<SecurityShield size="sm" opacity={0.15} />}
-            />
             <SectionContent>
               <Services 
                 title="Our Services"
@@ -260,12 +254,6 @@ const Home: React.FC = () => {
       <ScrollReveal>
         <Section backgroundColor="#f0f4f8">
           <Container>
-            <SectionTitle 
-              title="Client Experiences" 
-              subtitle="Discover how our approach has helped others"
-              decoratorBefore={<AssetRecovery size="sm" opacity={0.2} />}
-              decoratorAfter={<AssetRecovery size="sm" opacity={0.2} />}
-            />
             <SectionContent>
               <TestimonialsSection
                 title="Client Experiences"
@@ -283,12 +271,6 @@ const Home: React.FC = () => {
       <ScrollReveal>
         <Section backgroundColor="#ffffff">
           <Container>
-            <SectionTitle 
-              title="Our Team" 
-              subtitle="Specialists in financial recovery and regulatory compliance"
-              decoratorBefore={<ComplianceBadge size="sm" opacity={0.3} />}
-              decoratorAfter={<ComplianceBadge size="sm" opacity={0.3} />}
-            />
             <SectionContent>
               <Team
                 title="Our Expert Team"

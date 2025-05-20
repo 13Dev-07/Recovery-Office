@@ -129,27 +129,27 @@ export const GlobalStyles = createGlobalStyle<{ theme: DefaultTheme }>`
   }
   
   h1 {
-    font-size: ${props => props.theme.typography.fontSize.rem.xxl};
+    font-size: clamp(2.25rem, 7vw, ${props => props.theme.typography.fontSize.xxl});
   }
   
   h2 {
-    font-size: ${props => props.theme.typography.fontSize.rem.xl};
+    font-size: clamp(2rem, 5vw, ${props => props.theme.typography.fontSize.xl});
   }
   
   h3 {
-    font-size: ${props => props.theme.typography.fontSize.rem.lg};
+    font-size: clamp(1.75rem, 4.5vw, ${props => props.theme.typography.fontSize.lg});
   }
   
   h4 {
-    font-size: ${props => props.theme.typography.fontSize.rem.md};
+    font-size: clamp(1.5rem, 4vw, ${props => props.theme.typography.fontSize.md});
   }
   
   h5 {
-    font-size: ${props => props.theme.typography.fontSize.rem.base};
+    font-size: clamp(1.25rem, 3.5vw, ${props => props.theme.typography.fontSize.base});
   }
   
   h6 {
-    font-size: ${props => props.theme.typography.fontSize.rem.sm};
+    font-size: clamp(1.125rem, 3vw, ${props => props.theme.typography.fontSize.sm});
   }
   
   p {
