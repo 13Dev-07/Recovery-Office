@@ -42,6 +42,9 @@ import { ClientInformationData } from '../components/booking/validation/clientIn
 import { ServiceSelectionData } from '../components/booking/validation/serviceSelection.schema';
 import { ConfirmationStepData } from '../components/booking/validation/confirmationStep.schema';
 
+// Define constants for toast durations
+const TOAST_DURATION = 3000; // 3 seconds for standard toast duration
+
 // More specific loading state tracking
 interface LoadingState {
   services: boolean;
@@ -437,7 +440,7 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({
   }, [state]);
   
   const isResourceLoading = useCallback((resource: keyof LoadingState): boolean => {
-    return state.loadingState[resource] ?? 1;
+    return Boolean(state.loadingState[resource] ?? false);
   }, [state.loadingState]);
   
   const hasApiError = useCallback((): boolean => {
@@ -498,29 +501,31 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({
   const updateFormData = useCallback((data: unknown) => {
     // Implementation would depend on what data needs to be updated
     // This is a placeholder for backward compatibility
-    if (data.serviceId && state.availableServices.length > 0) {
-      const service = state.availableServices.find(s => s.id === data.serviceId);
+    const typedData = data as Record<string, any>;
+    
+    if (typedData?.serviceId && state.availableServices.length > 0) {
+      const service = state.availableServices.find(s => s.id === typedData.serviceId);
       if (service) {
         selectService(service);
       }
     }
     
-    if (data.date) {
-      selectDate(data.date);
+    if (typedData?.date) {
+      selectDate(typedData.date);
     }
     
-    if (data.timeSlot) {
-      setSelectedTime(data.timeSlot);
+    if (typedData?.timeSlot) {
+      setSelectedTime(typedData.timeSlot);
     }
     
-    if (data.firstName || data.lastName || data.email || data.phone) {
+    if (typedData?.firstName || typedData?.lastName || typedData?.email || typedData?.phone) {
       const clientInfo: ClientInformation = {
-        firstName: data.firstName || '',
-        lastName: data.lastName || '',
-        email: data.email || '',
-        phone: data.phone || '',
-        preferredContactMethod: data.preferredContactMethod || 'email',
-        isNewClient: data.isNewClient || false
+        firstName: typedData.firstName || '',
+        lastName: typedData.lastName || '',
+        email: typedData.email || '',
+        phone: typedData.phone || '',
+        preferredContactMethod: typedData.preferredContactMethod || 'email',
+        isNewClient: Boolean(typedData.isNewClient) || false
       };
       setClientInfo(clientInfo);
     }
@@ -652,7 +657,7 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({
       setBookingReference(bookingReference);
       
       // Show success toast
-      successToast("Booking Confirmed", `Your booking has been confirmed. Reference: ${bookingReference}`, ANIMATION_TIMING.standard);
+      successToast("Booking Confirmed", `Your booking has been confirmed. Reference: ${bookingReference}`, TOAST_DURATION);
       
       return bookingReference;
     } catch (error) {
@@ -681,7 +686,7 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({
       await BookingService.cancelBooking(bookingId, reason);
       
       // Show success toast
-      successToast("Booking Cancelled", "Your booking has been cancelled successfully.", ANIMATION_TIMING.standard);
+      successToast("Booking Cancelled", "Your booking has been cancelled successfully.", TOAST_DURATION);
     } catch (error) {
       const apiError = categorizeError(error);
       setApiError({
@@ -709,7 +714,7 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({
       await BookingService.rescheduleBooking(bookingId, newDate, newTimeSlot);
       
       // Show success toast
-      successToast("Booking Rescheduled", "Your booking has been rescheduled successfully.", ANIMATION_TIMING.standard);
+      successToast("Booking Rescheduled", "Your booking has been rescheduled successfully.", TOAST_DURATION);
     } catch (error) {
       const apiError = categorizeError(error);
       setApiError({

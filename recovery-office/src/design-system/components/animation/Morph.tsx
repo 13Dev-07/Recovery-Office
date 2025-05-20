@@ -7,13 +7,13 @@
  */
 
 import * as React from 'react';
-import { useState, useEffect } from 'react';;
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 import { Box } from '../layout';
-import type { BoxProps } from '../../types';
-import { MorphProps } from './animation.d';
+import { MorphProps } from '../../types/animation.types';
 import { resolveDuration, applyGoldenRatioDuration } from '../../../utils/animation';
+import { SACRED_EASINGS } from '../../../constants/sacred-geometry';
 
 /**
  * Morph Component with ref forwarding
@@ -69,6 +69,9 @@ export const Morph = React.forwardRef<HTMLDivElement, MorphProps>(
     const effectiveDuration = useGoldenRatio 
       ? applyGoldenRatioDuration(durationValue) 
       : durationValue;
+      
+    // Get the current path safely
+    const currentPath = paths[currentIndex] || '';
     
     return (
       <Box 
@@ -85,10 +88,10 @@ export const Morph = React.forwardRef<HTMLDivElement, MorphProps>(
           overflow="visible"
         >
           <motion.path
-            d={paths[currentIndex] ?? 1}
+            d={currentPath}
             initial={false}
             animate={{ 
-              d: paths[currentIndex] ?? 1 
+              d: currentPath
             }}
             style={{
               fill: fill ? fillColor : "none",

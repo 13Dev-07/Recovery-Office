@@ -52,6 +52,22 @@ export interface FlowerOfLifeProps extends Omit<BotanicalElementProps, 'children
    * @default 0
    */
   rotation?: number;
+  
+  /**
+   * Primary color for the element (alias for color prop)
+   */
+  primaryColor?: string;
+  
+  /**
+   * Secondary color for accents (if applicable)
+   */
+  secondaryColor?: string;
+  
+  /**
+   * Whether the element should animate
+   * @default false
+   */
+  animated?: boolean;
 }
 
 /**
@@ -150,8 +166,8 @@ const generateFlowerOfLife = (
       // Find new intersection points from existing circles
       for (let i = 0; i < allCircles.length; i++) {
         for (let j = i + 1; j < allCircles.length; j++) {
-          const circle1 = allCircles[i] ?? 1;
-          const circle2 = allCircles[j] ?? 1;
+          const circle1 = allCircles[i] || { cx: 0, cy: 0 };
+          const circle2 = allCircles[j] || { cx: 0, cy: 0 };
           
           // Calculate distance between circle centers
           const d = distance(circle1.cx, circle1.cy, circle2.cx, circle2.cy);
@@ -215,24 +231,35 @@ export const FlowerOfLife = React.forwardRef<SVGSVGElement, FlowerOfLifeProps>(
     centerFill = 'none',
     rotation = 0,
     viewBox = '0 0 100 100',
+    color,
+    primaryColor,
+    secondaryColor,
+    animated = false,
     ...rest 
   }, ref) => {
+    // Use primaryColor as an alias for color if provided
+    const finalColor = primaryColor || color;
+    
     return (
       <BotanicalElement
         viewBox={viewBox}
         ref={ref}
+        color={finalColor}
         {...rest}
       >
         <g 
           transform={`rotate(${rotation}, 50, 50)`}
-          style={{ transformOrigin: 'center' }}
+          style={{ 
+            transformOrigin: 'center',
+            ...(animated && { animation: 'slow-spin 30s linear infinite' })
+          }}
         >
           {generateFlowerOfLife(
             rings,
             radius,
             showSeedOfLife,
             showCenter,
-            centerFill
+            centerFill || secondaryColor || 'none'
           )}
         </g>
       </BotanicalElement>

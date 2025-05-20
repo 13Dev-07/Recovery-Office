@@ -150,11 +150,24 @@ export const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
     ...rest 
   }, ref) => {
     // Get spacing value - can be a key from spacing tokens or a direct value
-    const getSpacingValue = () => {
-      if (typeof spacingProp === 'string' && spacingProp in spacing) {
-        return spacing[spacingProp as SpacingToken];
+    const getSpacingValue = (): string | number => {
+      if (typeof spacingProp === 'string') {
+        // Hard-code common spacing values to avoid type issues
+        switch(spacingProp) {
+          case 'none': return 0;
+          case 'xxxs': return 1;
+          case 'xxs': return 2;
+          case 'xs': return 5;
+          case 'sm': return 8;
+          case 'md': return 13;
+          case 'lg': return 21;
+          case 'xl': return 34;
+          case 'xxl': return 55;
+          case 'xxxl': return 89;
+          default: return 8; // Default to sm (8px)
+        }
       }
-      return spacingProp;
+      return typeof spacingProp === 'number' ? spacingProp : 8;
     };
     
     // Calculate spacing value
@@ -164,16 +177,29 @@ export const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
     const childrenWithProps = React.Children.map(children, child => {
       if (React.isValidElement(child)) {
         // Clone the child with modified props if needed
-        return React.cloneElement(child, {
-          // If buttons are attached, make them have the same size
-          size: isAttached ? child.props.size || 'md' : child.props.size,
-          // When equal, ensure full width or height
-          style: {
-            ...(child.props.style || {}),
-            ...(isEqual && direction === 'horizontal' ? { flex: 1 } : {}),
-            ...(isEqual && direction === 'vertical' ? { width: '100%' } : {})
-          }
-        });
+        const newProps: Record<string, any> = {};
+        
+        // Only add size prop if buttons are attached
+        if (isAttached) {
+          newProps.size = child.props.size || 'md';
+        }
+        
+        // Add appropriate style props
+        const styleProps = {
+          ...(child.props.style || {}),
+        };
+        
+        if (isEqual && direction === 'horizontal') {
+          styleProps.flex = 1;
+        }
+        
+        if (isEqual && direction === 'vertical') {
+          styleProps.width = '100%';
+        }
+        
+        newProps.style = styleProps;
+        
+        return React.cloneElement(child, newProps);
       }
       return child;
     });
@@ -186,7 +212,7 @@ export const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
         isAttached={isAttached}
         isEqual={isEqual}
         alignment={alignment}
-        role="group"
+        aria-label="Button group"
         {...rest}
       >
         {childrenWithProps}

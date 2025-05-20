@@ -6,8 +6,8 @@
  */
 
 import * as React from 'react';
-import { Hero } from '../design-system/components/feature-sections';
-import { Text } from '../design-system/components/typography';
+import { Hero } from '../../../design-system/components/feature-sections';
+import { Text } from '../../../design-system/components/typography';
 import { PHI } from '../../../constants/sacred-geometry';
 
 interface ContactHeroProps {

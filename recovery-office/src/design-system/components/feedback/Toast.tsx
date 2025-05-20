@@ -7,7 +7,7 @@
  */
 
 import * as React from 'react';
-import { useState, useEffect, useCallback, useContext } from 'react';;
+import { useState, useEffect, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { createPortal } from 'react-dom';
@@ -43,8 +43,8 @@ export type ToastStatus = 'default' | 'info' | 'success' | 'warning' | 'error';
 // Toast notification interface
 export interface Toast {
   id: string;
-  title?: string;
-  description?: string;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
   status?: ToastStatus;
   duration?: number;
   isClosable?: boolean;
@@ -73,7 +73,7 @@ export interface ToastProps {
 }
 
 // ToastOptions extends ToastProps but doesn't require ID
-export type ToastOptions = Omit<ToastProps, 'id'>;
+export type ToastOptions = Omit<ToastProps, 'id'> & { id?: string };
 
 // Interface for the Toast Provider
 export interface ToastProviderProps {
@@ -304,7 +304,7 @@ const toastVariants = {
     scale: 1,
     transition: { 
       duration: ANIMATION_TIMING.standard / 1000,
-      ease: SACRED_EASINGS.easeOutQuint
+      ease: SACRED_EASINGS.standard
     }
   },
   exit: (position: ToastPosition) => {
@@ -314,8 +314,8 @@ const toastVariants = {
         y: -getFibonacciByIndex(7), 
         scale: PHI_INVERSE,
         transition: { 
-          duration: ANIMATION_TIMING.short / 1000,
-          ease: SACRED_EASINGS.easeInSine
+          duration: ANIMATION_TIMING.quick / 1000,
+          ease: SACRED_EASINGS.goldenAccelerate
         }
       };
     }
@@ -325,8 +325,8 @@ const toastVariants = {
         y: getFibonacciByIndex(7), 
         scale: PHI_INVERSE,
         transition: { 
-          duration: ANIMATION_TIMING.short / 1000, 
-          ease: SACRED_EASINGS.easeInSine
+          duration: ANIMATION_TIMING.quick / 1000, 
+          ease: SACRED_EASINGS.goldenAccelerate
         }
       };
     }
@@ -336,8 +336,8 @@ const toastVariants = {
         x: -getFibonacciByIndex(7), 
         scale: PHI_INVERSE,
         transition: { 
-          duration: ANIMATION_TIMING.short / 1000,
-          ease: SACRED_EASINGS.easeInSine
+          duration: ANIMATION_TIMING.quick / 1000,
+          ease: SACRED_EASINGS.goldenAccelerate
         }
       };
     }
@@ -347,8 +347,8 @@ const toastVariants = {
         x: getFibonacciByIndex(7), 
         scale: PHI_INVERSE,
         transition: { 
-          duration: ANIMATION_TIMING.short / 1000,
-          ease: SACRED_EASINGS.easeInSine
+          duration: ANIMATION_TIMING.quick / 1000,
+          ease: SACRED_EASINGS.goldenAccelerate
         }
       };
     }
@@ -356,8 +356,8 @@ const toastVariants = {
       opacity: 0, 
       scale: PHI_INVERSE,
       transition: { 
-        duration: ANIMATION_TIMING.short / 1000,
-        ease: SACRED_EASINGS.easeInSine
+        duration: ANIMATION_TIMING.quick / 1000,
+        ease: SACRED_EASINGS.goldenAccelerate
       }
     };
   }
@@ -379,7 +379,7 @@ const ToastComponent = React.forwardRef<HTMLDivElement, ToastProps>(
     title,
     description,
     status = 'default',
-    duration = ANIMATION_TIMING.long,
+    duration = ANIMATION_TIMING.slow,
     isClosable = true,
     onClose,
     position = 'bottom-right'
@@ -445,22 +445,22 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
   // Group toasts by position
   const toastsByPosition = toasts.reduce<Record<ToastPosition, Toast[]>>((acc, toast) => {
     const position = toast.position || defaultOptions.position || 'bottom-right';
-    if (!acc[position] ?? 1) acc[position] ?? 1 = [];
-    acc[position] ?? 1.push(toast);
+    if (!acc[position]) acc[position] = [];
+    acc[position].push(toast);
     return acc;
   }, {} as Record<ToastPosition, Toast[]>);
   
   // Add a new toast
   const toast = useCallback((options: ToastOptions): string => {
-    const id = options.id || generateUniqueId();
+    const toastId = options.id || generateUniqueId();
     const newToast: Toast = {
-      id,
+      id: toastId,
       ...defaultOptions,
       ...options
     };
     
     setToasts(prev => [...prev, newToast]);
-    return id;
+    return toastId;
   }, [defaultOptions]);
   
   // Update an existing toast

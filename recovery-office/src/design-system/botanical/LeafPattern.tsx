@@ -1,4 +1,3 @@
-import { getFibonacciByIndex } from "@utils/getFibonacciByIndex";
 /**
  * LeafPattern Component
  * 
@@ -10,12 +9,13 @@ import { getFibonacciByIndex } from "@utils/getFibonacciByIndex";
  */
 
 import * as React from 'react';
+import { forwardRef } from 'react';
 
 import { OliveLeaf } from './OliveLeaf';
 
 import BotanicalElement, { BotanicalElementProps } from './BotanicalElement';
 
-import { PHI, PHI_INVERSE, FIBONACCI } from '../constants/sacred-geometry';
+import { PHI, PHI_INVERSE, FIBONACCI, getFibonacciByIndex } from '../../constants/sacred-geometry';
 
 
 /**

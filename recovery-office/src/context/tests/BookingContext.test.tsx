@@ -2,8 +2,10 @@ import * as React from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BookingProvider, useBooking } from '../BookingContext';
-import { BookingService } from "@services/booking.service";
-import { useToast } from '../hooks/useToast';
+import { BookingService } from "../../services/booking.service";
+import { useToast } from '../../hooks/useToast';
+import '@testing-library/jest-dom';
+import { ServiceType } from '../../types/api.types';
 
 // Mock the booking service
 jest.mock('../../services/booking.service', () => ({
@@ -50,13 +52,13 @@ const TestComponent = ({ testId = 'test-component' }) => {
   return (
     <div data-testid={testId}>
       <div data-testid="current-step">{state.currentStep}</div>
-      <div data-testid="loading-services">{String(state.loadingServices)}</div>
-      <div data-testid="loading-dates">{String(state.loadingDates)}</div>
-      <div data-testid="loading-time-slots">{String(state.loadingTimeSlots)}</div>
-      <div data-testid="loading-submission">{String(state.loadingSubmission)}</div>
-      <div data-testid="loading-cancellation">{String(state.loadingCancellation)}</div>
-      <div data-testid="loading-reschedule">{String(state.loadingReschedule)}</div>
-      <div data-testid="loading-payment">{String(state.loadingPaymentIntent)}</div>
+      <div data-testid="loading-services">{String(state.loadingState.services)}</div>
+      <div data-testid="loading-dates">{String(state.loadingState.dates)}</div>
+      <div data-testid="loading-time-slots">{String(state.loadingState.timeSlots)}</div>
+      <div data-testid="loading-submission">{String(state.loadingState.booking)}</div>
+      <div data-testid="loading-cancellation">{String(state.loadingState.cancellation)}</div>
+      <div data-testid="loading-reschedule">{String(state.loadingState.rescheduling)}</div>
+      <div data-testid="loading-payment">{String(state.loadingState.paymentIntent)}</div>
       <div data-testid="error">{state.error || 'no-error'}</div>
       
       <button data-testid="next-step" onClick={nextStep}>Next</button>
@@ -69,25 +71,45 @@ const TestComponent = ({ testId = 'test-component' }) => {
       </button>
       <button 
         data-testid="fetch-dates" 
-        onClick={() => fetchAvailableDates('service-123')}
+        onClick={() => fetchAvailableDates('2023-05-01', '2023-05-30', 'service-123')}
       >
         Fetch Dates
       </button>
       <button 
         data-testid="fetch-time-slots" 
-        onClick={() => fetchAvailableTimeSlots('service-123', '2023-05-15')}
+        onClick={() => fetchAvailableTimeSlots('2023-05-15', 'service-123')}
       >
         Fetch Time Slots
       </button>
       <button 
         data-testid="submit-booking" 
-        onClick={() => submitBooking()}
+        onClick={() => submitBooking(
+          { 
+            serviceId: 'service-123',
+            isRecurring: false 
+          },
+          { 
+            firstName: 'Test', 
+            lastName: 'User', 
+            email: 'test@example.com',
+            phone: '123-456-7890',
+            preferredContactMethod: 'email',
+            isReturningClient: false,
+            privacyPolicyAccepted: true
+          },
+          { 
+            paymentMethod: 'credit_card',
+            detailsConfirmed: true,
+            cancellationPolicyAgreed: true,
+            receiveReminders: true
+          }
+        )}
       >
         Submit Booking
       </button>
       <button 
         data-testid="create-payment" 
-        onClick={() => createPaymentIntent()}
+        onClick={() => createPaymentIntent(ServiceType.INITIAL_CONSULTATION, 60)}
       >
         Create Payment Intent
       </button>
@@ -105,7 +127,14 @@ const TestComponent = ({ testId = 'test-component' }) => {
       </button>
       <button 
         data-testid="set-service" 
-        onClick={() => setSelectedService({ id: 'service-123', name: 'Test Service', duration: 60, price: 100 })}
+        onClick={() => setSelectedService({
+          id: 'service-123',
+          name: 'Test Service',
+          duration: 60,
+          price: 100,
+          type: ServiceType.INITIAL_CONSULTATION,
+          description: 'Test service description'
+        })}
       >
         Set Service
       </button>
@@ -117,7 +146,13 @@ const TestComponent = ({ testId = 'test-component' }) => {
       </button>
       <button 
         data-testid="set-time-slot" 
-        onClick={() => setSelectedTimeSlot({ id: 'slot-123', startTime: '10:00', endTime: '11:00' })}
+        onClick={() => setSelectedTimeSlot({
+          id: 'slot-123',
+          startTime: '10:00',
+          endTime: '11:00',
+          duration: 60,
+          available: true
+        })}
       >
         Set Time Slot
       </button>
@@ -129,7 +164,8 @@ const TestComponent = ({ testId = 'test-component' }) => {
           email: 'test@example.com',
           phone: '123-456-7890',
           dateOfBirth: '1990-01-01',
-          acceptedTerms: true
+          preferredContactMethod: 'email',
+          isNewClient: true
         })}
       >
         Set Client Info

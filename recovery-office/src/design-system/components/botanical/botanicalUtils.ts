@@ -1,10 +1,11 @@
-
 import { CSSProperties } from 'react';
-
 import { css } from 'styled-components';
-
-
-
+import { 
+  PHI,
+  PHI_INVERSE,
+  SACRED_SPACING,
+  getFibonacciByIndex
+} from '../../../constants/sacred-geometry';
 
 /**
  * Botanical Utilities
@@ -18,8 +19,23 @@ import { css } from 'styled-components';
 
 /**
  * Available positions for botanical elements
+ * Using kebab-case for consistency with other APIs
  */
 export type BotanicalPosition = 
+  | 'top-left' 
+  | 'top-right' 
+  | 'bottom-left' 
+  | 'bottom-right' 
+  | 'top-center' 
+  | 'bottom-center' 
+  | 'left-center' 
+  | 'right-center' 
+  | 'golden-left' 
+  | 'golden-right' 
+  | 'golden-top' 
+  | 'golden-bottom'
+  | 'center'
+  // Legacy camelCase positions for backward compatibility
   | 'topLeft' 
   | 'topRight' 
   | 'bottomLeft' 
@@ -31,8 +47,29 @@ export type BotanicalPosition =
   | 'goldenLeft' 
   | 'goldenRight' 
   | 'goldenTop' 
-  | 'goldenBottom'
-  | 'center';
+  | 'goldenBottom';
+
+/**
+ * Normalize legacy camelCase position values to kebab-case
+ */
+export const normalizePosition = (position: BotanicalPosition): BotanicalPosition => {
+  // Map legacy camelCase to kebab-case
+  switch (position) {
+    case 'topLeft': return 'top-left';
+    case 'topRight': return 'top-right';
+    case 'bottomLeft': return 'bottom-left';
+    case 'bottomRight': return 'bottom-right';
+    case 'topCenter': return 'top-center';
+    case 'bottomCenter': return 'bottom-center';
+    case 'leftCenter': return 'left-center';
+    case 'rightCenter': return 'right-center';
+    case 'goldenLeft': return 'golden-left';
+    case 'goldenRight': return 'golden-right';
+    case 'goldenTop': return 'golden-top';
+    case 'goldenBottom': return 'golden-bottom';
+    default: return position; // Already kebab-case or 'center'
+  }
+};
 
 /**
  * Available size presets for botanical elements
@@ -101,37 +138,40 @@ export const getBotanicalPositionStyles = (
     ...(animate && { transition: `all 0.5s cubic-bezier(${PHI_INVERSE}, 0, ${1 - PHI_INVERSE}, 1)` })
   };
   
+  // Normalize position to kebab-case format
+  const normalizedPosition = normalizePosition(position);
+  
   // Position-specific styles
-  switch (position) {
-    case 'topLeft':
+  switch (normalizedPosition) {
+    case 'top-left':
       return {
         ...baseStyles,
         top: yOffset,
         left: xOffset,
       };
       
-    case 'topRight':
+    case 'top-right':
       return {
         ...baseStyles,
         top: yOffset,
         right: xOffset,
       };
       
-    case 'bottomLeft':
+    case 'bottom-left':
       return {
         ...baseStyles,
         bottom: yOffset,
         left: xOffset,
       };
       
-    case 'bottomRight':
+    case 'bottom-right':
       return {
         ...baseStyles,
         bottom: yOffset,
         right: xOffset,
       };
       
-    case 'topCenter':
+    case 'top-center':
       return {
         ...baseStyles,
         top: yOffset,
@@ -139,7 +179,7 @@ export const getBotanicalPositionStyles = (
         transform: `translateX(-50%) rotate(${rotation}deg)`,
       };
       
-    case 'bottomCenter':
+    case 'bottom-center':
       return {
         ...baseStyles,
         bottom: yOffset,
@@ -147,7 +187,7 @@ export const getBotanicalPositionStyles = (
         transform: `translateX(-50%) rotate(${rotation}deg)`,
       };
       
-    case 'leftCenter':
+    case 'left-center':
       return {
         ...baseStyles,
         left: xOffset,
@@ -155,7 +195,7 @@ export const getBotanicalPositionStyles = (
         transform: `translateY(-50%) rotate(${rotation}deg)`,
       };
       
-    case 'rightCenter':
+    case 'right-center':
       return {
         ...baseStyles,
         right: xOffset,
@@ -163,7 +203,7 @@ export const getBotanicalPositionStyles = (
         transform: `translateY(-50%) rotate(${rotation}deg)`,
       };
       
-    case 'goldenLeft':
+    case 'golden-left':
       return {
         ...baseStyles,
         left: xOffset,
@@ -171,7 +211,7 @@ export const getBotanicalPositionStyles = (
         transform: `translateY(-50%) rotate(${rotation}deg)`,
       };
       
-    case 'goldenRight':
+    case 'golden-right':
       return {
         ...baseStyles,
         right: xOffset,
@@ -179,7 +219,7 @@ export const getBotanicalPositionStyles = (
         transform: `translateY(-50%) rotate(${rotation}deg)`,
       };
       
-    case 'goldenTop':
+    case 'golden-top':
       return {
         ...baseStyles,
         top: yOffset,
@@ -187,7 +227,7 @@ export const getBotanicalPositionStyles = (
         transform: `translateX(-50%) rotate(${rotation}deg)`,
       };
       
-    case 'goldenBottom':
+    case 'golden-bottom':
       return {
         ...baseStyles,
         bottom: yOffset,
@@ -196,6 +236,15 @@ export const getBotanicalPositionStyles = (
       };
       
     case 'center':
+      return {
+        ...baseStyles,
+        top: '50%',
+        left: '50%',
+        transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
+      };
+      
+    default:
+      // Fallback to center position if not recognized
       return {
         ...baseStyles,
         top: '50%',
@@ -356,20 +405,32 @@ export const createBotanicalContainer = (
   botanicalType: string,
   position: BotanicalPosition,
   size: BotanicalSize = 'md'
-) => css`
-  position: relative;
+) => {
+  // Get position styles based on the provided position
+  const positionStyles = getBotanicalPositionStyles({ position });
   
-  &::after {
-    content: '';
-    ${props => getBotanicalPositionStyles({ position })}
-    width: ${getBotanicalSize(size)}px;
-    height: ${getBotanicalSize(size)}px;
-    background-image: url("data:image/svg+xml,..."); /* SVG content */
-    background-size: contain;
-    background-repeat: no-repeat;
-    ${accessibleBotanical.decorative}
-  }
-`; 
+  // Convert to CSS template literal
+  return css`
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: ${positionStyles.top || 'auto'};
+      right: ${positionStyles.right || 'auto'};
+      bottom: ${positionStyles.bottom || 'auto'};
+      left: ${positionStyles.left || 'auto'};
+      transform: ${positionStyles.transform || 'none'};
+      z-index: ${positionStyles.zIndex || 0};
+      width: ${getBotanicalSize(size)}px;
+      height: ${getBotanicalSize(size)}px;
+      background-image: url("data:image/svg+xml,..."); /* SVG content */
+      background-size: contain;
+      background-repeat: no-repeat;
+      ${accessibleBotanical.decorative}
+    }
+  `;
+}; 
 
 
 

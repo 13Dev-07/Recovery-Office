@@ -70,7 +70,8 @@ export const breakpoints = {
       return breakpoints.up(key);
     }
     
-    return breakpoints.between(key, keys[keyIndex + 1] ?? 1);
+    const nextKey = keys[keyIndex + 1];
+    return breakpoints.between(key, nextKey);
   },
   
   /**

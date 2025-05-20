@@ -9,7 +9,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
-import { getFibonacciByIndex } from '../utils';
+import { getFibonacciByIndex } from '../../../constants/sacred-geometry';
 import { PHI, PHI_INVERSE, FIBONACCI } from '../../../constants/sacred-geometry';
 import { Box } from '../layout/Box';
 import { Grid } from '../layout/Grid';
@@ -17,91 +17,15 @@ import { Heading } from '../typography/Heading';
 import { Text } from '../typography/Text';
 import { Button } from '../button/Button';
 import { Section, SectionTitle } from '../layout/Section';
-import { Card } from '../data-display/Card';
-import { BotanicalElement, BotanicalPosition } from '../botanical';
+import Card from '../data-display/Card';
+import { BotanicalElement } from '../botanical';
+import { BotanicalPosition } from '../botanical/botanicalUtils';
 import { FadeIn, ScaleFade } from '../animation';
+import { ServicesProps, ServiceItem, FeatureCTA } from '../../types/feature-sections.types';
+import { BotanicalDecoration, BotanicalElementType } from '../../types/botanical.types';
 
-export interface ServiceItem {
-  /** Unique identifier for the service */
-  id: string;
-  
-  /** Title of the service */
-  title: string;
-  
-  /** Description of the service */
-  description: string;
-  
-  /** Optional icon or image for the service */
-  icon?: React.ReactNode;
-  
-  /** URL for the service detail page */
-  url?: string;
-  
-  /** Optional additional content */
-  content?: React.ReactNode;
-  
-  /** Optional accent color for the service card */
-  accentColor?: string;
-  
-  /** Optional botanical decoration type */
-  botanicalAccent?: 'oliveBranch' | 'flowerOfLife' | 'vesicaPiscis' | 'oliveLeaf' | 'none';
-}
-
-export interface ServicesProps {
-  /** Section title */
-  title: string;
-  
-  /** Optional section subtitle */
-  subtitle?: string;
-  
-  /** Array of service items to display */
-  services: ServiceItem[];
-  
-  /** Style of service display */
-  displayStyle?: 'grid' | 'featured' | 'alternating';
-  
-  /** Number of columns in grid layout (defaults to Fibonacci-based responsive grid) */
-  columns?: 1 | 2 | 3 | 4;
-  
-  /** Background color or gradient */
-  backgroundColor?: string;
-  
-  /** Whether to add animation to service items */
-  animated?: boolean;
-  
-  /** Botanical decoration configuration */
-  botanical?: {
-    /** Type of botanical element */
-    type: 'oliveBranch' | 'flowerOfLife' | 'vesicaPiscis' | 'fibonacciSpiral' | 'oliveLeaf';
-    
-    /** Position of the botanical element */
-    position: BotanicalPosition;
-    
-    /** Size of the botanical element */
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-    
-    /** Opacity of the botanical element */
-    opacity?: number;
-  };
-  
-  /** Call-to-action button for the services section */
-  cta?: {
-    /** Button text */
-    label: string;
-    
-    /** Button URL */
-    url: string;
-    
-    /** Button variant */
-    variant?: 'primary' | 'secondary' | 'accent' | 'outline';
-  };
-  
-  /** Optional additional class name */
-  className?: string;
-  
-  /** Optional inline styles */
-  style?: React.CSSProperties;
-}
+// Reexport the types for external use
+export type { ServicesProps, ServiceItem } from '../../types/feature-sections.types';
 
 const ServicesSection = styled(Section)<{ $backgroundColor?: string }>`
   position: relative;
@@ -118,7 +42,7 @@ const ServiceGrid = styled(Grid)<{ $columns: number }>`
   gap: ${getFibonacciByIndex(6)}px;
   margin-top: ${getFibonacciByIndex(7)}px;
   
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
+  @media (max-width: ${props => props.theme.breakpoints.md}px) {
     gap: ${getFibonacciByIndex(5)}px;
   }
 `;
@@ -229,7 +153,7 @@ const Services: React.FC<ServicesProps> = ({
         {service.botanicalAccent && service.botanicalAccent !== 'none' && (
           <Box position="absolute" bottom={getFibonacciByIndex(3)} right={getFibonacciByIndex(3)} opacity={0.1}>
             <BotanicalElement 
-              type={service.botanicalAccent} 
+              variant={service.botanicalAccent} 
               size="sm" 
             />
           </Box>
@@ -260,6 +184,9 @@ const Services: React.FC<ServicesProps> = ({
   
   // Render services in a featured layout
   const renderFeatured = () => {
+    // Use window.matchMedia to apply responsive behavior
+    const isMobile = window.innerWidth <= 768;
+    
     return (
       <Box display="flex" flexDirection="column" gap={getFibonacciByIndex(7)}>
         {services.map((service, index) => {
@@ -269,7 +196,7 @@ const Services: React.FC<ServicesProps> = ({
             <Box 
               key={service.id}
               display="flex" 
-              flexDirection={{ xs: 'column', md: isEven ? 'row' : 'row-reverse' }} 
+              flexDirection={isMobile ? "column" : isEven ? "row" : "row-reverse"}
               gap={getFibonacciByIndex(6)}
             >
               <Box flex={PHI_INVERSE}>
@@ -322,16 +249,23 @@ const Services: React.FC<ServicesProps> = ({
       className={className}
       style={style}
     >
-      {botanical && (
+      {botanical && typeof botanical !== 'boolean' && (
         <BotanicalElement
-          type={botanical.type}
-          position={botanical.position}
-          size={botanical.size}
-          opacity={botanical.opacity}
+          variant={botanical.type}
+          size={botanical.size || 'lg'}
+          opacity={botanical.opacity || 0.1}
         />
       )}
       
-      <SectionTitle title={title} subtitle={subtitle} centered animated={animated} />
+      {botanical && typeof botanical === 'boolean' && (
+        <BotanicalElement
+          variant="oliveBranch"
+          size="lg"
+          opacity={0.1}
+        />
+      )}
+      
+      <SectionTitle title={title} subtitle={subtitle} align="center" />
       
       {renderServices()}
       

@@ -1,9 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
-
-// Import sacred geometry constants
-
-import { getFibonacciByIndex } from '../utils';
+import { DefaultTheme } from 'styled-components';
+import { PHI_INVERSE, getFibonacciByIndex } from '../../../constants/sacred-geometry';
+import { BoxProps } from '../../types/styled.types';
 
 // TypeScript interfaces
 export interface LinkProps {

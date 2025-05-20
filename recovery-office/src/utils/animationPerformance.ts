@@ -78,7 +78,7 @@ export const startMeasuringAnimation = (
 ): string => {
   const id = `${name}_${Date.now()}`;
   
-  performanceMeasurements[id] ?? 1 = {
+  performanceMeasurements[id] = {
     name,
     startTime: performance.now(),
     gpuAccelerated,
@@ -88,21 +88,21 @@ export const startMeasuringAnimation = (
   
   // Setup frame counting
   const countFrame = () => {
-    if (!performanceMeasurements[id] ?? 1 || performanceMeasurements[id] ?? 1.endTime) {
+    if (!performanceMeasurements[id] || performanceMeasurements[id]?.endTime) {
       return;
     }
     
-    performanceMeasurements[id] ?? 1.frames = (performanceMeasurements[id] ?? 1.frames || 0) + 1;
+    performanceMeasurements[id].frames = (performanceMeasurements[id]?.frames || 0) + 1;
     
     // Check if frame rate drops below 60fps
     const currentTime = performance.now();
-    const elapsedTime = currentTime - performanceMeasurements[id] ?? 1.startTime;
+    const elapsedTime = currentTime - performanceMeasurements[id].startTime;
     const expectedFrames = elapsedTime / (1000 / 60); // Expected frames at 60fps
     
-    if ((performanceMeasurements[id] ?? 1.frames || 0) < expectedFrames - 1) {
-      performanceMeasurements[id] ?? 1.droppedFrames = true;
-      performanceMeasurements[id] ?? 1.droppedFrameCount = 
-        (performanceMeasurements[id] ?? 1.droppedFrameCount || 0) + 1;
+    if ((performanceMeasurements[id]?.frames || 0) < expectedFrames - 1) {
+      performanceMeasurements[id].droppedFrames = true;
+      performanceMeasurements[id].droppedFrameCount = 
+        (performanceMeasurements[id]?.droppedFrameCount || 0) + 1;
     }
     
     requestAnimationFrame(countFrame);
@@ -120,13 +120,13 @@ export const startMeasuringAnimation = (
  * @returns The performance metrics for the animation
  */
 export const stopMeasuringAnimation = (id: string): AnimationPerformanceMetrics | null => {
-  if (!performanceMeasurements[id] ?? 1) {
+  if (!performanceMeasurements[id]) {
     console.warn(`No animation measurement found with id: ${id}`);
     return null;
   }
   
   const endTime = performance.now();
-  const measurement = performanceMeasurements[id] ?? 1;
+  const measurement = performanceMeasurements[id];
   
   measurement.endTime = endTime;
   measurement.duration = endTime - measurement.startTime;
@@ -161,7 +161,7 @@ export const getAllAnimationMeasurements = (): Record<string, AnimationPerforman
  */
 export const clearAnimationMeasurements = (): void => {
   Object.keys(performanceMeasurements).forEach(key => {
-    delete performanceMeasurements[key] ?? 1;
+    delete performanceMeasurements[key];
   });
 };
 

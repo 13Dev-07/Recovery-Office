@@ -12,6 +12,9 @@
 import * as React from 'react';
 import BotanicalElement, { BotanicalElementProps } from './BotanicalElement';
 
+// Golden ratio constants
+const PHI = 1.618033988749895;
+const PHI_INVERSE = 0.618033988749895;
 
 /**
  * PentaFlower component props
@@ -87,8 +90,8 @@ const calculatePentagramPoints = (
   const pentagramPoints: { x: number; y: number }[] = [];
   
   for (let i = 0; i < 5; i++) {
-    pentagramPoints.push(pentagonPoints[i] ?? 1);
-    pentagramPoints.push(pentagonPoints[(i + 2) % 5]);
+    pentagramPoints.push(pentagonPoints[i] || { x: 0, y: 0 });
+    pentagramPoints.push(pentagonPoints[(i + 2) % 5] || { x: 0, y: 0 });
   }
   
   return pentagramPoints;
@@ -115,15 +118,15 @@ const generatePentaFlower = (
   if (showPentagram) {
     const pentagramPath = pentagonPoints.map((point, i) => {
       return `${i === 0 ? 'M' : 'L'} ${point.x},${point.y} ${
-        i === 0 ? `L ${pentagonPoints[2] ?? 1.x},${pentagonPoints[2] ?? 1.y}` : ''
+        i === 0 ? `L ${pentagonPoints[2]?.x ?? 0},${pentagonPoints[2]?.y ?? 0}` : ''
       } ${
-        i === 1 ? `L ${pentagonPoints[4] ?? 1.x},${pentagonPoints[4] ?? 1.y}` : ''
+        i === 1 ? `L ${pentagonPoints[4]?.x ?? 0},${pentagonPoints[4]?.y ?? 0}` : ''
       } ${
-        i === 2 ? `L ${pentagonPoints[0] ?? 1.x},${pentagonPoints[0] ?? 1.y}` : ''
+        i === 2 ? `L ${pentagonPoints[0]?.x ?? 0},${pentagonPoints[0]?.y ?? 0}` : ''
       } ${
-        i === 3 ? `L ${pentagonPoints[1] ?? 1.x},${pentagonPoints[1] ?? 1.y}` : ''
+        i === 3 ? `L ${pentagonPoints[1]?.x ?? 0},${pentagonPoints[1]?.y ?? 0}` : ''
       } ${
-        i === 4 ? `L ${pentagonPoints[3] ?? 1.x},${pentagonPoints[3] ?? 1.y} Z` : ''
+        i === 4 ? `L ${pentagonPoints[3]?.x ?? 0},${pentagonPoints[3]?.y ?? 0} Z` : ''
       }`;
     }).join(' ');
     
@@ -144,9 +147,9 @@ const generatePentaFlower = (
     
     // Create petals
     for (let i = 0; i < 5; i++) {
-      const point = layerPentagonPoints[i] ?? 1;
-      const prevPoint = layerPentagonPoints[(i + 4) % 5];
-      const nextPoint = layerPentagonPoints[(i + 1) % 5];
+      const point = layerPentagonPoints[i] || { x: 0, y: 0 };
+      const prevPoint = layerPentagonPoints[(i + 4) % 5] || { x: 0, y: 0 };
+      const nextPoint = layerPentagonPoints[(i + 1) % 5] || { x: 0, y: 0 };
       
       // Calculate control points for the petal curves
       const petalSize = layerRadius * PHI_INVERSE;

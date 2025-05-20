@@ -1,319 +1,335 @@
+/**
+ * ClientInfo Component
+ * 
+ * Reusable component for collecting client information in the booking flow.
+ * Uses sacred geometry principles for form layout and spacing.
+ */
+
 import * as React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { DefaultTheme } from 'styled-components';
-import { PHI, SACRED_SPACING, FIBONACCI, SACRED_RADIUS } from '../../../constants/sacred-geometry';
-import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
-import { useBooking } from '../../../context/BookingContext';
-import { ClientInformationData, validateClientInformation } from '../validation/clientInformation.schema';
+import { Box } from '../../../design-system/components/layout/Box';
+import { Flex } from '../../../design-system/components/layout/Flex';
+import { Heading } from '../../../design-system/components/typography/Heading';
+import { Button } from '../../../design-system/components/button/Button';
 import { ErrorMessage } from '../../../design-system/components/feedback/ErrorMessage';
+import { SACRED_SPACING, SACRED_RADIUS } from '../../../constants/sacred-geometry';
+import { ClientInformation } from '../../../types/booking.types';
 
-/**
- * Client information form fields
- * 
- * @interface ClientFormData
- * @property {string} firstName - Client's first name
- * @property {string} lastName - Client's last name
- * @property {string} email - Client's email address
- * @property {string} phone - Client's phone number
- * @property {string} message - Additional message or details from client
- */
-interface ClientFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  message: string;
+// Define prop interfaces for styled components to prevent type errors
+interface FormInputProps {
+  hasError?: boolean;
 }
 
 /**
- * Form field errors
- * Maps field names to error messages
+ * Styled form label
  */
-type FormErrors = Partial<Record<keyof ClientFormData, string>>;
-
-/**
- * Props for the ClientInfo component
- * 
- * @interface ClientInfoProps
- * @property {ClientFormData} formData - Current form data
- * @property {(field: keyof ClientFormData, value: string) => void} onFieldChange - Handler for field changes
- * @property {FormErrors} errors - Form validation errors
- */
-interface ClientInfoProps {
-  formData: ClientFormData;
-  onFieldChange: (field: keyof ClientFormData, value: string) => void;
-  errors: FormErrors;
-}
-
-/**
- * Container for the client info component
- * Uses sacred spacing for margins
- */
-const Container = styled.div`
-  width: 100%;
-  padding: ${SACRED_SPACING.md}px 0;
-`;
-
-/**
- * Title for the client info section
- * Uses golden ratio for line height
- */
-const SectionTitle = styled.h2`
-  font-size: 1.5rem;
-  margin-bottom: ${SACRED_SPACING.lg}px;
-  line-height: ${PHI};
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.text.dark};
-`;
-
-/**
- * Description for the client info section
- * Uses PHI for line height and margins
- */
-const SectionDescription = styled.p`
-  margin-bottom: ${SACRED_SPACING.xl}px;
-  line-height: ${PHI};
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.text.main};
-`;
-
-/**
- * Form container with grid layout
- * Uses Fibonacci numbers for gaps
- */
-const FormGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: ${SACRED_SPACING.md}px;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-/**
- * Form field group
- * Uses sacred spacing for margins
- */
-const FormGroup = styled.div<{ fullWidth?: boolean }>`
-  margin-bottom: ${SACRED_SPACING.md}px;
-  grid-column: ${(props: { fullWidth?: boolean }) => props.fullWidth ? 'span 2' : 'span 1'};
-  
-  @media (max-width: 768px) {
-    grid-column: span 1;
-  }
-`;
-
-/**
- * Form field label
- * Uses golden ratio for spacing and line height
- */
-const Label = styled.label`
+const FormLabel = styled.label`
   display: block;
   margin-bottom: ${SACRED_SPACING.xs}px;
   font-weight: 500;
-  font-size: 0.875rem;
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.text.dark};
-  line-height: ${PHI};
+  color: ${props => props.theme.colors.text.primary};
 `;
 
 /**
- * Required field indicator
- * Uses accent color for visibility
+ * Styled form input with error state styling
  */
-const Required = styled.span`
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.accent.main};
-  margin-left: ${SACRED_SPACING.xxs}px;
-`;
-
-/**
- * Input field
- * Uses sacred spacing and Fibonacci for dimensions
- */
-const Input = styled.input<{ hasError: boolean }>`
+const FormInput = styled.input<FormInputProps>`
   width: 100%;
-  padding: ${SACRED_SPACING.sm}px;
-  font-size: 1rem;
+  padding: ${SACRED_SPACING.sm}px ${SACRED_SPACING.md}px;
   border-radius: ${SACRED_RADIUS.sm}px;
-  border: 1px solid ${(props: { theme: DefaultTheme; hasError: boolean }) => 
-    props.hasError ? props.theme.colors.error.main : props.theme.colors.border.main
+  border: 1px solid ${props => 
+    props.hasError 
+      ? props.theme.colors.error.main 
+      : props.theme.colors.border.light
   };
-  background-color: ${(props: { theme: DefaultTheme }) => props.theme.colors.background.light};
-  transition: all ${getFibonacciByIndex(5) * 10}ms ease-in-out;
+  font-size: 1rem;
+  background-color: #FFFFFF;
   
   &:focus {
     outline: none;
-    border-color: ${(props: { theme: DefaultTheme; hasError: boolean }) => 
-      props.hasError ? props.theme.colors.error.main : props.theme.colors.accent.main
-    };
-    box-shadow: 0 0 0 ${getFibonacciByIndex(3)}px ${(props: { theme: DefaultTheme; hasError: boolean }) => 
+    border-color: ${props => 
       props.hasError 
-        ? `${props.theme.colors.error.main}33` // 20% opacity
-        : `${props.theme.colors.accent.light}33`
+        ? props.theme.colors.error.main 
+        : props.theme.colors.primary[500]
+    };
+    box-shadow: 0 0 0 2px ${props => 
+      props.hasError 
+        ? props.theme.colors.error.light 
+        : props.theme.colors.primary[200]
     };
   }
 `;
 
 /**
- * Textarea for messages
- * Uses golden ratio for proportions
+ * Styled textarea with error state styling
  */
-const Textarea = styled(Input).attrs({ as: 'textarea' })`
-  resize: vertical;
-  min-height: ${getFibonacciByIndex(9)}px;
-  line-height: ${PHI};
-`;
-
-/**
- * Privacy policy text
- * Uses sacred spacing and golden ratio
- */
-const PrivacyText = styled.p`
-  font-size: 0.75rem;
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.text.light};
-  margin-top: ${SACRED_SPACING.lg}px;
-  line-height: ${PHI};
-`;
-
-/**
- * Privacy policy link
- * Uses accent color for visibility
- */
-const PrivacyLink = styled.a`
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.accent.main};
-  text-decoration: none;
+const FormTextArea = styled.textarea<FormInputProps>`
+  width: 100%;
+  padding: ${SACRED_SPACING.sm}px ${SACRED_SPACING.md}px;
+  border-radius: ${SACRED_RADIUS.sm}px;
+  border: 1px solid ${props => 
+    props.hasError 
+      ? props.theme.colors.error.main 
+      : props.theme.colors.border.light
+  };
+  min-height: 100px;
+  font-family: inherit;
+  font-size: 1rem;
+  background-color: #FFFFFF;
   
-  &:hover {
-    text-decoration: underline;
+  &:focus {
+    outline: none;
+    border-color: ${props => 
+      props.hasError 
+        ? props.theme.colors.error.main 
+        : props.theme.colors.primary[500]
+    };
+    box-shadow: 0 0 0 2px ${props => 
+      props.hasError 
+        ? props.theme.colors.error.light 
+        : props.theme.colors.primary[200]
+    };
   }
 `;
 
 /**
- * ClientInfo component
- * Collects client information for booking
- * Implements sacred geometry principles throughout
+ * Styled form section
+ */
+const FormSection = styled(Box)`
+  margin-bottom: ${SACRED_SPACING.lg}px;
+`;
+
+/**
+ * Styled form row
+ */
+const FormRow = styled(Flex)`
+  margin-bottom: ${SACRED_SPACING.md}px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+/**
+ * Styled form group
+ */
+const FormGroup = styled(Box)`
+  margin-bottom: ${SACRED_SPACING.md}px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+/**
+ * Props for the ClientInfo component
+ */
+interface ClientInfoProps {
+  initialData?: ClientInformation;
+  onSubmit: (data: ClientInformation) => void;
+  onCancel?: () => void;
+  className?: string;
+}
+
+/**
+ * ClientInfo Component
+ * Collects detailed information about the client
  */
 const ClientInfo: React.FC<ClientInfoProps> = ({
-  formData,
-  onFieldChange,
-  errors,
+  initialData,
+  onSubmit,
+  onCancel,
+  className
 }) => {
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  // Form state with default values
+  const [formData, setFormData] = useState<ClientInformation>({
+    firstName: initialData?.firstName || '',
+    lastName: initialData?.lastName || '',
+    email: initialData?.email || '',
+    phone: initialData?.phone || '',
+    preferredContactMethod: initialData?.preferredContactMethod || 'email',
+    isNewClient: initialData?.isNewClient !== undefined ? initialData.isNewClient : true,
+    additionalNotes: initialData?.additionalNotes || ''
+  });
+  
+  // Form validation errors
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    onFieldChange(name as keyof ClientFormData, value);
+    
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Clear error when field is edited
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+  
+  // Validate form data
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    }
+    
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      onSubmit(formData);
+    }
   };
   
   return (
-    <Container>
-      <SectionTitle>Your Information</SectionTitle>
-      <SectionDescription>
-        Please provide your contact details. We'll use this information to confirm your booking and send important updates.
-      </SectionDescription>
-      
-      <FormGrid>
-        <FormGroup>
-          <Label htmlFor="firstName">
-            First Name <Required>*</Required>
-          </Label>
-          <Input
-            id="firstName"
-            name="firstName"
-            type="text"
-            value={formData.firstName}
-            onChange={handleInputChange}
-            hasError={!!errors.firstName}
-            aria-invalid={!!errors.firstName}
-            aria-describedby={errors.firstName ? "firstName-error" : undefined}
-            required
-          />
-          {errors.firstName && (
-            <ErrorMessage id="firstName-error">{errors.firstName}</ErrorMessage>
-          )}
-        </FormGroup>
+    <Box className={className} data-testid="client-info-form">
+      <form onSubmit={handleSubmit} noValidate>
+        <FormSection>
+          <Heading as="h3" style={{ marginBottom: '1rem' }}>
+            Personal Information
+          </Heading>
+          
+          <FormRow flexDirection="column" style={{ marginLeft: '-0.5rem', marginRight: '-0.5rem' }}>
+            <FormGroup flex="1" padding="0 0.5rem">
+              <FormLabel htmlFor="firstName">First Name *</FormLabel>
+              <FormInput
+                id="firstName"
+                name="firstName"
+                type="text"
+                value={formData.firstName}
+                onChange={handleChange}
+                hasError={!!errors.firstName}
+                aria-invalid={!!errors.firstName}
+                aria-describedby={errors.firstName ? "firstName-error" : undefined}
+                required
+              />
+              {errors.firstName && (
+                <ErrorMessage id="firstName-error">{errors.firstName}</ErrorMessage>
+              )}
+            </FormGroup>
+            
+            <FormGroup flex="1" padding="0 0.5rem">
+              <FormLabel htmlFor="lastName">Last Name *</FormLabel>
+              <FormInput
+                id="lastName"
+                name="lastName"
+                type="text"
+                value={formData.lastName}
+                onChange={handleChange}
+                hasError={!!errors.lastName}
+                aria-invalid={!!errors.lastName}
+                aria-describedby={errors.lastName ? "lastName-error" : undefined}
+                required
+              />
+              {errors.lastName && (
+                <ErrorMessage id="lastName-error">{errors.lastName}</ErrorMessage>
+              )}
+            </FormGroup>
+          </FormRow>
+          
+          <FormGroup>
+            <FormLabel htmlFor="email">Email Address *</FormLabel>
+            <FormInput
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              hasError={!!errors.email}
+              aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? "email-error" : undefined}
+              required
+            />
+            {errors.email && (
+              <ErrorMessage id="email-error">{errors.email}</ErrorMessage>
+            )}
+          </FormGroup>
+          
+          <FormGroup>
+            <FormLabel htmlFor="phone">Phone Number *</FormLabel>
+            <FormInput
+              id="phone"
+              name="phone"
+              type="tel"
+              value={formData.phone}
+              onChange={handleChange}
+              hasError={!!errors.phone}
+              aria-invalid={!!errors.phone}
+              aria-describedby={errors.phone ? "phone-error" : undefined}
+              required
+            />
+            {errors.phone && (
+              <ErrorMessage id="phone-error">{errors.phone}</ErrorMessage>
+            )}
+          </FormGroup>
+          
+          <FormGroup>
+            <FormLabel htmlFor="additionalNotes">Additional Notes</FormLabel>
+            <FormTextArea
+              id="additionalNotes"
+              name="additionalNotes"
+              value={formData.additionalNotes || ''}
+              onChange={handleChange}
+              hasError={!!errors.additionalNotes}
+              aria-invalid={!!errors.additionalNotes}
+              aria-describedby={errors.additionalNotes ? "additionalNotes-error" : undefined}
+            />
+            {errors.additionalNotes && (
+              <ErrorMessage id="additionalNotes-error">{errors.additionalNotes}</ErrorMessage>
+            )}
+          </FormGroup>
+        </FormSection>
         
-        <FormGroup>
-          <Label htmlFor="lastName">
-            Last Name <Required>*</Required>
-          </Label>
-          <Input
-            id="lastName"
-            name="lastName"
-            type="text"
-            value={formData.lastName}
-            onChange={handleInputChange}
-            hasError={!!errors.lastName}
-            aria-invalid={!!errors.lastName}
-            aria-describedby={errors.lastName ? "lastName-error" : undefined}
-            required
-          />
-          {errors.lastName && (
-            <ErrorMessage id="lastName-error">{errors.lastName}</ErrorMessage>
+        <Flex justifyContent="space-between" style={{ marginTop: `${SACRED_SPACING.lg}px` }}>
+          {onCancel && (
+            <Button 
+              type="button" 
+              variant="outline"
+              onClick={onCancel}
+            >
+              Back
+            </Button>
           )}
-        </FormGroup>
-        
-        <FormGroup>
-          <Label htmlFor="email">
-            Email <Required>*</Required>
-          </Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            hasError={!!errors.email}
-            aria-invalid={!!errors.email}
-            aria-describedby={errors.email ? "email-error" : undefined}
-            required
-          />
-          {errors.email && (
-            <ErrorMessage id="email-error">{errors.email}</ErrorMessage>
-          )}
-        </FormGroup>
-        
-        <FormGroup>
-          <Label htmlFor="phone">
-            Phone <Required>*</Required>
-          </Label>
-          <Input
-            id="phone"
-            name="phone"
-            type="tel"
-            value={formData.phone}
-            onChange={handleInputChange}
-            hasError={!!errors.phone}
-            aria-invalid={!!errors.phone}
-            aria-describedby={errors.phone ? "phone-error" : undefined}
-            required
-          />
-          {errors.phone && (
-            <ErrorMessage id="phone-error">{errors.phone}</ErrorMessage>
-          )}
-        </FormGroup>
-        
-        <FormGroup fullWidth>
-          <Label htmlFor="message">
-            Additional Message
-          </Label>
-          <Textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleInputChange}
-            hasError={!!errors.message}
-            aria-invalid={!!errors.message}
-            aria-describedby={errors.message ? "message-error" : undefined}
-          />
-          {errors.message && (
-            <ErrorMessage id="message-error">{errors.message}</ErrorMessage>
-          )}
-        </FormGroup>
-      </FormGrid>
-      
-      <PrivacyText>
-        By submitting this form, you agree to our{' '}
-        <PrivacyLink href="/privacy-policy">Privacy Policy</PrivacyLink> and{' '}
-        <PrivacyLink href="/terms-of-service">Terms of Service</PrivacyLink>.
-      </PrivacyText>
-    </Container>
+          
+          <Button 
+            type="submit" 
+            variant="primary"
+            style={{ marginLeft: onCancel ? 'auto' : '0' }}
+          >
+            Continue
+          </Button>
+        </Flex>
+      </form>
+    </Box>
   );
 };
 

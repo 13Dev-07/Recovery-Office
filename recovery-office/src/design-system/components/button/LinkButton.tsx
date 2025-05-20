@@ -10,6 +10,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
 import { Button, ButtonProps } from './Button';
+import { PHI_INVERSE } from '../../../constants/sacred-geometry';
 
 
 /**
@@ -65,41 +66,29 @@ const StyledLinkButton = styled(Button)<LinkButtonProps & {
   
   // Color variations based on variant
   color: ${props => {
-    switch (props.variant) {
-      case 'secondary':
-        return props.theme.colors.secondary[500] ?? 1;
-      case 'accent':
-        return props.theme.colors.accent.gold;
-      case 'subtle':
-        return props.theme.colors.text.secondary;
-      case 'primary':
-      default:
-        return props.theme.colors.primary[500] ?? 1;
-    }
+    const variantString = String(props.variant);
+    if (variantString === 'secondary') return props.theme.colors.secondary[500] ?? '#666';
+    if (variantString === 'accent') return props.theme.colors.accent.gold;
+    if (variantString === 'subtle') return props.theme.colors.text.secondary;
+    return props.theme.colors.primary[500] ?? '#333'; // default to primary
   }};
   
   &:hover, &:focus {
     color: ${props => {
-      switch (props.variant) {
-        case 'secondary':
-          return props.theme.colors.secondary[700] ?? 1;
-        case 'accent':
-          return props.theme.colors.accent.copper;
-        case 'subtle':
-          return props.theme.colors.text.primary;
-        case 'primary':
-        default:
-          return props.theme.colors.primary[700] ?? 1;
-      }
+      const variantString = String(props.variant);
+      if (variantString === 'secondary') return props.theme.colors.secondary[700] ?? '#444';
+      if (variantString === 'accent') return props.theme.colors.accent.copper;
+      if (variantString === 'subtle') return props.theme.colors.text.primary;
+      return props.theme.colors.primary[700] ?? '#111'; // default to primary hover
     }};
   }
   
   // Navigation specific styling
   ${props => props.$isNavLink && `
-    border-radius: ${props.theme.borderRadius.sm};
+    border-radius: ${props.theme.radius?.sm || '4px'};
     
     &:hover, &:focus {
-      background-color: ${props.theme.colors.background[100] ?? 1};
+      background-color: ${props.theme.colors.background[100] ?? '#f5f5f5'};
     }
   `}
 `;

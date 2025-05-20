@@ -8,8 +8,8 @@
  */
 
 import * as React from 'react';
-import { useEffect } from 'react';;
 import { 
+  useEffect,
   createContext,
   useState,
   useContext,
@@ -108,25 +108,19 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({
     
     // Use proper event listener pattern based on browser support
     if (mediaQuery.addEventListener) {
-      if (mediaQuery.addEventListener) {
-        mediaQuery.addEventListener('change', handleChange);
+      mediaQuery.addEventListener('change', handleChange);
     } else {
         // Fallback for older browsers
-        mediaQuery.addListener(mediaQuery.match);
+        mediaQuery.addListener(handleChange);
     }
       
-      return () => {
+    return () => {
+      if (mediaQuery.removeEventListener) {
         mediaQuery.removeEventListener('change', handleChange);
-      };
-    } else {
-      // For older browsers that don't support addEventListener
-      // This is the fallback for older browsers
-      mediaQuery.addListener(handleChange);
-      
-      return () => {
+      } else {
         mediaQuery.removeListener(handleChange);
-      };
-    }
+      }
+    };
   }, []);
   
   // Combine context values
@@ -183,8 +177,8 @@ export const useAnimationDuration = (
   };
   
   // Get the mapped key with a fallback to 'standard'
-  const mappedKey = durationMap[durationKey] ?? 1 || 'standard';
-  return ANIMATION_TIMING[mappedKey] ?? 1;
+  const mappedKey = durationMap[durationKey] || 'standard';
+  return ANIMATION_TIMING[mappedKey] as number;
 };
 
 // Hook to get animation easing function
@@ -204,15 +198,15 @@ export const useAnimationEasing = (
   // Map animation context easing types to SACRED_EASINGS keys
   const easingMap: Record<AnimationEasing, keyof typeof SACRED_EASINGS> = {
     smooth: 'standard',
-    bouncy: 'botanical',
-    sharp: 'easeIn',
-    elastic: 'botanical',
-    golden: 'standard'
+    bouncy: 'naturalBounce',
+    sharp: 'sharpIn',
+    elastic: 'naturalSpring',
+    golden: 'golden'
   };
   
-  const mappedKey = easingMap[easingKey] ?? 1;
+  const mappedKey = easingMap[easingKey] || 'standard';
   // Return the easing value as a string representation
-  return JSON.stringify(SACRED_EASINGS[mappedKey as keyof typeof SACRED_EASINGS]);
+  return JSON.stringify(SACRED_EASINGS[mappedKey]);
 };
 
 // Hook to calculate stagger delay based on index

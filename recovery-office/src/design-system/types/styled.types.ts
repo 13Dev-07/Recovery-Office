@@ -34,6 +34,11 @@ export interface MarginProps {
   ml?: string | number;
   mx?: string | number;
   my?: string | number;
+  margin?: string | number;
+  marginTop?: string | number;
+  marginRight?: string | number;
+  marginBottom?: string | number;
+  marginLeft?: string | number;
 }
 
 /**
@@ -47,6 +52,11 @@ export interface PaddingProps {
   pl?: string | number;
   px?: string | number;
   py?: string | number;
+  padding?: string | number;
+  paddingTop?: string | number;
+  paddingRight?: string | number;
+  paddingBottom?: string | number;
+  paddingLeft?: string | number;
 }
 
 /**
@@ -128,6 +138,7 @@ export interface FlexItemProps {
   flexShrink?: number;
   flexBasis?: string | number;
   alignSelf?: 'auto' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
+  justifySelf?: 'auto' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
   order?: number;
 }
 
@@ -135,7 +146,7 @@ export interface FlexItemProps {
  * Props for grid container components
  */
 export interface GridProps {
-  gridTemplateColumns?: string;
+  gridTemplateColumns?: string | Record<string, string>;
   gridTemplateRows?: string;
   gridTemplateAreas?: string;
   gridGap?: string | number;
@@ -208,6 +219,24 @@ export interface PositionProps {
   bottom?: string | number;
   left?: string | number;
   zIndex?: number;
+  transform?: string;
+  cursor?: string;
+}
+
+/**
+ * Props for CSS style object
+ */
+export interface StyleObjectProps {
+  style?: React.CSSProperties;
+}
+
+/**
+ * Props for overflow handling
+ */
+export interface OverflowProps {
+  overflow?: string;
+  overflowX?: string;
+  overflowY?: string;
 }
 
 /**
@@ -217,13 +246,16 @@ export interface BoxStyleProps extends
   SpacingProps, 
   DisplayProps, 
   DimensionProps, 
-  FlexProps, 
+  FlexProps,
+  FlexItemProps,
   GridProps,
   TextProps,
   ColorProps,
   BorderProps,
   ShadowProps,
-  PositionProps {}
+  PositionProps,
+  OverflowProps,
+  StyleObjectProps {}
 
 /**
  * Props for responsive styling (with breakpoint-specific values)
@@ -248,15 +280,15 @@ export interface BoxProps extends BoxStyleProps, ResponsiveProps, StyledComponen
 }
 
 /**
- * Props that allow specifying a polymorphic 'as' prop
- * for components built with styled-components
+ * Props for elements that accept the 'as' prop for polymorphic components
+ * Enhanced to better support framer-motion components
  */
 export interface AsProps<T = unknown> extends BoxProps {
   /**
    * Polymorphic as prop for rendering different HTML elements
-   * or other React components
+   * or other React components, including framer-motion components
    */
-  as?: React.ElementType<T> | keyof JSX.IntrinsicElements;
+  as?: React.ElementType | keyof JSX.IntrinsicElements;
 }
 
 /**
@@ -308,6 +340,18 @@ export interface GoldenSectionProps extends BoxProps {
    * When true, the secondary section will be rendered first
    */
   reverseOrder?: boolean;
+  
+  /**
+   * Alternative way to provide content for the right/secondary section
+   * This is an alternative to providing two children
+   */
+  rightContent?: React.ReactNode;
+  
+  /**
+   * Alternative way to provide content for the left/primary section
+   * This is an alternative to providing two children
+   */
+  leftContent?: React.ReactNode;
 }
 
 /**
@@ -382,8 +426,7 @@ export interface StackProps extends BoxProps {
 }
 
 /**
- * Form Field Props
- * Common props for form fields
+ * Props for form field components
  */
 export interface FormFieldProps extends BoxProps {
   /**
@@ -563,10 +606,9 @@ export interface FormErrorProps extends BoxProps {
 }
 
 /**
- * Input Props
- * Text input field props
+ * Input component props
  */
-export interface InputProps extends FormFieldProps {
+export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>, FormFieldProps {
   /**
    * The input type
    * @default 'text'
@@ -616,40 +658,99 @@ export interface InputProps extends FormFieldProps {
 }
 
 /**
- * Text Area Props
- * Multiline text input field props
+ * TextArea component props
  */
-export interface TextAreaProps extends Omit<InputProps, 'type' | 'startIcon' | 'endIcon'> {
+export interface TextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size' | 'onChange' | 'onFocus' | 'onBlur'>, FormFieldProps {
   /**
-   * Number of rows in the textarea
+   * The textarea value
+   */
+  value?: string;
+  
+  /**
+   * Default value for uncontrolled textareas
+   */
+  defaultValue?: string;
+  
+  /**
+   * Placeholder text for the textarea
+   */
+  placeholder?: string;
+  
+  /**
+   * Number of rows to display initially
    * @default 3
    */
   rows?: number;
   
   /**
-   * Whether to automatically resize the textarea based on content
+   * Whether the textarea should automatically resize based on content
    * @default false
    */
   autoResize?: boolean;
   
   /**
-   * Maximum height for auto-resizing textareas
+   * Maximum height when auto-resizing
    */
-  maxHeight?: string | number;
+  maxHeight?: number | string;
   
   /**
-   * Minimum height for auto-resizing textareas
+   * Minimum height when auto-resizing
    */
-  minHeight?: string | number;
+  minHeight?: number | string;
+  
+  /**
+   * Callback when the textarea value changes
+   */
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>) => void;
+  
+  /**
+   * Callback when the textarea is focused
+   */
+  onFocus?: (e: React.FocusEvent<HTMLTextAreaElement> | React.FocusEvent<HTMLInputElement>) => void;
+  
+  /**
+   * Callback when the textarea loses focus
+   */
+  onBlur?: (e: React.FocusEvent<HTMLTextAreaElement> | React.FocusEvent<HTMLInputElement>) => void;
 }
 
 /**
- * Select Props
- * Dropdown selection field props
+ * Select component props
  */
-export interface SelectProps extends Omit<InputProps, 'type'> {
+export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'size' | 'onChange' | 'onFocus' | 'onBlur'>, FormFieldProps {
   /**
-   * Options for the select field
+   * The select value
+   */
+  value?: string | number;
+  
+  /**
+   * Default value for uncontrolled selects
+   */
+  defaultValue?: string | number;
+  
+  /**
+   * Placeholder text for the select
+   */
+  placeholder?: string;
+  
+  /**
+   * Callback when the select value changes
+   * Accept both select and input element events for compatibility
+   */
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLInputElement>) => void;
+  
+  /**
+   * Callback when the select is focused
+   */
+  onFocus?: (e: React.FocusEvent<HTMLSelectElement> | React.FocusEvent<HTMLInputElement>) => void;
+  
+  /**
+   * Callback when the select loses focus
+   */
+  onBlur?: (e: React.FocusEvent<HTMLSelectElement> | React.FocusEvent<HTMLInputElement>) => void;
+  
+  /**
+   * Array of select options
    */
   options?: Array<{
     value: string | number;
@@ -657,27 +758,19 @@ export interface SelectProps extends Omit<InputProps, 'type'> {
     disabled?: boolean;
     group?: string;
   }>;
-  
+
   /**
-   * Placeholder text when no option is selected
-   */
-  placeholder?: string;
-  
-  /**
-   * Whether to use a clearable select
-   * @default false
+   * Whether the select can be cleared
    */
   isClearable?: boolean;
   
   /**
-   * Whether to allow searching in the options
-   * @default false
+   * Whether the select supports text search
    */
   isSearchable?: boolean;
   
   /**
-   * Whether to use a sacred geometry-based dropdown layout
-   * @default true
+   * Whether to use the custom sacred geometry dropdown
    */
   useSacredDropdown?: boolean;
 }

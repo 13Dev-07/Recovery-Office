@@ -7,14 +7,14 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import { Section } from '../design-system/components/layout/Section';
-import { SectionTitle } from '../../../design-system/components/typography/SectionTitle';
+import { Section } from '../../../design-system/components/layout/Section';
+import SectionTitle from '../../../design-system/components/typography/SectionTitle';
 import { Text } from '../../../design-system/components/typography/Text';
-import { Box, GoldenSection } from '../design-system/components/layout';
-import { Card } from '../design-system/components/data-display';
+import { Box, GoldenSection } from '../../../design-system/components/layout';
+import { Card } from '../../../design-system/components/data-display';
 import { PHI, PHI_INVERSE, SACRED_SPACING } from '../../../constants/sacred-geometry';
-import { FlowerOfLife, SeedOfLife, TreeOfLife } from '../design-system/botanical';
-import { FadeIn, ScrollReveal } from '../../animation';
+import { FlowerOfLife, SeedOfLife, TreeOfLife } from '../../../design-system/botanical';
+import { FadeIn, ScrollReveal } from '../../../animation';
 
 const StyledSection = styled(Section)`
   position: relative;
@@ -92,7 +92,7 @@ const PhilosophySection: React.FC = () => {
         />
         
         <Box mt={SACRED_SPACING.lg}>
-          <Text fontSize="lg" textAlign="center" style={{ maxWidth: '800px', margin: '0 auto', marginBottom: SACRED_SPACING.lg }}>
+          <Text size="lg" textAlign="center" style={{ maxWidth: '800px', margin: '0 auto', marginBottom: SACRED_SPACING.lg }}>
             Recovery Office is founded on the understanding that the same mathematical principles
             that create harmony in the universe can be applied to therapeutic practices.
           </Text>
@@ -109,21 +109,20 @@ const PhilosophySection: React.FC = () => {
               >
                 <FlowerOfLife
                   size="xl"
-                  primaryColor="#4a6eb3"
-                  secondaryColor="rgba(0,0,0,0)"
+                  color="#4a6eb3"
+                  fill="rgba(0,0,0,0)"
                   opacity={0.7}
-                  animated
                 />
               </Box>
             }
           >
-            <Text fontSize="md">
+            <Text size="md">
               Our approach merges ancient wisdom with modern therapeutic practices. We recognize that
               the same sacred proportions found in natural systems—from galaxies to seashells, from flower
               petals to human DNA—can be applied to healing methodologies to create greater harmony
               and more efficient recovery.
             </Text>
-            <Text fontSize="md" mt={SACRED_SPACING.md}>
+            <Text size="md" mt={SACRED_SPACING.md}>
               By incorporating these principles into our therapeutic environments, exercises, and
               procedures, we create a resonance that naturally facilitates the body's own healing capabilities.
               This isn't just theoretical—our research has demonstrated measurable improvements in
@@ -134,7 +133,7 @@ const PhilosophySection: React.FC = () => {
           <Box 
             mt={SACRED_SPACING.xl} 
             display="grid" 
-            gridTemplateColumns={["1fr", null, "1fr 1fr 1fr"]} 
+            gridTemplateColumns={{ _xs: "1fr", _md: "1fr 1fr 1fr" }}
             gap={SACRED_SPACING.lg}
           >
             {philosophyPrinciples.map((principle, index) => (
@@ -176,10 +175,10 @@ const PhilosophySection: React.FC = () => {
           </Box>
           
           <Box mt={SACRED_SPACING.xl} textAlign="center">
-            <Text fontSize="lg" fontWeight="500" color="#4a6eb3">
+            <Text size="lg" fontWeight="500" color="#4a6eb3">
               "Harmony in healing comes from aligning with the mathematical principles that govern our universe."
             </Text>
-            <Text fontSize="md" mt={SACRED_SPACING.sm} fontStyle="italic">
+            <Text size="md" mt={SACRED_SPACING.sm} fontStyle="italic">
               — Dr. Elizabeth Harper, Founder
             </Text>
           </Box>

@@ -2,7 +2,14 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 // Import botanical components and utilities
-import { BotanicalElement } from './index';
+import { 
+  FlowerOfLife, 
+  OliveBranch, 
+  VesicaPiscis, 
+  FibonacciSpiral, 
+  OliveLeaf, 
+  SmallFlourish 
+} from './index';
 import { 
   BotanicalPosition, 
   BotanicalSize,
@@ -12,7 +19,7 @@ import {
 } from './botanicalUtils';
 
 // Import sacred geometry constants
-
+import { PHI_INVERSE } from '../../constants/sacred-geometry';
 
 // TypeScript interfaces
 export interface BotanicalDecoratorProps {
@@ -68,6 +75,31 @@ const BotanicalDecorator: React.FC<BotanicalDecoratorProps> = ({
   style,
   'data-testid': testId = 'botanical-decorator',
 }) => {
+  // Render the appropriate botanical component based on type
+  const renderBotanicalElement = () => {
+    const commonProps = {
+      opacity: opacity,
+      decorative: decorative,
+    };
+
+    switch (botanicalType) {
+      case 'oliveBranch':
+        return <OliveBranch {...commonProps} />;
+      case 'flowerOfLife':
+        return <FlowerOfLife {...commonProps} />;
+      case 'vesicaPiscis':
+        return <VesicaPiscis {...commonProps} />;
+      case 'fibonacciSpiral':
+        return <FibonacciSpiral {...commonProps} />;
+      case 'oliveLeaf':
+        return <OliveLeaf {...commonProps} />;
+      case 'smallFlourish':
+        return <SmallFlourish {...commonProps} />;
+      default:
+        return <OliveBranch {...commonProps} />;
+    }
+  };
+
   return (
     <Container 
       className={className} 
@@ -89,13 +121,7 @@ const BotanicalDecorator: React.FC<BotanicalDecoratorProps> = ({
         $animateOnHover={animateOnHover}
         aria-hidden={decorative}
       >
-        <BotanicalElement
-          variant={botanicalType}
-          size={size}
-          opacity={opacity}
-          colorScheme={colorScheme}
-          withAnimation={animateOnHover}
-        />
+        {renderBotanicalElement()}
       </BotanicalWrapper>
     </Container>
   );

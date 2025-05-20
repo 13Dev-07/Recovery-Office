@@ -26,8 +26,6 @@ export interface SectionContentProps {
   columnGap?: 1 | 2 | 3 | 5 | 8 | 13;
 }
 
-export { SectionContentProps };
-
 /**
  * Calculate column width based on sacred geometry
  * Using golden ratio to determine width proportions

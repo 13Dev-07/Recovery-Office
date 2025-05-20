@@ -12,7 +12,7 @@ import {
 } from './botanicalUtils';
 
 // Import sacred geometry constants
-
+import { PHI_INVERSE } from '../../../constants/sacred-geometry';
 
 // TypeScript interfaces
 export interface BotanicalDecoratorProps {
@@ -56,7 +56,7 @@ const BotanicalDecorator = React.forwardRef<HTMLDivElement, BotanicalDecoratorPr
   ({
     children,
     botanicalType = 'oliveBranch',
-    position = 'bottomRight',
+    position = 'bottom-right',
     size = 'md',
     opacity = 0.15,
     colorScheme = 'primary',
@@ -127,8 +127,8 @@ const Container = styled.div<ContainerProps>`
   /* Hover animation for botanical element */
   ${({ $animateOnHover }) => $animateOnHover && `
     &:hover .botanical-decorator-element {
-      transform: scale(${1 + (PHI_INVERSE * 0.2)});
-      opacity: ${1 - (PHI_INVERSE * 0.5)};
+      transform: scale(${1 + (0.618 * 0.2)});
+      opacity: ${1 - (0.618 * 0.5)};
     }
   `}
 `;
@@ -148,7 +148,7 @@ const BotanicalWrapper = styled.div<BotanicalWrapperProps>`
   
   /* Transition for hover animations */
   ${({ $animateOnHover }) => $animateOnHover && `
-    transition: all 0.3s cubic-bezier(${PHI_INVERSE}, 0, ${1 - PHI_INVERSE}, 1);
+    transition: all 0.3s cubic-bezier(0.618, 0, 0.382, 1);
   `}
   
   /* Accessibility styles */

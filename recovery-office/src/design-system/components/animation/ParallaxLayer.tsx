@@ -14,16 +14,16 @@ import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';;
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
 
-import type { BoxProps } from '../../types';
-import { ParallaxLayerProps } from './animation.d';
+import { ParallaxLayerProps } from '../../types/animation.types';
 import { prefersReducedMotion } from '../../../utils/animation';
 import { mergeRefs } from '../../../utils/refs';
+import { FIBONACCI, FibonacciIndex } from '../../../constants/sacred-geometry';
 
 // Helper function to safely access Fibonacci values by index
 const getFibonacciByIndex = (index: number): number => {
   const fibKeys = Object.keys(FIBONACCI).map(Number).sort((a, b) => a - b);
   const safeIndex = Math.max(0, Math.min(index, fibKeys.length - 1));
-  return FIBONACCI[fibKeys[safeIndex] ?? 1];
+  return FIBONACCI[fibKeys[safeIndex] as FibonacciIndex] || 1;
 };
 
 /**

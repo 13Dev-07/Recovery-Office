@@ -158,8 +158,11 @@ export const calculateGridColumns = (
   // Calculate raw number of columns
   const rawColumns = Math.floor(containerWidth / minItemWidth);
   
+  // Convert FIBONACCI to an array of values
+  const fibArray = Object.values(FIBONACCI);
+  
   // Find the closest Fibonacci number that's less than or equal to the raw columns
-  const fibNumber = FIBONACCI.reduce((prev, curr) => 
+  const fibNumber = fibArray.reduce((prev: number, curr: number) => 
     curr <= rawColumns ? curr : prev, 1);
   
   // Ensure we have at least 1 column
@@ -253,8 +256,8 @@ export const parseUnit = (
   
   const match = value.match(/^([\d.]+)([a-z%]*)$/);
   
-  if (match) {
-    return parseFloat(match[1] ?? 1);
+  if (match && match[1]) {
+    return parseFloat(match[1]);
   }
   
   return defaultValue;
@@ -268,13 +271,17 @@ export const parseUnit = (
  */
 export const createFibonacciSpacer = (baseFibIndex: number = 5) => {
   return (multiplier: number = 1): number => {
+    // Convert FIBONACCI to an array of values for safe indexing
+    const fibValues = Object.values(FIBONACCI);
+    
     // Ensure the index is within bounds
     const index = Math.min(
       Math.max(0, baseFibIndex + Math.round(multiplier) - 1),
-      FIBONACCI.length - 1
+      fibValues.length - 1
     );
     
-    return FIBONACCI[index] ?? 1;
+    // Get the value from the array
+    return fibValues[index] || 1;
   };
 };
 
@@ -350,6 +357,9 @@ export const extractInitials = (
   // Split the name by spaces and other separators
   const parts = fullName.split(/[\s-_]+/).filter(Boolean);
   
+  // Convert FIBONACCI to an array of values
+  const fibArray = Object.values(FIBONACCI);
+  
   // Use Fibonacci sequence to determine which parts to use for initials
   // For names with 1-3 parts, use first and last
   // For names with 4+ parts, use parts at Fibonacci indices
@@ -357,11 +367,11 @@ export const extractInitials = (
   
   if (parts.length <= 3) {
     // Use first and last parts for shorter names
-    initialsArray = [parts[0] ?? 1, parts[parts.length - 1]];
+    initialsArray = [parts[0], parts[parts.length - 1]];
   } else {
     // For longer names, use Fibonacci-based selection
-    const fibIndices = FIBONACCI.slice(0, 5).filter(i => i < parts.length);
-    initialsArray = fibIndices.map(i => parts[i] ?? 1);
+    const fibIndices = fibArray.slice(0, 5).filter(i => i < parts.length);
+    initialsArray = fibIndices.map(i => parts[i]);
   }
   
   // Extract first letter from each selected part

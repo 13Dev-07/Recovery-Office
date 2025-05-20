@@ -9,7 +9,7 @@ export { default as useReducedMotion } from './useReducedMotion';
 export { default as useAnimationSequence } from './useAnimationSequence';
 export { default as useParallaxScroll } from './useParallaxScroll';
 export { default as useMediaQuery } from './useMediaQuery';
-export { default as useBookingStepValidation } from './useBookingStepValidation';
+export { useBookingStepValidation } from './useBookingStepValidation';
 export { default as useToast } from './useToast';
 
 // Export types

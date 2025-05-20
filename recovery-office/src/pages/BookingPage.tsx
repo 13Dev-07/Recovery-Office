@@ -1,14 +1,14 @@
 import * as React from 'react';
-
 import styled from 'styled-components';
 import { BookingProvider } from '../context/BookingContext';
 import ServiceSelection from '../components/booking/ServiceSelection';
 import DateTimeSelection from '../components/booking/DateTimeSelection';
 import CustomerInfoForm from '../components/booking/CustomerInfoForm';
 import BookingSummary from '../components/booking/BookingSummary';
-import BookingNavigation from '../components/booking/BookingNavigation';
-
+import { BookingNavigation } from '../components/booking/BookingNavigation';
 import { useBooking } from '../context/BookingContext';
+import { getFibonacciByIndex } from '../utils/getFibonacciByIndex';
+import { PHI } from '../constants/sacred-geometry';
 
 // Styled components with sacred geometry principles
 const PageContainer = styled.div`
@@ -18,13 +18,13 @@ const PageContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: ${getFibonacciByIndex(8)}px ${getFibonacciByIndex(7)}px;
-  background-color: ${props => props.theme.colors.background.default};
+  background-color: ${props => props.theme.colors.background[50]};
 `;
 
 const BookingContainer = styled.div`
   width: 100%;
   max-width: ${getFibonacciByIndex(13) * PHI}px;
-  background-color: ${props => props.theme.colors.background.paper};
+  background-color: ${props => props.theme.colors.background[50]};
   border-radius: ${getFibonacciByIndex(6)}px;
   box-shadow: 0 ${getFibonacciByIndex(5)}px ${getFibonacciByIndex(8)}px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -34,7 +34,7 @@ const BookingContainer = styled.div`
 const Header = styled.header`
   padding: ${getFibonacciByIndex(8)}px;
   background-color: ${props => props.theme.colors.primary[500] ?? 1};
-  color: ${props => props.theme.colors.primary.contrastText};
+  color: ${props => props.theme.colors.white};
 `;
 
 const Title = styled.h1`
@@ -65,7 +65,7 @@ const BookingPage: React.FC = () => {
           
           <ContentContainer>
             <BookingStepContent />
-            <BookingNavigation />
+            <BookingNavigationWrapper />
           </ContentContainer>
         </BookingContainer>
       </PageContainer>
@@ -95,6 +95,12 @@ const BookingStepContent: React.FC = () => {
     default:
       return <ServiceSelection />;
   }
+};
+
+// Wrapper for BookingNavigation to provide the currentStepId
+const BookingNavigationWrapper: React.FC = () => {
+  const { currentStep } = useBooking();
+  return <BookingNavigation currentStepId={currentStep} />;
 };
 
 export default BookingPage; 

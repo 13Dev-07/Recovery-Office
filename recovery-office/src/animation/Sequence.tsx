@@ -9,8 +9,8 @@
 import * as React from 'react';;
 import { forwardRef, isValidElement, Children } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { PHI_INVERSE, FIBONACCI, SACRED_EASINGS } from '@constants/sacred-geometry';
-import { BoxProps } from '@design-system/types/styled.types';
+import { PHI_INVERSE, FIBONACCI, SACRED_EASINGS } from '../constants/sacred-geometry';
+import { BoxProps } from '../design-system/types/styled.types';
 
 // Define types for the Sequence component
 export type SequenceVariant = 'fade' | 'slide-up' | 'slide-down' | 'slide-left' | 'slide-right' | 'scale' | 'none';

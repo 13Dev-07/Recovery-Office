@@ -5,12 +5,15 @@
  * It ensures type safety when accessing theme values throughout the application.
  */
 
+import { DefaultTheme, Interpolation, ThemedStyledProps } from 'styled-components';
 import { BreakpointKey } from '../tokens/breakpoints';
+import { DetailedHTMLProps, ButtonHTMLAttributes, RefObject } from 'react';
 
 /**
  * Theme color definitions
  */
 export interface ThemeColors {
+  border: any;
   primary: {
     50: string;
     100: string;
@@ -38,6 +41,7 @@ export interface ThemeColors {
     950: string;
   };
   background: {
+    light: Interpolation<ThemedStyledProps<Omit<DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "ref"> & { ref?: ((instance: HTMLButtonElement | null) => void) | RefObject<HTMLButtonElement> | null | undefined; } & { isSecondary?: boolean | undefined; }, DefaultTheme>>;
     50: string;
     100: string;
     200: string;
@@ -51,6 +55,7 @@ export interface ThemeColors {
     950: string;
   };
   text: {
+    main: Interpolation<ThemedStyledProps<Omit<DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "ref"> & { ref?: ((instance: HTMLButtonElement | null) => void) | RefObject<HTMLButtonElement> | null | undefined; } & { isSecondary?: boolean | undefined; }, DefaultTheme>>;
     primary: string;
     secondary: string;
     tertiary: string;
@@ -58,7 +63,10 @@ export interface ThemeColors {
     dark: string;
     disabled: string;
   };
+  white: string;
   accent: {
+    main: Interpolation<ThemedStyledProps<Omit<DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "ref"> & { ref?: ((instance: HTMLButtonElement | null) => void) | RefObject<HTMLButtonElement> | null | undefined; } & { isSecondary?: boolean | undefined; }, DefaultTheme>>;
+    dark: Interpolation<ThemedStyledProps<Omit<DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "ref"> & { ref?: ((instance: HTMLButtonElement | null) => void) | RefObject<HTMLButtonElement> | null | undefined; } & { isSecondary?: boolean | undefined; }, DefaultTheme>>;
     gold: string;
     copper: string;
     teal: string;
@@ -100,6 +108,17 @@ export interface ThemeColors {
     slight: number;
     minimal: number;
     ultraLight: number;
+  };
+  error: {
+    light: string;
+    main: string;
+    dark: string;
+  };
+  divider: string;
+  success: {
+    light: string;
+    main: string;
+    dark: string;
   };
 }
 
@@ -228,6 +247,14 @@ export interface ThemeBreakpoints {
   reducedMotion: string;
   prefersDark: string;
   prefersLight: string;
+  
+  // Direct access to breakpoint values
+  xs: number;
+  sm: number;
+  md: number;
+  lg: number;
+  xl: number;
+  xxl: number;
 }
 
 /**
@@ -343,6 +370,9 @@ export interface ThemeSacredGeometry {
     easeIn: [number, number, number, number];
     easeOut: [number, number, number, number];
     botanical: [number, number, number, number];
+    goldenEaseIn: (t: number) => number;
+    goldenEaseOut: (t: number) => number;
+    goldenEaseInOut: (t: number) => number;
   };
 }
 

@@ -1,48 +1,27 @@
 import * as React from 'react';
+import { BrowserRouter } from 'react-router-dom'; 
+import { HelmetProvider } from 'react-helmet-async';
+import { ErrorBoundary } from './components/common';
+import AppRoutes from './routes';
+import { ThemeProvider } from './design-system/theme/ThemeProvider';
 
 /**
- * Simplified App Component
+ * Main App Component
  * 
- * A minimal version of the app for initial build testing
+ * Sets up the core providers and routing for the Recovery Office application.
+ * This is the proper full implementation for production use.
  */
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Recovery Office</h1>
-        <p>
-          A holistic wellness center using sacred geometry principles for optimal healing.
-        </p>
-        <div>
-          <button 
-            style={{ 
-              backgroundColor: '#81976F', 
-              color: 'white', 
-              border: 'none', 
-              padding: '10px 20px',
-              borderRadius: '4px',
-              margin: '10px',
-              cursor: 'pointer'
-            }}
-          >
-            Book a Consultation
-          </button>
-          <button
-            style={{ 
-              backgroundColor: 'transparent', 
-              color: '#81976F', 
-              border: '1px solid #81976F', 
-              padding: '10px 20px',
-              borderRadius: '4px',
-              margin: '10px',
-              cursor: 'pointer'
-            }}
-          >
-            Learn More
-          </button>
-        </div>
-      </header>
-    </div>
+    <HelmetProvider>
+      <ThemeProvider mode="light">
+        <ErrorBoundary>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </ErrorBoundary>
+      </ThemeProvider>
+    </HelmetProvider>
   );
 };
 

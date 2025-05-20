@@ -11,8 +11,7 @@
 import * as React from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
-import Box from '../layout/Box';
-import { FadeInProps } from './animation.d';
+import { FadeInProps } from '../../types/animation.types';
 import { resolveDuration, applyGoldenRatioDuration } from '../../../utils/animation';
 import { SACRED_EASINGS } from '../../../constants/sacred-geometry';
 
@@ -66,8 +65,7 @@ export const FadeIn = React.forwardRef<HTMLDivElement, FadeInProps>(
     return (
       <AnimatePresence mode="wait">
         {(isVisible || stayMounted) && (
-          <Box
-            as={motion.div}
+          <motion.div
             ref={ref}
             initial="hidden"
             animate={isVisible ? "visible" : "hidden"}
@@ -79,7 +77,7 @@ export const FadeIn = React.forwardRef<HTMLDivElement, FadeInProps>(
             {...rest}
           >
             {children}
-          </Box>
+          </motion.div>
         )}
       </AnimatePresence>
     );

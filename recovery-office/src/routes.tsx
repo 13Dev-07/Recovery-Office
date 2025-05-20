@@ -3,20 +3,18 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { FadeIn } from './animation';
 
 // Import pages
-import { 
-  Home, 
-  Services, 
-  About, 
-  Contact, 
-  Blog, 
-  FAQ, 
-  Booking, 
-  NotFound,
-  Privacy,
-  Terms,
-  HIPAA,
-  Accessibility
-} from './pages';
+import Home from './pages/Home/Home';
+import Services from './pages/Services/Services';
+import About from './pages/About/About';
+import Contact from './pages/Contact/Contact';
+import Blog from './pages/Blog/Blog';
+import FAQ from './pages/FAQ/FAQ';
+import Booking from './pages/Booking/Booking';
+import NotFound from './pages/NotFound/NotFound';
+import Privacy from './pages/legal/Privacy';
+import Terms from './pages/legal/Terms';
+import HIPAA from './pages/legal/HIPAA';
+import Accessibility from './pages/legal/Accessibility';
 
 // Loading component
 const Loading = () => (

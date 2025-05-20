@@ -6,15 +6,16 @@
  */
 
 import * as React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { Section } from '../design-system/components/layout/Section';
-import { SectionTitle } from '../../../design-system/components/typography/SectionTitle';
+import { Section } from '../../../design-system/components/layout/Section';
+import SectionTitle from '../../../design-system/components/typography/SectionTitle';
 import { Text } from '../../../design-system/components/typography/Text';
-import { Box } from '../design-system/components/layout';
-import { Button } from '../design-system/components/button';
+import { Box } from '../../../design-system/components/layout';
+import { Button } from '../../../design-system/components/button';
 import { PHI, PHI_INVERSE, SACRED_SPACING } from '../../../constants/sacred-geometry';
-import { TreeOfLife } from '../design-system/botanical';
-import { FadeIn } from '../../animation';
+import { FlowerOfLife } from '../../../design-system/botanical';
+import { FadeIn } from '../../../animation';
 
 const StyledSection = styled(Section)`
   position: relative;
@@ -137,7 +138,7 @@ const FAQSection: React.FC = () => {
   return (
     <StyledSection id="faq">
       <BackgroundDecoration>
-        <TreeOfLife size="xl" />
+        <FlowerOfLife size="xl" />
       </BackgroundDecoration>
       
       <ContentContainer>
@@ -155,7 +156,7 @@ const FAQSection: React.FC = () => {
                   onClick={() => toggleFAQ(index)}
                 >
                   <Text 
-                    fontSize="md" 
+                    size="md" 
                     fontWeight={activeIndex === index ? '600' : '500'}
                     style={{ 
                       color: activeIndex === index ? '#4a6eb3' : 'inherit',
@@ -169,7 +170,7 @@ const FAQSection: React.FC = () => {
                   </IconButton>
                 </FAQHeader>
                 <FAQContent isActive={activeIndex === index}>
-                  <Text fontSize="md" lineHeight={1.6}>
+                  <Text size="md" lineHeight={1.6}>
                     {faq.answer}
                   </Text>
                 </FAQContent>
@@ -188,10 +189,10 @@ const FAQSection: React.FC = () => {
             border: '1px solid rgba(0, 0, 0, 0.05)'
           }}
         >
-          <Text fontSize="lg" fontWeight="500">
+          <Text size="lg" fontWeight="500">
             Have more questions about our approach?
           </Text>
-          <Text fontSize="md" mt={SACRED_SPACING.sm} mb={SACRED_SPACING.md}>
+          <Text size="md" mt={SACRED_SPACING.sm} mb={SACRED_SPACING.md}>
             Our team is here to help you understand how sacred geometry principles can enhance your recovery journey.
           </Text>
           <Box display="flex" justifyContent="center" gap={SACRED_SPACING.md}>

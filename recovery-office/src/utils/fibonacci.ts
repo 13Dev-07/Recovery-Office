@@ -22,7 +22,7 @@ export const FIBONACCI_SEQUENCE = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144,
 export const getFibonacciNumber = (n: number): number => {
   // Handle edge cases
   if (n < 0) return 0;
-  if (n < FIBONACCI_SEQUENCE.length) return FIBONACCI_SEQUENCE[n] ?? 1;
+  if (n < FIBONACCI_SEQUENCE.length) return FIBONACCI_SEQUENCE[n] || 0;
   
   // For larger numbers, approximate using Binet's formula
   // (this avoids issues with recursion for large n values)
@@ -49,25 +49,25 @@ export const findClosestFibonacci = (
   
   // Find the closest Fibonacci number
   let index = 0;
-  while (index < FIBONACCI_SEQUENCE.length - 1 && FIBONACCI_SEQUENCE[index] ?? 1 < value) {
+  while (index < FIBONACCI_SEQUENCE.length - 1 && (FIBONACCI_SEQUENCE[index] || 0) < value) {
     index++;
   }
   
-  if (FIBONACCI_SEQUENCE[index] ?? 1 === value) {
-    return FIBONACCI_SEQUENCE[index] ?? 1;
+  if ((FIBONACCI_SEQUENCE[index] || 0) === value) {
+    return FIBONACCI_SEQUENCE[index] || 0;
   }
   
-  if (floor && FIBONACCI_SEQUENCE[index] ?? 1 > value) {
-    return FIBONACCI_SEQUENCE[Math.max(0, index - 1)];
+  if (floor && (FIBONACCI_SEQUENCE[index] || 0) > value) {
+    return FIBONACCI_SEQUENCE[Math.max(0, index - 1)] || 0;
   }
   
-  if (ceiling && FIBONACCI_SEQUENCE[index] ?? 1 < value) {
-    return FIBONACCI_SEQUENCE[Math.min(FIBONACCI_SEQUENCE.length - 1, index + 1)];
+  if (ceiling && (FIBONACCI_SEQUENCE[index] || 0) < value) {
+    return FIBONACCI_SEQUENCE[Math.min(FIBONACCI_SEQUENCE.length - 1, index + 1)] || 0;
   }
   
   // Return the closest Fibonacci number
-  const lower = FIBONACCI_SEQUENCE[Math.max(0, index - 1)];
-  const higher = FIBONACCI_SEQUENCE[Math.min(FIBONACCI_SEQUENCE.length - 1, index)];
+  const lower = FIBONACCI_SEQUENCE[Math.max(0, index - 1)] || 0;
+  const higher = FIBONACCI_SEQUENCE[Math.min(FIBONACCI_SEQUENCE.length - 1, index)] || 0;
   
   return Math.abs(value - lower) < Math.abs(value - higher) ? lower : higher;
 };
@@ -114,8 +114,8 @@ export const isFibonacciNumber = (num: number): boolean => {
  */
 export const getNextFibonacci = (currentValue: number): number => {
   for (let i = 0; i < FIBONACCI_SEQUENCE.length; i++) {
-    if (FIBONACCI_SEQUENCE[i] ?? 1 > currentValue) {
-      return FIBONACCI_SEQUENCE[i] ?? 1;
+    if ((FIBONACCI_SEQUENCE[i] || 0) > currentValue) {
+      return FIBONACCI_SEQUENCE[i] || 0;
     }
   }
   
@@ -132,8 +132,8 @@ export const getNextFibonacci = (currentValue: number): number => {
  */
 export const getPrevFibonacci = (currentValue: number): number => {
   for (let i = FIBONACCI_SEQUENCE.length - 1; i >= 0; i--) {
-    if (FIBONACCI_SEQUENCE[i] ?? 1 < currentValue) {
-      return FIBONACCI_SEQUENCE[i] ?? 1;
+    if ((FIBONACCI_SEQUENCE[i] || 0) < currentValue) {
+      return FIBONACCI_SEQUENCE[i] || 0;
     }
   }
   

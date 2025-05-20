@@ -8,13 +8,13 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import AwardsShowcase from '../../../components/awards/AwardsShowcase';
-import { Section } from '../design-system/components/layout/Section';
-import { SectionTitle } from '../../../design-system/components/typography/SectionTitle';
+import { Section } from '../../../design-system/components/layout/Section';
+import SectionTitle from '../../../design-system/components/typography/SectionTitle';
 import { Text } from '../../../design-system/components/typography/Text';
 import { PHI, SACRED_SPACING } from '../../../constants/sacred-geometry';
 import { BotanicalElement } from '../../../design-system/botanical/BotanicalElement';
 
-// Sample award data
+// Sample award data with correct shape and variant types
 const awardData = [
   {
     id: 'holistic-healing-2023',
@@ -22,8 +22,8 @@ const awardData = [
     year: 2023,
     issuedBy: 'Wellness Association',
     description: 'Awarded for outstanding contributions to holistic healing practices and patient recovery.',
-    shape: 'circle',
-    variant: 'gold',
+    shape: 'circle' as const,
+    variant: 'gold' as const,
     showBotanical: true,
     icon: '🌿'
   },
@@ -33,8 +33,8 @@ const awardData = [
     year: 2022,
     issuedBy: 'Green Health Initiative',
     description: 'Recognized for implementing sustainable and eco-friendly practices in healthcare.',
-    shape: 'shield',
-    variant: 'silver',
+    shape: 'shield' as const,
+    variant: 'silver' as const,
     icon: '♻️'
   },
   {
@@ -43,8 +43,8 @@ const awardData = [
     year: 2022,
     issuedBy: 'Local Health Board',
     description: 'Recognized for exceptional community outreach and support programs.',
-    shape: 'laurel',
-    variant: 'bronze',
+    shape: 'laurel' as const,
+    variant: 'bronze' as const,
     icon: '🤝'
   },
   {
@@ -53,8 +53,8 @@ const awardData = [
     year: 2021,
     issuedBy: 'Healthcare Excellence Foundation',
     description: 'Awarded for exceptional standards in patient care and recovery support.',
-    shape: 'ribbon',
-    variant: 'gold',
+    shape: 'ribbon' as const,
+    variant: 'gold' as const,
     icon: '❤️'
   },
   {
@@ -63,8 +63,8 @@ const awardData = [
     year: 2020,
     issuedBy: 'Medical Innovation Forum',
     description: 'Recognized for innovative approaches to physical therapy and recovery techniques.',
-    shape: 'circle',
-    variant: 'recognition',
+    shape: 'circle' as const,
+    variant: 'recognition' as const,
     icon: '💡'
   },
   {
@@ -73,8 +73,8 @@ const awardData = [
     year: 2019,
     issuedBy: 'Healthcare Training Institute',
     description: 'Awarded for exceptional staff development programs and training excellence.',
-    shape: 'shield',
-    variant: 'certification',
+    shape: 'shield' as const,
+    variant: 'certification' as const,
     icon: '🎓'
   }
 ];
@@ -114,13 +114,16 @@ const AwardsSection: React.FC = () => {
   return (
     <StyledSection id="awards">
       <BackgroundDecoration>
-        <BotanicalElement type="flourish" size="xl" />
+        <BotanicalElement size="xl">
+          {/* SVG path for decoration */}
+          <path d="M10,10 L90,90 M10,90 L90,10" stroke="currentColor" strokeWidth="2" />
+        </BotanicalElement>
       </BackgroundDecoration>
       
       <ContentContainer>
         <SectionHeader>
-          <SectionTitle>Our Recognitions</SectionTitle>
-          <Text fontSize="lg" mt={SACRED_SPACING.sm}>
+          <SectionTitle title="Our Recognitions" />
+          <Text size="lg" mt={SACRED_SPACING.sm}>
             We are honored to be recognized for our commitment to excellence in holistic recovery practices
           </Text>
         </SectionHeader>
@@ -136,8 +139,8 @@ const AwardsSection: React.FC = () => {
         
         {/* Featured awards section */}
         <SectionHeader style={{ marginTop: SACRED_SPACING.xl }}>
-          <SectionTitle level={3}>Featured Achievements</SectionTitle>
-          <Text fontSize="md" mt={SACRED_SPACING.xs}>
+          <SectionTitle title="Featured Achievements" />
+          <Text size="md" mt={SACRED_SPACING.xs}>
             Highlights of our most significant recognitions
           </Text>
         </SectionHeader>
@@ -151,7 +154,7 @@ const AwardsSection: React.FC = () => {
         
         {/* Carousel for all awards */}
         <SectionHeader style={{ marginTop: SACRED_SPACING.xl }}>
-          <SectionTitle level={3}>Browse Our Achievements</SectionTitle>
+          <SectionTitle title="Browse Our Achievements" />
         </SectionHeader>
         
         <AwardsShowcase 

@@ -1,15 +1,15 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Hero } from '../design-system/components/feature-sections';
-import { Section } from '../design-system/components/layout/Section';
-import { SectionTitle } from '../design-system/components/layout/Section/SectionTitle';
-import { Text, Paragraph } from '../design-system/components/typography';
-import { Button } from '../design-system/components/button';
-import { Card } from '../design-system/components/data-display';
-import { FlowerOfLife, OliveBranch, VesicaPiscis } from '../design-system/botanical';
-import { PHI, PHI_INVERSE, SACRED_TIMING } from '../constants/sacred-geometry';
-import { theme } from '../design-system/theme';
-import { Container, Box } from '../design-system/components/layout';
+import { Hero } from '../../design-system/components/feature-sections';
+import { Section } from '../../design-system/components/layout/Section';
+import SectionTitle from '../../design-system/components/layout/Section/SectionTitle';
+import { Text, Paragraph } from '../../design-system/components/typography';
+import { Button } from '../../design-system/components/button';
+import { Card } from '../../design-system/components/data-display';
+import { SecurityShield, ComplianceBadge, AssetRecovery } from '../../design-system/components/utility/FinancialIcons';
+import { PHI, PHI_INVERSE, SACRED_TIMING } from '../../constants/sacred-geometry';
+import { theme } from '../../design-system/theme';
+import { Container, Box } from '../../design-system/components/layout';
 import { motion } from 'framer-motion';
 
 // Used for lists
@@ -30,7 +30,7 @@ const StyledSection = styled(Section)`
   z-index: 1;
 `;
 
-const BotanicalContainer = styled.div`
+const IconContainer = styled.div`
   position: absolute;
   top: ${PHI * 5}rem;
   right: ${PHI * -3}rem;
@@ -64,11 +64,6 @@ const Accessibility = () => {
         }}
         minHeight="30vh"
         animated={true}
-        botanical={{
-          type: "vesicaPiscis",
-          position: "bottomRight",
-          opacity: 0.3
-        }}
       />
 
       <StyledSection 
@@ -84,7 +79,7 @@ const Accessibility = () => {
           >
             <SectionTitle 
               title="Our Commitment" 
-              subtitle="Creating an accessible healing space for everyone"
+              subtitle="Creating an accessible financial services platform for everyone"
               align="left"
               size="large"
             />
@@ -92,9 +87,9 @@ const Accessibility = () => {
               Recovery Office is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone, and applying the relevant accessibility standards to ensure we provide equal access to all of our users.
             </Paragraph>
 
-            <BotanicalContainer>
-              <FlowerOfLife color={theme.colors.primary[200] ?? 1} />
-            </BotanicalContainer>
+            <IconContainer>
+              <SecurityShield size="lg" opacity={0.3} />
+            </IconContainer>
           </motion.div>
         </Container>
       </StyledSection>
@@ -109,8 +104,8 @@ const Accessibility = () => {
             title="Conformance Status" 
             subtitle="Our standards and compliance efforts"
             align="center"
-            decoratorBefore={<OliveBranch size="sm" color={theme.colors.secondary[500] ?? 1} />}
-            decoratorAfter={<OliveBranch size="sm" color={theme.colors.secondary[500] ?? 1} rotate={180} />}
+            decoratorBefore={<ComplianceBadge size="sm" />}
+            decoratorAfter={<ComplianceBadge size="sm" />}
           />
           
           <Paragraph mb={`${PHI * 2}rem`}>
@@ -169,7 +164,7 @@ const Accessibility = () => {
               <Box as="ul" pl={`${PHI}rem`}>
                 <ListItem><strong>Email:</strong> accessibility@recoveryoffice.com</ListItem>
                 <ListItem><strong>Phone:</strong> (555) 123-4567</ListItem>
-                <ListItem><strong>Address:</strong> 123 Healing Way, Wellness City, WC 12345</ListItem>
+                <ListItem><strong>Address:</strong> 123 Financial Street, Recovery City, RC 12345</ListItem>
               </Box>
               <Box mt={`${PHI}rem`} alignSelf="flex-start">
                 <Button 

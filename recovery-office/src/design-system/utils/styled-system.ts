@@ -5,13 +5,27 @@
  * for styling props, responsive values, and sacred geometry principles.
  */
 
-import { css, FlattenSimpleInterpolation } from 'styled-components';
-import { spacing } from '../tokens';
+import { css } from 'styled-components';
+import spacing from '../tokens/spacing';
 import { BoxStyleProps } from '../types/styled.types';
 
-type StyleValue = string | number | undefined;
-type StyleKey = keyof BoxStyleProps;
-type SpacingToken = keyof typeof spacing;
+type SpacingRecord = Record<string, string | number>;
+
+/**
+ * Extract spacing values from the spacing object, excluding the 'values' property
+ */
+const extractSpacingValues = (): SpacingRecord => {
+  const spacingObj: SpacingRecord = {};
+  
+  // Copy only key-value pairs where value is string or number
+  Object.entries(spacing).forEach(([key, value]) => {
+    if (key !== 'values' && (typeof value === 'string' || typeof value === 'number')) {
+      spacingObj[key] = value;
+    }
+  });
+  
+  return spacingObj;
+};
 
 /**
  * Process a style value, converting it to a proper CSS value
@@ -20,13 +34,16 @@ type SpacingToken = keyof typeof spacing;
  * @param tokenMap - Optional token map to look up values from
  * @returns Processed CSS value as a string
  */
-const processValue = (value: StyleValue, tokenMap?: Record<string, any>): string => {
+const processValue = (
+  value: string | number | undefined | null,
+  tokenMap?: SpacingRecord
+): string => {
   if (value === undefined || value === null) {
     return '';
   }
   
   if (tokenMap && typeof value === 'string' && value in tokenMap) {
-    return tokenMap[value as string];
+    return String(tokenMap[value]);
   }
   
   if (typeof value === 'number' && !Number.isNaN(value)) {
@@ -37,27 +54,6 @@ const processValue = (value: StyleValue, tokenMap?: Record<string, any>): string
 };
 
 /**
- * Interface to map spacing properties to their CSS property names
- */
-interface SpacingPropertiesMap {
-  m: string;
-  mt: string;
-  mr: string;
-  mb: string;
-  ml: string;
-  mx: string;
-  my: string;
-  p: string;
-  pt: string;
-  pr: string;
-  pb: string;
-  pl: string;
-  px: string;
-  py: string;
-  [key: string]: string;
-}
-
-/**
  * Creates a styled-system component configuration with all the styling props
  * from BoxStyleProps interface.
  * 
@@ -66,11 +62,12 @@ interface SpacingPropertiesMap {
  * 
  * @returns A function that generates CSS from BoxStyleProps
  */
-export const createStyledSystemComponent = () => (props: BoxStyleProps): FlattenSimpleInterpolation => {
+export const createStyledSystemComponent = () => (props: BoxStyleProps): ReturnType<typeof css> => {
   let styles = '';
+  const spacingValues = extractSpacingValues();
 
   // Process margin and padding properties
-  const spacingProperties: SpacingPropertiesMap = {
+  const spacingProperties: Record<string, string> = {
     m: 'margin',
     mt: 'margin-top',
     mr: 'margin-right',
@@ -88,9 +85,9 @@ export const createStyledSystemComponent = () => (props: BoxStyleProps): Flatten
   };
 
   Object.entries(spacingProperties).forEach(([prop, cssProps]) => {
-    const propKey = prop as keyof typeof spacingProperties;
-    if (props[propKey as StyleKey] !== undefined) {
-      const value = processValue(props[propKey as StyleKey] as StyleValue, spacing);
+    const propKey = prop as keyof BoxStyleProps;
+    if (props[propKey] !== undefined) {
+      const value = processValue(props[propKey] as string | number, spacingValues);
       
       if (prop === 'mx') {
         styles += `
@@ -169,16 +166,16 @@ export const createStyledSystemComponent = () => (props: BoxStyleProps): Flatten
   }
   
   // Ensure flexGrow is part of FlexItemProps and BoxStyleProps
-  if ((props as any).flexGrow !== undefined) {
-    styles += `flex-grow: ${(props as any).flexGrow};`;
+  if (props.flexGrow !== undefined) {
+    styles += `flex-grow: ${props.flexGrow};`;
   }
   
-  if ((props as any).flexShrink !== undefined) {
-    styles += `flex-shrink: ${(props as any).flexShrink};`;
+  if (props.flexShrink !== undefined) {
+    styles += `flex-shrink: ${props.flexShrink};`;
   }
   
-  if ((props as any).flexBasis !== undefined) {
-    styles += `flex-basis: ${processValue((props as any).flexBasis)};`;
+  if (props.flexBasis !== undefined) {
+    styles += `flex-basis: ${processValue(props.flexBasis)};`;
   }
   
   if (props.justifySelf !== undefined) {
@@ -189,49 +186,37 @@ export const createStyledSystemComponent = () => (props: BoxStyleProps): Flatten
     styles += `align-self: ${props.alignSelf};`;
   }
   
-  if ((props as any).order !== undefined) {
-    styles += `order: ${(props as any).order};`;
+  if (props.order !== undefined) {
+    styles += `order: ${props.order};`;
   }
   
   // Grid properties
   if (props.gap !== undefined) {
-    styles += `gap: ${processValue(props.gap, spacing)};`;
+    styles += `gap: ${processValue(props.gap, spacingValues)};`;
   }
   
-  if ((props as any).gridGap !== undefined) {
-    styles += `grid-gap: ${processValue((props as any).gridGap, spacing)};`;
+  if (props.gridGap !== undefined) {
+    styles += `grid-gap: ${processValue(props.gridGap, spacingValues)};`;
   }
   
-  if ((props as any).gridColumnGap !== undefined) {
-    styles += `grid-column-gap: ${processValue((props as any).gridColumnGap, spacing)};`;
+  if (props.gridColumnGap !== undefined) {
+    styles += `grid-column-gap: ${processValue(props.gridColumnGap, spacingValues)};`;
   }
   
-  if ((props as any).gridRowGap !== undefined) {
-    styles += `grid-row-gap: ${processValue((props as any).gridRowGap, spacing)};`;
+  if (props.gridRowGap !== undefined) {
+    styles += `grid-row-gap: ${processValue(props.gridRowGap, spacingValues)};`;
   }
   
-  if ((props as any).gridColumn !== undefined) {
-    styles += `grid-column: ${(props as any).gridColumn};`;
+  if (props.gridTemplateColumns !== undefined) {
+    styles += `grid-template-columns: ${props.gridTemplateColumns};`;
   }
   
-  if ((props as any).gridRow !== undefined) {
-    styles += `grid-row: ${(props as any).gridRow};`;
+  if (props.gridTemplateRows !== undefined) {
+    styles += `grid-template-rows: ${props.gridTemplateRows};`;
   }
   
-  if ((props as any).gridTemplateColumns !== undefined) {
-    styles += `grid-template-columns: ${(props as any).gridTemplateColumns};`;
-  }
-  
-  if ((props as any).gridTemplateRows !== undefined) {
-    styles += `grid-template-rows: ${(props as any).gridTemplateRows};`;
-  }
-  
-  if ((props as any).gridTemplateAreas !== undefined) {
-    styles += `grid-template-areas: ${(props as any).gridTemplateAreas};`;
-  }
-  
-  if ((props as any).gridArea !== undefined) {
-    styles += `grid-area: ${(props as any).gridArea};`;
+  if (props.gridTemplateAreas !== undefined) {
+    styles += `grid-template-areas: ${props.gridTemplateAreas};`;
   }
   
   // Position properties
@@ -306,10 +291,6 @@ export const createStyledSystemComponent = () => (props: BoxStyleProps): Flatten
   }
   
   // Typography properties
-  if ((props as any).fontSize !== undefined) {
-    styles += `font-size: ${processValue((props as any).fontSize)};`;
-  }
-  
   if (props.fontWeight !== undefined) {
     styles += `font-weight: ${props.fontWeight};`;
   }
@@ -335,28 +316,16 @@ export const createStyledSystemComponent = () => (props: BoxStyleProps): Flatten
     styles += `overflow: ${props.overflow};`;
   }
   
-  if ((props as any).overflowX !== undefined) {
-    styles += `overflow-x: ${(props as any).overflowX};`;
+  if (props.overflowX !== undefined) {
+    styles += `overflow-x: ${props.overflowX};`;
   }
   
-  if ((props as any).overflowY !== undefined) {
-    styles += `overflow-y: ${(props as any).overflowY};`;
+  if (props.overflowY !== undefined) {
+    styles += `overflow-y: ${props.overflowY};`;
   }
   
-  if ((props as any).visibility !== undefined) {
-    styles += `visibility: ${(props as any).visibility};`;
-  }
-  
-  if ((props as any).cursor !== undefined) {
-    styles += `cursor: ${(props as any).cursor};`;
-  }
-  
-  if ((props as any).whiteSpace !== undefined) {
-    styles += `white-space: ${(props as any).whiteSpace};`;
-  }
-  
-  if ((props as any).textDecoration !== undefined) {
-    styles += `text-decoration: ${(props as any).textDecoration};`;
+  if (props.cursor !== undefined) {
+    styles += `cursor: ${props.cursor};`;
   }
   
   // Custom css prop for direct CSS injection

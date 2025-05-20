@@ -5,17 +5,17 @@
  * Implements sacred geometry principles for layout and animations.
  */
 
-import * as React from 'react';;
-import styled, { css } from 'styled-components';
+import * as React from 'react';
+import styled, { css, DefaultTheme } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import AwardBadge, { AwardBadgeProps } from './AwardBadge';
-import { Text } from '@design-system/components/typography/Text';
-import { Heading } from '@design-system/components/typography/Heading';
-import { Box } from '@design-system/components/layout/Box';
-import { Grid } from '@design-system/components/layout/Grid';
-import { PHI, SACRED_SPACING } from '@constants/sacred-geometry';
-
-import { BotanicalElement } from '@design-system/botanical/BotanicalElement';
+import { Text } from '../../design-system/components/typography/Text';
+import { Heading } from '../../design-system/components/typography/Heading';
+import { Box } from '../../design-system/components/layout/Box';
+import { Grid } from '../../design-system/components/layout/Grid';
+import { getFibonacciByIndex } from '../../utils/getFibonacciByIndex';
+import { PHI, SACRED_SPACING } from '../../constants/sacred-geometry';
+import { BotanicalElement } from '../../design-system/components/botanical/BotanicalElement';
 
 // Award display types
 export type AwardsDisplayMode = 'grid' | 'carousel' | 'featured';
@@ -62,6 +62,9 @@ export interface AwardsShowcaseProps {
   onAwardSelect?: (award: Award) => void;
 }
 
+// Make sure Typescript is aware of the custom props
+type StyledProps<P> = P & { theme?: DefaultTheme };
+
 const ShowcaseContainer = styled.div<{
   $layout: AwardsLayout;
 }>`
@@ -75,7 +78,7 @@ const ShowcaseContainer = styled.div<{
 const AwardsGrid = styled(Grid)<{
   $displayMode: AwardsDisplayMode;
 }>`
-  --min-column-width: ${() => getFibonacciByIndex(9)}px;
+  --min-column-width: ${getFibonacciByIndex(9)}px;
   
   display: grid;
   grid-template-columns: repeat(
@@ -84,7 +87,7 @@ const AwardsGrid = styled(Grid)<{
   );
   gap: ${SACRED_SPACING.lg}px;
   
-  ${props => props.$displayMode === 'featured' && `
+  ${(props: StyledProps<{$displayMode: AwardsDisplayMode}>) => props.$displayMode === 'featured' && `
     grid-template-columns: repeat(3, 1fr);
     
     @media (max-width: 768px) {
@@ -120,8 +123,8 @@ const AwardContainer = styled(motion.div)<{
   border-radius: ${SACRED_SPACING.sm}px;
   transition: all 0.3s ease;
   
-  ${props => props.$isActive && `
-    box-shadow: 0 ${() => getFibonacciByIndex(4)}px ${() => getFibonacciByIndex(6)}px rgba(0, 0, 0, 0.1);
+  ${(props: StyledProps<{$isActive?: boolean}>) => props.$isActive && `
+    box-shadow: 0 ${getFibonacciByIndex(4)}px ${getFibonacciByIndex(6)}px rgba(0, 0, 0, 0.1);
     background-color: rgba(255, 255, 255, 0.8);
   `}
 `;
@@ -129,7 +132,7 @@ const AwardContainer = styled(motion.div)<{
 const AwardDescription = styled(Text)`
   margin-top: ${SACRED_SPACING.sm}px;
   text-align: center;
-  max-width: ${() => getFibonacciByIndex(10)}px;
+  max-width: ${getFibonacciByIndex(10)}px;
   opacity: 0.9;
   line-height: ${1 * PHI};
 `;
@@ -142,8 +145,8 @@ const NavigationButtons = styled.div`
 `;
 
 const NavButton = styled.button`
-  width: ${() => getFibonacciByIndex(7)}px;
-  height: ${() => getFibonacciByIndex(7)}px;
+  width: ${getFibonacciByIndex(7)}px;
+  height: ${getFibonacciByIndex(7)}px;
   border-radius: 50%;
   background: #fff;
   border: 1px solid #ddd;
@@ -163,8 +166,8 @@ const NavButton = styled.button`
   }
   
   svg {
-    width: ${() => getFibonacciByIndex(5)}px;
-    height: ${() => getFibonacciByIndex(5)}px;
+    width: ${getFibonacciByIndex(5)}px;
+    height: ${getFibonacciByIndex(5)}px;
   }
 `;
 
@@ -176,26 +179,26 @@ const BotanicalDecoration = styled.div<{
   pointer-events: none;
   z-index: -1;
   
-  ${props => props.$position === 'left' && css`
-    left: -${() => getFibonacciByIndex(8)}px;
+  ${(props: StyledProps<{$position: 'left' | 'right' | 'top' | 'bottom'}>) => props.$position === 'left' && css`
+    left: -${getFibonacciByIndex(8)}px;
     top: 50%;
     transform: translateY(-50%) rotate(-90deg);
   `}
   
-  ${props => props.$position === 'right' && css`
-    right: -${() => getFibonacciByIndex(8)}px;
+  ${(props: StyledProps<{$position: 'left' | 'right' | 'top' | 'bottom'}>) => props.$position === 'right' && css`
+    right: -${getFibonacciByIndex(8)}px;
     top: 50%;
     transform: translateY(-50%) rotate(90deg);
   `}
   
-  ${props => props.$position === 'top' && css`
-    top: -${() => getFibonacciByIndex(7)}px;
+  ${(props: StyledProps<{$position: 'left' | 'right' | 'top' | 'bottom'}>) => props.$position === 'top' && css`
+    top: -${getFibonacciByIndex(7)}px;
     left: 50%;
     transform: translateX(-50%);
   `}
   
-  ${props => props.$position === 'bottom' && css`
-    bottom: -${() => getFibonacciByIndex(7)}px;
+  ${(props: StyledProps<{$position: 'left' | 'right' | 'top' | 'bottom'}>) => props.$position === 'bottom' && css`
+    bottom: -${getFibonacciByIndex(7)}px;
     left: 50%;
     transform: translateX(-50%) rotate(180deg);
   `}
@@ -240,7 +243,7 @@ const AwardsShowcase: React.FC<AwardsShowcaseProps> = ({
   onAwardSelect
 }) => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
-  const [selectedAward, setSelectedAward] = useState<Award | null>(null);
+  const [selectedAward, setSelectedAward] = React.useState<Award | null>(null);
   
   const handleNext = () => {
     setCurrentIndex(prev => 
@@ -299,7 +302,7 @@ const AwardsShowcase: React.FC<AwardsShowcaseProps> = ({
       {/* Title and description */}
       {(title || description) && (
         <Box mb={SACRED_SPACING.md}>
-          {title && <Heading level={3} mb={SACRED_SPACING.xs}>{title}</Heading>}
+          {title && <Heading as="h3" mb={SACRED_SPACING.xs}>{title}</Heading>}
           {description && <Text>{description}</Text>}
         </Box>
       )}
@@ -308,10 +311,24 @@ const AwardsShowcase: React.FC<AwardsShowcaseProps> = ({
       {showBotanical && (
         <>
           <BotanicalDecoration $position="left">
-            <BotanicalElement type="branch" size="md" />
+            <BotanicalElement width={120} height={120}>
+              <path
+                d="M10,90 Q30,40 50,90 Q70,40 90,90"
+                stroke="currentColor"
+                fill="none"
+                strokeWidth={2}
+              />
+            </BotanicalElement>
           </BotanicalDecoration>
           <BotanicalDecoration $position="right">
-            <BotanicalElement type="branch" size="md" />
+            <BotanicalElement width={120} height={120}>
+              <path
+                d="M10,90 Q30,40 50,90 Q70,40 90,90"
+                stroke="currentColor"
+                fill="none"
+                strokeWidth={2} 
+              />
+            </BotanicalElement>
           </BotanicalDecoration>
         </>
       )}

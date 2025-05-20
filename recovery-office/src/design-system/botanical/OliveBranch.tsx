@@ -9,7 +9,8 @@
  */
 
 import * as React from 'react';
-import { PHI, PHI_INVERSE, FIBONACCI } from '../constants/sacred-geometry';
+import { forwardRef } from 'react';
+import { PHI, PHI_INVERSE, FIBONACCI } from '../../constants/sacred-geometry';
 import BotanicalElement, { BotanicalElementProps } from './BotanicalElement';
 
 /**
@@ -57,6 +58,12 @@ export interface OliveBranchProps extends Omit<BotanicalElementProps, 'children'
    * @default false
    */
   mirror?: boolean;
+  
+  /**
+   * Alias for mirror prop
+   * @default false 
+   */
+  flipHorizontal?: boolean;
 }
 
 /**
@@ -152,8 +159,11 @@ const generateOliveBranch = (
       </g>
     );
     
-    // Add olives to some of the leaves based on Fibonacci indices
-    if (includeOlives && FIBONACCI.indexOf(i + 1) !== -1) {
+    // Add olives to some of the leaves based on Fibonacci positions
+    // Use a simple algorithm instead of FIBONACCI.indexOf
+    const isFibonacciPosition = [0, 1, 2, 3, 5, 8].includes(i);
+    
+    if (includeOlives && isFibonacciPosition) {
       const oliveSize = currentLeafSize * 0.3;
       elements.push(
         <circle
@@ -222,7 +232,7 @@ const calculateCubicBezierTangent = (
  * 
  * Creates a mathematically harmonious olive branch design based on sacred geometry
  */
-export const OliveBranch = React.forwardRef<SVGSVGElement, OliveBranchProps>(
+export const OliveBranch = forwardRef<SVGSVGElement, OliveBranchProps>(
   ({ 
     leafCount = 5,
     leafSize = 1,
@@ -231,9 +241,13 @@ export const OliveBranch = React.forwardRef<SVGSVGElement, OliveBranchProps>(
     oliveFill = 'currentColor',
     rotation = 0,
     mirror = false,
+    flipHorizontal = false,
     viewBox = '0 0 100 100',
     ...rest 
   }, ref) => {
+    // Use either mirror or flipHorizontal prop
+    const shouldMirror = mirror || flipHorizontal;
+    
     return (
       <BotanicalElement
         viewBox={viewBox}
@@ -250,7 +264,7 @@ export const OliveBranch = React.forwardRef<SVGSVGElement, OliveBranchProps>(
             curvature,
             includeOlives,
             oliveFill,
-            mirror
+            shouldMirror
           )}
         </g>
       </BotanicalElement>

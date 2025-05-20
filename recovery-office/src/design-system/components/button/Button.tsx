@@ -11,7 +11,7 @@ import * as React from 'react';
 import styled, { css, DefaultTheme } from 'styled-components';
 import { PHI, PHI_INVERSE } from '../../../constants/sacred-geometry';
 import { Box } from '../layout';
-import { BoxProps } from '../../types';
+import { BoxProps } from '../../../design-system/types';
 
 /**
  * Button component props
@@ -21,13 +21,13 @@ export interface ButtonProps extends Omit<BoxProps, 'as'> {
    * The variant of the button
    * @default 'primary'
    */
-  variant?: 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost' | 'link';
+  variant?: 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost' | 'link' | 'light';
   
   /**
    * The size of the button
    * @default 'md'
    */
-  size?: 'sm' | 'md' | 'lg' | 'large' | 'medium';
+  size?: 'sm' | 'md' | 'lg' | 'large' | 'medium' | 'small';
   
   /**
    * Whether the button is in a loading state
@@ -86,10 +86,20 @@ export interface ButtonProps extends Omit<BoxProps, 'as'> {
   href?: string;
   
   /**
+   * For integration with react-router-dom Link component
+   */
+  to?: string;
+  
+  /**
    * Polymorphic as prop for rendering different elements
    * Useful for rendering the button as a link or other component
    */
   as?: React.ElementType;
+  
+  /**
+   * Custom inline styles
+   */
+  style?: React.CSSProperties;
   
   /**
    * The content of the button
@@ -100,7 +110,23 @@ export interface ButtonProps extends Omit<BoxProps, 'as'> {
 /**
  * Get size-specific styles based on button size
  */
-const getSizeStyles = (size: 'sm' | 'md' | 'lg', theme: DefaultTheme) => {
+const getSizeStyles = (size: 'sm' | 'md' | 'lg' | 'small' | 'medium' | 'large', theme: DefaultTheme) => {
+  // Map alternative size names to standard sizes
+  let normalizedSize: 'sm' | 'md' | 'lg';
+  switch (size) {
+    case 'small':
+      normalizedSize = 'sm';
+      break;
+    case 'medium':
+      normalizedSize = 'md';
+      break;
+    case 'large':
+      normalizedSize = 'lg';
+      break;
+    default:
+      normalizedSize = size;
+  }
+  
   // Base heights derived from Fibonacci sequence
   const baseHeights = {
     sm: 34, // Fibonacci number
@@ -130,14 +156,14 @@ const getSizeStyles = (size: 'sm' | 'md' | 'lg', theme: DefaultTheme) => {
   };
   
   // Icon size and gap
-  const iconSize = Math.round(baseHeights[size] ?? 1 * PHI_INVERSE * 0.8);
-  const iconGap = Math.round(horizontalPadding[size] ?? 1 * PHI_INVERSE);
+  const iconSize = Math.round(baseHeights[normalizedSize] ?? 1 * PHI_INVERSE * 0.8);
+  const iconGap = Math.round(horizontalPadding[normalizedSize] ?? 1 * PHI_INVERSE);
   
   return {
-    height: `${baseHeights[size] ?? 1}px`,
-    padding: `0 ${horizontalPadding[size] ?? 1}px`,
-    fontSize: fontSizes[size] ?? 1,
-    borderRadius: `${borderRadius[size] ?? 1}px`,
+    height: `${baseHeights[normalizedSize] ?? 1}px`,
+    padding: `0 ${horizontalPadding[normalizedSize] ?? 1}px`,
+    fontSize: fontSizes[normalizedSize] ?? 1,
+    borderRadius: `${borderRadius[normalizedSize] ?? 1}px`,
     iconSize,
     iconGap,
   };
@@ -241,6 +267,30 @@ const getVariantStyles = (
           background-color: ${theme.colors.accent.copper};
           transform: translateY(1px);
           box-shadow: ${theme.shadows.xs};
+        }
+      `;
+    case 'light':
+      return css`
+        background-color: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: ${theme.shadows.xs};
+        
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.25);
+          transform: translateY(-1px);
+          box-shadow: ${theme.shadows.sm};
+        }
+        
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+        
+        &:active {
+          background-color: rgba(255, 255, 255, 0.2);
+          transform: translateY(1px);
+          box-shadow: none;
         }
       `;
     case 'outline':

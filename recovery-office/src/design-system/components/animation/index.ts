@@ -40,8 +40,13 @@ export type {
   ParallaxLayerProps,
   ParallaxProps,
   MorphProps,
-  MorphingShapeProps
-} from './animation.d';
+  MorphingShapeProps,
+  AnimationDuration,
+  CustomEasingFunction,
+  EasingValue,
+  BaseAnimationProps,
+  AnimationConfigOptions
+} from '../../types/animation.types';
 
 
 

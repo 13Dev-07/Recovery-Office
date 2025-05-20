@@ -10,10 +10,10 @@ import * as React from 'react';;
 import { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 
-import { Box } from '@design-system/components/layout';
+import { Box } from '../design-system/components/layout';
 import type { MorphProps } from './animation.d';
-import { resolveDuration, applyGoldenRatioDuration } from '@utils/animation';
-import { SACRED_EASINGS, PHI_INVERSE } from '@constants/sacred-geometry';
+import { resolveDuration, applyGoldenRatioDuration } from '../utils/animation';
+import { SACRED_EASINGS, PHI_INVERSE } from '../constants/sacred-geometry';
 
 /**
  * Morph Component with ref forwarding

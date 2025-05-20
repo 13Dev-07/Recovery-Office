@@ -11,6 +11,7 @@
 
 import * as React from 'react';
 import BotanicalElement, { BotanicalElementProps } from './BotanicalElement';
+import { PHI, PHI_INVERSE } from '../../constants/sacred-geometry';
 
 
 /**

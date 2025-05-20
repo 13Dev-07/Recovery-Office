@@ -3,8 +3,10 @@
  * 
  * This file exports utilities used throughout the design system.
  */
- 
-export { default as createStyledSystemComponent } from './styled-system';
+
+import createStyledSystemComponent from './styled-system';
+
+export { createStyledSystemComponent };
 export * from './styled-system'; 
 
 

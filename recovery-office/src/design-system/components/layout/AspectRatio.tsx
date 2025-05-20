@@ -13,7 +13,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import Box from './Box';
 import { PHI } from '../../../constants/sacred-geometry';
-import { BoxProps } from '../../types';
+import { BoxProps } from '../../types/styled.types';
 
 // Define the sacred aspect ratios if not already imported
 const SACRED_ASPECT_RATIOS = {
@@ -46,14 +46,14 @@ interface AspectRatioProps extends BoxProps {
 }
 
 // Container with aspect ratio padding technique
-const AspectRatioContainer = styled(Box)<{ paddingBottom: string }>`
+const AspectRatioContainer = styled(Box)<{ $paddingBottom: string }>`
   position: relative;
   width: 100%;
   
   &::before {
     content: '';
     display: block;
-    padding-bottom: ${props => props.paddingBottom};
+    padding-bottom: ${props => props.$paddingBottom};
   }
 `;
 
@@ -123,7 +123,7 @@ export const AspectRatio = React.forwardRef<HTMLDivElement, AspectRatioProps>(
 
     return (
       <AspectRatioContainer 
-        paddingBottom={getPaddingBottom()} 
+        $paddingBottom={getPaddingBottom()} 
         ref={ref}
         {...rest}
       >

@@ -5,8 +5,8 @@ import {
   useAnimationEasing, 
   useShouldAnimate,
   useStaggerDelay
-} from '@context/AnimationContext';
-import { PHI_INVERSE } from '@constants/sacred-geometry';
+} from '../context/AnimationContext';
+import { PHI_INVERSE } from '../constants/sacred-geometry';
 
 interface ScaleInProps {
   children: React.ReactNode;

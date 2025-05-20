@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { PHI, PHI_INVERSE, SACRED_SPACING, FIBONACCI, SACRED_RADIUS } from '../../../constants/sacred-geometry';
 import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
@@ -52,7 +53,7 @@ const SectionTitle = styled.h2`
   font-size: 1.5rem;
   margin-bottom: ${SACRED_SPACING.lg}px;
   line-height: ${PHI};
-  color: ${props => props.theme.colors.text.dark};
+  color: ${props => props.theme.colors.text.primary};
 `;
 
 /**
@@ -62,7 +63,7 @@ const SectionTitle = styled.h2`
 const SectionDescription = styled.p`
   margin-bottom: ${SACRED_SPACING.xl}px;
   line-height: ${PHI};
-  color: ${props => props.theme.colors.text.main};
+  color: ${props => props.theme.colors.text.secondary};
 `;
 
 /**
@@ -85,10 +86,10 @@ const DateSelectionLayout = styled.div`
  * Uses Fibonacci spacing and golden ratio for calendar cells
  */
 const CalendarContainer = styled.div`
-  background-color: ${props => props.theme.colors.background.light};
+  background-color: ${props => props.theme.colors.background[50]};
   border-radius: ${SACRED_RADIUS.md}px;
   padding: ${SACRED_SPACING.md}px;
-  border: 1px solid ${props => props.theme.colors.border.light};
+  border: 1px solid ${props => props.theme.colors.divider};
 `;
 
 /**
@@ -107,7 +108,7 @@ const CalendarHeader = styled.div`
  */
 const CalendarMonth = styled.h3`
   font-size: 1.25rem;
-  color: ${props => props.theme.colors.text.dark};
+  color: ${props => props.theme.colors.text.primary};
 `;
 
 /**
@@ -118,8 +119,8 @@ const NavButton = styled.button`
   width: ${getFibonacciByIndex(7)}px;
   height: ${getFibonacciByIndex(7)}px;
   border-radius: 50%;
-  border: 1px solid ${props => props.theme.colors.border.light};
-  background-color: ${props => props.theme.colors.background.main};
+  border: 1px solid ${props => props.theme.colors.divider};
+  background-color: ${props => props.theme.colors.background[50]};
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -127,7 +128,7 @@ const NavButton = styled.button`
   transition: all ${getFibonacciByIndex(6) * 10}ms ease-in-out;
   
   &:hover {
-    background-color: ${props => props.theme.colors.background.medium};
+    background-color: ${props => props.theme.colors.background[100]};
   }
 `;
 
@@ -149,7 +150,7 @@ const WeekdayHeader = styled.div`
 const Weekday = styled.div`
   text-align: center;
   font-size: 0.875rem;
-  color: ${props => props.theme.colors.text.light};
+  color: ${props => props.theme.colors.text.secondary};
   padding: ${SACRED_SPACING.xxs}px;
   font-weight: 500;
 `;
@@ -165,47 +166,49 @@ const DaysGrid = styled.div`
 `;
 
 /**
- * Individual calendar day cell
- * Uses golden ratio and Fibonacci for styling
+ * Calendar day cell
+ * Uses sacred geometry for styling and interactions
  */
-const DayCell = styled.div<{ 
-  isCurrentMonth: boolean; 
-  isToday: boolean; 
-  isSelected: boolean;
-  isDisabled: boolean;
-}>`
-  aspect-ratio: 1; /* Perfect square */
+interface CalendarDayProps {
+  $isSelected?: boolean;
+  $isToday?: boolean;
+  $isCurrentMonth?: boolean;
+  $isDisabled?: boolean;
+}
+
+const CalendarDay = styled.div<CalendarDayProps>`
   display: flex;
   align-items: center;
   justify-content: center;
+  aspect-ratio: 1;
   border-radius: ${SACRED_RADIUS.sm}px;
-  cursor: ${props => props.isDisabled ? 'not-allowed' : 'pointer'};
-  font-weight: ${props => props.isToday || props.isSelected ? '600' : '400'};
-  opacity: ${props => (props.isCurrentMonth && !props.isDisabled) ? 1 : 0.3};
+  cursor: ${props => props.$isDisabled ? 'not-allowed' : 'pointer'};
+  font-weight: ${props => props.$isToday || props.$isSelected ? '600' : '400'};
+  opacity: ${props => (props.$isCurrentMonth && !props.$isDisabled) ? 1 : 0.3};
   background-color: ${props => {
-    if (props.isSelected) return props.theme.colors.accent.light;
-    if (props.isToday) return props.theme.colors.background.medium;
+    if (props.$isSelected) return props.theme.colors.primary[200];
+    if (props.$isToday) return props.theme.colors.background[100];
     return 'transparent';
   }};
   color: ${props => {
-    if (props.isSelected) return props.theme.colors.accent.dark;
-    if (props.isDisabled) return props.theme.colors.text.light;
-    return props.theme.colors.text.main;
+    if (props.$isSelected) return props.theme.colors.primary[700];
+    if (props.$isDisabled) return props.theme.colors.text.disabled;
+    return props.theme.colors.text.primary;
   }};
   border: 1px solid ${props => {
-    if (props.isSelected) return props.theme.colors.accent.main;
-    if (props.isToday) return props.theme.colors.border.main;
+    if (props.$isSelected) return props.theme.colors.primary[500];
+    if (props.$isToday) return props.theme.colors.divider;
     return 'transparent';
   }};
   transition: all ${getFibonacciByIndex(5) * 10}ms ease-in-out;
   
   &:hover {
     background-color: ${props => {
-      if (props.isDisabled) return 'transparent';
-      if (props.isSelected) return props.theme.colors.accent.light;
-      return props.theme.colors.background.light;
+      if (props.$isDisabled) return 'transparent';
+      if (props.$isSelected) return props.theme.colors.primary[200];
+      return props.theme.colors.background[100];
     }};
-    transform: ${props => props.isDisabled ? 'none' : `scale(${PHI_INVERSE + 0.5})`};
+    transform: ${props => props.$isDisabled ? 'none' : `scale(${PHI_INVERSE + 0.5})`};
   }
 `;
 
@@ -214,10 +217,10 @@ const DayCell = styled.div<{
  * Uses sacred spacing and golden ratio for layout
  */
 const TimeSlotsContainer = styled.div`
-  background-color: ${props => props.theme.colors.background.light};
+  background-color: ${props => props.theme.colors.background[50]};
   border-radius: ${SACRED_RADIUS.md}px;
   padding: ${SACRED_SPACING.md}px;
-  border: 1px solid ${props => props.theme.colors.border.light};
+  border: 1px solid ${props => props.theme.colors.divider};
 `;
 
 /**
@@ -227,7 +230,7 @@ const TimeSlotsContainer = styled.div`
 const TimeSlotsHeader = styled.h3`
   font-size: 1.125rem;
   margin-bottom: ${SACRED_SPACING.md}px;
-  color: ${props => props.theme.colors.text.dark};
+  color: ${props => props.theme.colors.text.primary};
   line-height: ${PHI};
 `;
 
@@ -245,35 +248,40 @@ const TimeSlotsGrid = styled.div`
  * Individual time slot
  * Uses sacred geometry for styling and interactions
  */
-const TimeSlotButton = styled.button<{ isSelected: boolean; isAvailable: boolean }>`
+interface TimeSlotButtonProps {
+  $isSelected: boolean;
+  $isAvailable: boolean;
+}
+
+const TimeSlotButton = styled.button<TimeSlotButtonProps>`
   padding: ${SACRED_SPACING.xs}px;
   border-radius: ${SACRED_RADIUS.sm}px;
   background-color: ${props => {
-    if (!props.isAvailable) return props.theme.colors.background.medium;
-    if (props.isSelected) return props.theme.colors.accent.light;
-    return props.theme.colors.background.main;
+    if (!props.$isAvailable) return props.theme.colors.background[200];
+    if (props.$isSelected) return props.theme.colors.primary[200];
+    return props.theme.colors.background[50];
   }};
   border: 1px solid ${props => {
-    if (!props.isAvailable) return props.theme.colors.border.light;
-    if (props.isSelected) return props.theme.colors.accent.main;
-    return props.theme.colors.border.light;
+    if (!props.$isAvailable) return props.theme.colors.divider;
+    if (props.$isSelected) return props.theme.colors.primary[500];
+    return props.theme.colors.divider;
   }};
   color: ${props => {
-    if (!props.isAvailable) return props.theme.colors.text.light;
-    if (props.isSelected) return props.theme.colors.accent.dark;
-    return props.theme.colors.text.main;
+    if (!props.$isAvailable) return props.theme.colors.text.disabled;
+    if (props.$isSelected) return props.theme.colors.primary[700];
+    return props.theme.colors.text.primary;
   }};
   font-size: 0.875rem;
-  cursor: ${props => props.isAvailable ? 'pointer' : 'not-allowed'};
+  cursor: ${props => props.$isAvailable ? 'pointer' : 'not-allowed'};
   transition: all ${getFibonacciByIndex(5) * 10}ms ease-in-out;
   
   &:hover {
     background-color: ${props => {
-      if (!props.isAvailable) return props.theme.colors.background.medium;
-      if (props.isSelected) return props.theme.colors.accent.light;
-      return props.theme.colors.background.light;
+      if (!props.$isAvailable) return props.theme.colors.background[200];
+      if (props.$isSelected) return props.theme.colors.primary[200];
+      return props.theme.colors.background[100];
     }};
-    transform: ${props => props.isAvailable ? `translateY(-${getFibonacciByIndex(3)}px)` : 'none'};
+    transform: ${props => props.$isAvailable ? `translateY(-${getFibonacciByIndex(3)}px)` : 'none'};
   }
 `;
 
@@ -282,7 +290,7 @@ const TimeSlotButton = styled.button<{ isSelected: boolean; isAvailable: boolean
  * Uses golden ratio for typography
  */
 const NoTimeSlotsMessage = styled.p`
-  color: ${props => props.theme.colors.text.light};
+  color: ${props => props.theme.colors.text.disabled};
   font-style: italic;
   line-height: ${PHI};
   text-align: center;
@@ -317,87 +325,101 @@ const DateSelection: React.FC<DateSelectionProps> = ({
   const daysInMonth = getDaysInMonth(currentYear, currentMonth);
   const firstDayOfMonth = getFirstDayOfMonth(currentYear, currentMonth);
   
-  // Calculate days from previous month to display
+  // Current date for comparing with calendar days
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  // Create calendar days
+  const calendarDays = [];
+  
+  // Add previous month's days
   const prevMonthDays = [];
   if (firstDayOfMonth > 0) {
     const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
     const prevMonthYear = prevMonth === 11 ? currentYear - 1 : currentYear;
     const daysInPrevMonth = getDaysInMonth(prevMonthYear, prevMonth);
     
-    for (let i = firstDayOfMonth - 1; i >= 0; i--) {
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      const day = daysInPrevMonth - firstDayOfMonth + i + 1;
       prevMonthDays.push({
-        day: daysInPrevMonth - i,
-        month: prevMonth,
-        year: prevMonthYear,
-        isCurrentMonth: false,
+        date: new Date(prevMonthYear, prevMonth, day),
+        isCurrentMonth: false
       });
     }
   }
   
-  // Calculate days from current month
+  // Add current month's days
   const currentMonthDays = [];
   for (let i = 1; i <= daysInMonth; i++) {
     currentMonthDays.push({
-      day: i,
-      month: currentMonth,
-      year: currentYear,
-      isCurrentMonth: true,
+      date: new Date(currentYear, currentMonth, i),
+      isCurrentMonth: true
     });
   }
   
-  // Calculate days from next month to display
+  // Add days from the next month if needed
+  const totalDays = prevMonthDays.length + currentMonthDays.length;
   const nextMonthDays = [];
-  const totalCells = Math.ceil((firstDayOfMonth + daysInMonth) / 7) * 7;
-  const nextCellsToFill = totalCells - (prevMonthDays.length + currentMonthDays.length);
+  const daysNeeded = 42 - totalDays; // 6 rows of 7 days
   
-  if (nextCellsToFill > 0) {
+  if (daysNeeded > 0) {
     const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
     const nextMonthYear = nextMonth === 0 ? currentYear + 1 : currentYear;
     
-    for (let i = 1; i <= nextCellsToFill; i++) {
+    for (let i = 1; i <= daysNeeded; i++) {
       nextMonthDays.push({
-        day: i,
-        month: nextMonth,
-        year: nextMonthYear,
-        isCurrentMonth: false,
+        date: new Date(nextMonthYear, nextMonth, i),
+        isCurrentMonth: false
       });
     }
   }
   
   // Combine all days
-  const allDays = [...prevMonthDays, ...currentMonthDays, ...nextMonthDays];
+  calendarDays.push(...prevMonthDays, ...currentMonthDays, ...nextMonthDays);
   
-  // Handle calendar navigation
+  // Calendar navigation handlers
   const goToPrevMonth = () => {
-    const newViewDate = new Date(viewDate);
-    newViewDate.setMonth(viewDate.getMonth() - 1);
-    setViewDate(newViewDate);
+    const date = new Date(viewDate);
+    date.setMonth(date.getMonth() - 1);
+    setViewDate(date);
   };
   
   const goToNextMonth = () => {
-    const newViewDate = new Date(viewDate);
-    newViewDate.setMonth(viewDate.getMonth() + 1);
-    setViewDate(newViewDate);
+    const date = new Date(viewDate);
+    date.setMonth(date.getMonth() + 1);
+    setViewDate(date);
   };
   
-  // Handle date selection
-  const handleDateClick = (year: number, month: number, day: number) => {
-    const newDate = new Date(year, month, day);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    // Don't allow selecting dates in the past
-    if (newDate >= today) {
-      onDateChange(newDate);
-    }
+  // Date selection handler
+  const handleDateSelect = (date: Date) => {
+    date.setHours(0, 0, 0, 0);
+    onDateChange(date);
+  };
+  
+  // Time slot selection handler
+  const handleTimeSlotSelect = (timeSlotId: string) => {
+    onTimeSlotChange(timeSlotId);
   };
   
   // Format month and year for display
-  const monthYearDisplay = viewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const formatMonthYear = (date: Date) => {
+    return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(date);
+  };
   
-  // Get today's date for highlighting
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // Check if a date is selectable (not in the past)
+  const isDateSelectable = (date: Date) => {
+    return date >= today;
+  };
+  
+  // Check if a date is the selected date
+  const isDateSelected = (date: Date) => {
+    return date.toDateString() === selectedDate.toDateString();
+  };
+  
+  // Check if a date is today
+  const isDateToday = (date: Date) => {
+    return date.toDateString() === today.toDateString();
+  };
   
   return (
     <Container>
@@ -409,76 +431,56 @@ const DateSelection: React.FC<DateSelectionProps> = ({
       <DateSelectionLayout>
         <CalendarContainer>
           <CalendarHeader>
-            <NavButton onClick={goToPrevMonth} aria-label="Previous month">
+            <NavButton onClick={goToPrevMonth} aria-label="Previous Month">
               &lt;
             </NavButton>
-            <CalendarMonth>{monthYearDisplay}</CalendarMonth>
-            <NavButton onClick={goToNextMonth} aria-label="Next month">
+            <CalendarMonth>{formatMonthYear(viewDate)}</CalendarMonth>
+            <NavButton onClick={goToNextMonth} aria-label="Next Month">
               &gt;
             </NavButton>
           </CalendarHeader>
           
           <WeekdayHeader>
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
               <Weekday key={day}>{day}</Weekday>
             ))}
           </WeekdayHeader>
           
           <DaysGrid>
-            {allDays.map(({ day, month, year, isCurrentMonth }) => {
-              const date = new Date(year, month, day);
-              const dateString = date.toISOString().split('T')[0];
-              const selectedDateString = selectedDate.toISOString().split('T')[0];
-              const todayString = today.toISOString().split('T')[0];
-              
-              const isSelected = dateString === selectedDateString;
-              const isToday = dateString === todayString;
-              const isDisabled = date < today; // Disable past dates
-              
-              return (
-                <DayCell
-                  key={`${year}-${month}-${day}`}
-                  isCurrentMonth={isCurrentMonth}
-                  isToday={isToday}
-                  isSelected={isSelected}
-                  isDisabled={isDisabled}
-                  onClick={() => {
-                    if (!isDisabled) {
-                      handleDateClick(year, month, day);
-                    }
-                  }}
-                  aria-label={date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                  aria-selected={isSelected}
-                  aria-disabled={isDisabled}
-                >
-                  {day}
-                </DayCell>
-              );
-            })}
+            {calendarDays.map((day, index) => (
+              <CalendarDay
+                key={`day-${index}`}
+                $isCurrentMonth={day.isCurrentMonth}
+                $isToday={isDateToday(day.date)}
+                $isSelected={isDateSelected(day.date)}
+                $isDisabled={!isDateSelectable(day.date)}
+                onClick={() => isDateSelectable(day.date) && handleDateSelect(day.date)}
+                aria-label={day.date.toLocaleDateString()}
+                aria-selected={isDateSelected(day.date)}
+                aria-disabled={!isDateSelectable(day.date)}
+              >
+                {day.date.getDate()}
+              </CalendarDay>
+            ))}
           </DaysGrid>
         </CalendarContainer>
         
         <TimeSlotsContainer>
           <TimeSlotsHeader>
-            Available Times for {selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            Available Times{selectedDate ? ` for ${selectedDate.toLocaleDateString()}` : ''}
           </TimeSlotsHeader>
           
           {availableTimeSlots.length > 0 ? (
             <TimeSlotsGrid>
-              {availableTimeSlots.map((slot) => (
+              {availableTimeSlots.map(slot => (
                 <TimeSlotButton
                   key={slot.id}
-                  isSelected={slot.id === selectedTimeSlotId}
-                  isAvailable={slot.available}
-                  onClick={() => {
-                    if (slot.available) {
-                      onTimeSlotChange(slot.id);
-                    }
-                  }}
+                  $isSelected={slot.id === selectedTimeSlotId}
+                  $isAvailable={slot.available}
+                  onClick={() => slot.available && handleTimeSlotSelect(slot.id)}
                   disabled={!slot.available}
-                  aria-label={`Time slot ${slot.time}`}
-                  aria-selected={slot.id === selectedTimeSlotId}
-                  aria-disabled={!slot.available}
+                  aria-label={`Time slot at ${slot.time}`}
+                  aria-pressed={slot.id === selectedTimeSlotId}
                 >
                   {slot.time}
                 </TimeSlotButton>
@@ -486,7 +488,9 @@ const DateSelection: React.FC<DateSelectionProps> = ({
             </TimeSlotsGrid>
           ) : (
             <NoTimeSlotsMessage>
-              No time slots available for this date. Please select another date.
+              {selectedDate 
+                ? 'No time slots available for the selected date. Please choose another date.'
+                : 'Please select a date to view available times.'}
             </NoTimeSlotsMessage>
           )}
         </TimeSlotsContainer>

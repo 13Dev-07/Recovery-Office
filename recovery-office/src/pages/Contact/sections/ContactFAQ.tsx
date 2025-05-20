@@ -6,14 +6,14 @@
  */
 
 import * as React from 'react';
-import { Box, Container, Grid } from '../design-system/components/layout';
-import { Section, SectionTitle, SectionContent } from '../design-system/components/layout/Section';
-import { Text, Paragraph, Heading } from '../design-system/components/typography';
-import { Card } from '../design-system/components/data-display';
-import { Button } from '../design-system/components/button';
-import { OliveBranch } from '../design-system/botanical';
+import { Box, Container, Grid } from '../../../design-system/components/layout';
+import { Section, SectionTitle, SectionContent } from '../../../design-system/components/layout/Section';
+import { Text, Paragraph, Heading } from '../../../design-system/components/typography';
+import { Card } from '../../../design-system/components/data-display';
+import { Button } from '../../../design-system/components/button';
+import { OliveBranch } from '../../../design-system/botanical';
 import { PHI } from '../../../constants/sacred-geometry';
-import { ScrollReveal, FadeIn } from '../../animation';
+import { ScrollReveal, FadeIn } from '../../../animation';
 
 // FAQ item interface
 interface FAQItem {
@@ -73,7 +73,7 @@ const ContactFAQ: React.FC<ContactFAQProps> = ({
           />
           <SectionContent>
             <Grid 
-              gridTemplateColumns={["1fr", null, "1fr 1fr"]} 
+              gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
               gap={`${PHI * 24}px`}
             >
               {faqItems.map((faq, index) => (

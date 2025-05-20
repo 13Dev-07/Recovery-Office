@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
 import { Box } from '../layout';
 import { FormLabelProps } from '../../types';
+import { PHI_INVERSE } from '../../../constants/sacred-geometry';
 
 
 // Calculate size-specific styles

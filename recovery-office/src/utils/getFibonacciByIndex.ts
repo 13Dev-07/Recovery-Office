@@ -1,4 +1,4 @@
-import { FIBONACCI } from '../constants/sacred-geometry';
+import { FIBONACCI, FibonacciIndex } from '../constants/sacred-geometry';
 
 /**
  * Utility function to get Fibonacci number by index
@@ -15,7 +15,8 @@ export function getFibonacciByIndex(index: number): number {
   const fibKeys = Object.keys(FIBONACCI).map(Number).sort((a, b) => a - b);
   
   if (index >= 0 && index < fibKeys.length) {
-    return FIBONACCI[fibKeys[index] ?? 1];
+    const key = fibKeys[index] ?? 1;
+    return FIBONACCI[key as unknown as FibonacciIndex];
   }
   
   // For indices beyond our predefined values, calculate dynamically

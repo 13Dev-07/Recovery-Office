@@ -12,9 +12,9 @@
 import * as React from 'react';;
 import { motion, useAnimation, Variants } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { PHI_INVERSE, SACRED_EASINGS } from '@constants/sacred-geometry';
+import { PHI_INVERSE, SACRED_EASINGS } from '../constants/sacred-geometry';
 import { ScrollRevealProps } from './animation.d';
-import { resolveDuration, applyGoldenRatioDuration, getAccessibleAnimationSettings } from '@utils/animation';
+import { resolveDuration, applyGoldenRatioDuration, getAccessibleAnimationSettings } from '../utils/animation';
 
 /**
  * ScrollReveal Component with ref forwarding

@@ -168,14 +168,18 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
   }, ref) => {
     // Create an internal ref if one is not provided
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-    const combinedRef = (node: HTMLTextAreaElement) => {
-      textAreaRef.current = node;
-      if (typeof ref === 'function') {
-        ref(node);
-      } else if (ref) {
-        (ref as React.MutableRefObject<HTMLTextAreaElement>).current = node;
+    const combinedRef = useCallback((node: HTMLTextAreaElement) => {
+      if (node) {
+        // Use type assertion to handle the read-only property
+        (textAreaRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = node;
+        
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          (ref as React.MutableRefObject<HTMLTextAreaElement | null>).current = node;
+        }
       }
-    };
+    }, [ref]);
     
     // State for tracking focus
     const [hasFocus, setHasFocus] = useState(false);

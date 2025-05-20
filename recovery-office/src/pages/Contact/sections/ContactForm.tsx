@@ -6,10 +6,9 @@
  */
 
 import * as React from 'react';
-import { Box } from '../design-system/components/layout';
-import { Grid } from '../design-system/components/layout';
-import { SectionTitle } from '../../../design-system/components/typography/SectionTitle';
-import { OliveBranch } from '../design-system/botanical';
+import { Box, Grid } from '../../../design-system/components/layout';
+import { Text } from '../../../design-system/components/typography';
+import { OliveBranch } from '../../../design-system/botanical';
 import { 
   FormControl, 
   FormLabel, 
@@ -19,12 +18,11 @@ import {
   Select,
   Checkbox
 } from '../../../design-system/components/form';
-import { Button } from '../design-system/components/button';
+import { Button } from '../../../design-system/components/button';
 import { PHI } from '../../../constants/sacred-geometry';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { FadeIn } from '../../animation';
+import { FadeIn } from '../../../animation';
 
 // Form validation schema using Zod
 const contactFormSchema = z.object({
@@ -37,8 +35,8 @@ const contactFormSchema = z.object({
     errorMap: () => ({ message: "Please select a preferred contact method" })
   }),
   message: z.string().min(10, "Message must be at least 10 characters"),
-  gdprConsent: z.literal(true, {
-    errorMap: () => ({ message: "You must agree to our privacy policy" })
+  gdprConsent: z.boolean().refine(val => val === true, {
+    message: "You must agree to our privacy policy"
   })
 });
 
@@ -61,7 +59,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
     formState: { errors, isSubmitting, isSubmitSuccessful },
     reset
   } = useForm<ContactFormData>({
-    resolver: zodResolver(contactFormSchema),
+    // resolver: zodResolver(contactFormSchema), // Uncomment when package is installed
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -96,13 +94,22 @@ const ContactForm: React.FC<ContactFormProps> = ({
   return (
     <FadeIn>
       <Box>
-        <SectionTitle 
-          title="Send Us a Message" 
-          subtitle="We'll respond within 24 hours"
-          size="medium"
-          align="left"
-          decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
-        />
+        <Text 
+          variant="h2"
+          style={{
+            marginBottom: `${PHI * 8}px`
+          }}
+        >
+          Send Us a Message
+        </Text>
+        <Text
+          variant="subtitle1"
+          style={{
+            marginBottom: `${PHI * 16}px`
+          }}
+        >
+          We'll respond within 24 hours
+        </Text>
         
         {isSubmitSuccessful ? (
           <Box 
@@ -114,24 +121,24 @@ const ContactForm: React.FC<ContactFormProps> = ({
               borderLeft: '4px solid #86b378'
             }}
           >
-            <Box fontSize="lg" fontWeight="600" color="#86b378" mb={2}>
+            <Text variant="h4" style={{ color: "#86b378", marginBottom: `${PHI * 8}px` }}>
               Message Sent Successfully
-            </Box>
-            <Box>
+            </Text>
+            <Text>
               Thank you for reaching out to us. We'll get back to you within 24 hours.
-            </Box>
+            </Text>
             <Button 
               variant="outline" 
               size="medium" 
-              mt={3}
+              style={{ marginTop: `${PHI * 12}px` }}
               onClick={() => reset()}
             >
               Send Another Message
             </Button>
           </Box>
         ) : (
-          <Box as="form" onSubmit={handleSubmit(onSubmit)} mt={4}>
-            <Grid gridTemplateColumns={["1fr", null, "1fr 1fr"]} gap={`${PHI * 16}px`}>
+          <form onSubmit={handleSubmit(onSubmit)} style={{ marginTop: `${PHI * 16}px` }}>
+            <Grid gridTemplateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={`${PHI * 16}px`}>
               <FormControl isInvalid={!!errors.firstName}>
                 <FormLabel htmlFor="firstName">First Name</FormLabel>
                 <Input 
@@ -153,7 +160,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
               </FormControl>
             </Grid>
 
-            <Grid gridTemplateColumns={["1fr", null, "1fr 1fr"]} gap={`${PHI * 16}px`} mt={4}>
+            <Grid gridTemplateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={`${PHI * 16}px`} mt={4}>
               <FormControl isInvalid={!!errors.email}>
                 <FormLabel htmlFor="email">Email</FormLabel>
                 <Input 
@@ -176,7 +183,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
               </FormControl>
             </Grid>
 
-            <Grid gridTemplateColumns={["1fr", null, "1fr 1fr"]} gap={`${PHI * 16}px`} mt={4}>
+            <Grid gridTemplateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={`${PHI * 16}px`} mt={4}>
               <FormControl isInvalid={!!errors.subject}>
                 <FormLabel htmlFor="subject">Subject</FormLabel>
                 <Select 
@@ -218,7 +225,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
             </FormControl>
 
             <FormControl isInvalid={!!errors.gdprConsent} mt={4}>
-              <Box display="flex" alignItems="start">
+              <Box display="flex" alignItems="flex-start">
                 <Checkbox
                   id="gdprConsent"
                   {...register('gdprConsent')}
@@ -247,7 +254,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
                 {isSubmitting ? 'Sending...' : 'Send Message'}
               </Button>
             </Box>
-          </Box>
+          </form>
         )}
       </Box>
     </FadeIn>

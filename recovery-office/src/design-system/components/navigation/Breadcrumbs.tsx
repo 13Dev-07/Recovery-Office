@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';;
+import { useState, useEffect } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 
 // Import sacred geometry constants
-
-
+import { PHI_INVERSE } from '../../../constants/sacred-geometry';
+import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
 
 // Import components
 import Link from './Link';
@@ -72,15 +72,17 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
     
     // If we need to collapse items
     if (items.length > maxVisibleItems) {
-      const firstItem = items[0] ?? 1;
+      const firstItem = items[0];
       const lastItems = items.slice(-Math.max(1, maxVisibleItems - 1));
       
-      // Create a collapsed version
-      setVisibleItems([
-        firstItem, 
-        { label: '...', path: '', isActive: false }, 
-        ...lastItems
-      ]);
+      if (firstItem) {
+        // Create a collapsed version
+        setVisibleItems([
+          firstItem, 
+          { label: '...', path: '', isActive: false }, 
+          ...lastItems
+        ]);
+      }
     } else {
       setVisibleItems(items);
     }

@@ -9,9 +9,10 @@
  * to create harmonious, balanced layouts.
  */
 
-import { forwardRef, ReactNode } from 'react';
+import { forwardRef } from 'react';
+import * as React from 'react';
 import Box from './Box';
-import { ContainerProps } from '../../types';
+import { ContainerProps } from '../../types/styled.types';
 
 // Define sacred grid values locally based on the constants in sacred-geometry.ts
 const CONTAINER_WIDTHS = {
@@ -30,7 +31,7 @@ const CONTAINER_WIDTHS = {
  * 
  * Creates a centered container with sacred-geometry-based proportions
  */
-export const Container = forwardRef<HTMLDivElement, ContainerProps & { children?: ReactNode }>(
+export const Container = forwardRef<HTMLDivElement, ContainerProps>(
   ({ 
     children, 
     maxWidth = 'lg',

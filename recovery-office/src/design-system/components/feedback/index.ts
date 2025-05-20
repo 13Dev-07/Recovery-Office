@@ -1,27 +1,37 @@
 /**
- * Feedback Components
+ * Feedback Components Export
  * 
- * This file exports all feedback components that provide user interface feedback
- * following sacred geometry principles for visual harmony. These components use
- * golden ratio proportions, Fibonacci sequence for spacing, and sacred timing
- * for animations to create a natural, balanced user experience.
+ * This file exports all feedback components and their types from the design system.
  */
 
-// Component exports
-export { default as Alert } from './Alert';
-export { default as Badge } from './Badge';
-export { default as LoadingScreen } from './LoadingScreen';
-export { default as Modal } from './Modal';
-export { default as Toast } from './Toast';
-export { default as ToastManager } from './ToastManager';
+// Export Modal component and types
+import Modal from './Modal';
+export { Modal };
+export type { ModalProps, ModalSize, ModalPosition } from './Modal';
 
-// Type exports
-export type { AlertProps } from './Alert';
-export type { BadgeProps } from './Badge';
-export type { LoadingScreenProps } from './LoadingScreen';
-export type { ModalProps } from './Modal';
-export type { ToastProps } from './Toast';
-export type { ToastManagerProps } from './ToastManager'; 
+// Export Toast component and types
+import Toast from './Toast';
+export { Toast };
+export type { ToastProps } from '../../../design-system/types/styled.types';
+
+// Export Alert component and types
+import Alert from './Alert';
+export { Alert };
+export type { AlertProps } from '../../../design-system/types/styled.types';
+
+// Export LoadingOverlay component and types
+import LoadingOverlay from './LoadingOverlay';
+export { LoadingOverlay };
+export type { LoadingOverlayProps } from './LoadingOverlay';
+
+// Export Badge component and types
+import Badge from './Badge';
+export { Badge };
+export type { BadgeProps } from '../../../design-system/types/styled.types';
+
+// Export ErrorMessage component
+import ErrorMessage from './ErrorMessage';
+export { ErrorMessage };
 
 
 

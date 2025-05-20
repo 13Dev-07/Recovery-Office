@@ -1,10 +1,13 @@
-import * as React from 'react';;
-import { useBooking } from '@context/BookingContext';
+import * as React from 'react';
+import { useBooking } from '../../context/BookingContext';
 
 import styled from 'styled-components';
-import { DefaultTheme } from 'styled-components';
-import { format, addDays, isSameDay, startOfDay, addMinutes } from 'date-fns';
-
+import { format, addDays, isSameDay, startOfDay, addMinutes, parseISO } from 'date-fns';
+import { getFibonacciByIndex } from '../../utils/getFibonacciByIndex';
+import { PHI } from '../../constants/sacred-geometry';
+import { useState } from 'react';
+import { RecoveryOfficeTheme } from '../../design-system/types/theme.types';
+import { BookingTimeSlot } from '../../types/booking.types';
 
 // Styled components using sacred geometry principles
 const Container = styled.div`
@@ -27,9 +30,9 @@ const WeekContainer = styled.div`
 const DayButton = styled.button<{ isSelected: boolean; isAvailable: boolean }>`
   height: ${getFibonacciByIndex(8)}px;
   border-radius: ${getFibonacciByIndex(4)}px;
-  border: 1px solid ${(props: { isSelected: boolean; theme: DefaultTheme }) => 
+  border: 1px solid ${(props: { isSelected: boolean; theme: RecoveryOfficeTheme }) => 
     props.isSelected ? props.theme.colors.primary[500] : props.theme.colors.border.main};
-  background-color: ${(props: { isSelected: boolean; isAvailable: boolean; theme: DefaultTheme }) => {
+  background-color: ${(props: { isSelected: boolean; isAvailable: boolean; theme: RecoveryOfficeTheme }) => {
     if (props.isSelected) return props.theme.colors.primary[100];
     if (!props.isAvailable) return props.theme.colors.background[200];
     return props.theme.colors.background[100];
@@ -57,13 +60,13 @@ const DayButton = styled.button<{ isSelected: boolean; isAvailable: boolean }>`
 const DayName = styled.span`
   font-size: ${getFibonacciByIndex(4)}px;
   margin-bottom: ${getFibonacciByIndex(2)}px;
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.text.secondary};
+  color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.text.secondary};
 `;
 
 const DayNumber = styled.span`
   font-size: ${getFibonacciByIndex(5)}px;
   font-weight: bold;
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.text.primary};
+  color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.text.primary};
 `;
 
 const TimeSlotsContainer = styled.div`
@@ -76,9 +79,9 @@ const TimeSlotsContainer = styled.div`
 const TimeSlot = styled.button<{ isSelected: boolean }>`
   padding: ${getFibonacciByIndex(5)}px;
   border-radius: ${getFibonacciByIndex(4)}px;
-  border: 1px solid ${(props: { isSelected: boolean; theme: DefaultTheme }) => 
+  border: 1px solid ${(props: { isSelected: boolean; theme: RecoveryOfficeTheme }) => 
     props.isSelected ? props.theme.colors.primary[500] : props.theme.colors.border.main};
-  background-color: ${(props: { isSelected: boolean; theme: DefaultTheme }) => 
+  background-color: ${(props: { isSelected: boolean; theme: RecoveryOfficeTheme }) => 
     props.isSelected ? props.theme.colors.primary[100] : props.theme.colors.background[100]};
   cursor: pointer;
   transition: all ${getFibonacciByIndex(5) * 10}ms ease-in-out;
@@ -96,7 +99,7 @@ const TimeSlot = styled.button<{ isSelected: boolean }>`
 
 const TimeText = styled.span`
   font-size: ${getFibonacciByIndex(5)}px;
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.text.primary};
+  color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.text.primary};
 `;
 
 const NavigationContainer = styled.div`
@@ -107,14 +110,14 @@ const NavigationContainer = styled.div`
 
 const NavigationButton = styled.button`
   padding: ${getFibonacciByIndex(4)}px ${getFibonacciByIndex(6)}px;
-  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.background[100]};
-  border: 1px solid ${({ theme }: { theme: DefaultTheme }) => theme.colors.border.main};
+  background-color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.background[100]};
+  border: 1px solid ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.border.main};
   border-radius: ${getFibonacciByIndex(3)}px;
   cursor: pointer;
   transition: all ${getFibonacciByIndex(5) * 10}ms ease;
   
   &:hover {
-    background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.background[200]};
+    background-color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.background[200]};
   }
 `;
 
@@ -126,11 +129,11 @@ const ActionContainer = styled.div`
 
 const Button = styled.button<{ isPrimary?: boolean }>`
   padding: ${getFibonacciByIndex(4)}px ${getFibonacciByIndex(6)}px;
-  background-color: ${(props: { isPrimary?: boolean; theme: DefaultTheme }) => 
+  background-color: ${(props: { isPrimary?: boolean; theme: RecoveryOfficeTheme }) => 
     props.isPrimary ? props.theme.colors.primary[500] : props.theme.colors.background[100]};
-  color: ${(props: { isPrimary?: boolean; theme: DefaultTheme }) => 
+  color: ${(props: { isPrimary?: boolean; theme: RecoveryOfficeTheme }) => 
     props.isPrimary ? 'white' : props.theme.colors.text.primary};
-  border: 1px solid ${(props: { isPrimary?: boolean; theme: DefaultTheme }) => 
+  border: 1px solid ${(props: { isPrimary?: boolean; theme: RecoveryOfficeTheme }) => 
     props.isPrimary ? props.theme.colors.primary[500] : props.theme.colors.border.main};
   border-radius: ${getFibonacciByIndex(3)}px;
   font-size: ${getFibonacciByIndex(5)}px;
@@ -138,32 +141,41 @@ const Button = styled.button<{ isPrimary?: boolean }>`
   transition: all ${getFibonacciByIndex(5) * 10}ms ease;
   
   &:hover {
-    background-color: ${(props: { isPrimary?: boolean; theme: DefaultTheme }) => 
+    background-color: ${(props: { isPrimary?: boolean; theme: RecoveryOfficeTheme }) => 
       props.isPrimary ? props.theme.colors.primary[700] : props.theme.colors.background[200]};
   }
   
   &:disabled {
-    background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.text.disabled};
-    border-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.text.disabled};
+    background-color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.text.disabled};
+    border-color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.text.disabled};
     cursor: not-allowed;
   }
 `;
 
-// Mock data for available slots
-// In a real app, this would come from an API based on the selected service
-const generateMockTimeSlots = (selectedDate: Date, serviceDuration: number = 60) => {
-  const slots: Date[] = [];
+// Generate mock time slots for a given date
+const generateMockTimeSlots = (selectedDate: string, serviceDuration: number = 60): BookingTimeSlot[] => {
+  const slots: BookingTimeSlot[] = [];
   const startTime = 9; // 9 AM
   const endTime = 17; // 5 PM
   
-  const startOfSelectedDay = startOfDay(selectedDate);
+  const dateObj = parseISO(selectedDate);
+  const startOfSelectedDay = startOfDay(dateObj);
   
   // Generate time slots every 'serviceDuration' minutes
   for (let hour = startTime; hour < endTime; hour++) {
     for (let minute = 0; minute < 60; minute += serviceDuration) {
       // Skip some slots randomly to simulate unavailability
       if (Math.random() > 0.3) {
-        slots.push(addMinutes(startOfSelectedDay, hour * 60 + minute));
+        const start = addMinutes(startOfSelectedDay, hour * 60 + minute);
+        const end = addMinutes(start, serviceDuration);
+        
+        slots.push({
+          id: `slot-${hour}-${minute}`,
+          startTime: start.toISOString(),
+          endTime: end.toISOString(),
+          duration: serviceDuration,
+          available: true
+        });
       }
     }
   }
@@ -182,13 +194,13 @@ const DateTimeSelection: React.FC = () => {
     setCurrentStep 
   } = useBooking();
   
-  const [availableDates, setAvailableDates] = useState<Date[]>([]);
-  const [availableTimeSlots, setAvailableTimeSlots] = useState<Date[]>([]);
+  const [availableDates, setAvailableDates] = React.useState<string[]>([]);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<BookingTimeSlot[]>([]);
   const [weekStart, setWeekStart] = useState<Date>(new Date());
   
   // Generate available dates for the next 14 days
   React.useEffect(() => {
-    const dates: Date[] = [];
+    const dates: string[] = [];
     const today = new Date();
     
     for (let i = 0; i < 14; i++) {
@@ -197,7 +209,7 @@ const DateTimeSelection: React.FC = () => {
       const dayOfWeek = day.getDay();
       
       if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-        dates.push(day);
+        dates.push(day.toISOString().split('T')[0]);
       }
     }
     
@@ -236,12 +248,13 @@ const DateTimeSelection: React.FC = () => {
   const visibleDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
   
   const handleDateSelection = (date: Date) => {
-    setSelectedDate(date);
-    setSelectedTime(null); // Reset time when date changes
+    const formattedDate = date.toISOString().split('T')[0];
+    setSelectedDate(formattedDate);
+    setSelectedTime(''); // Reset time when date changes
   };
   
-  const handleTimeSelection = (time: Date) => {
-    setSelectedTime(time);
+  const handleTimeSelection = (time: BookingTimeSlot) => {
+    setSelectedTime(time.startTime);
   };
   
   const handleBack = () => {
@@ -255,9 +268,8 @@ const DateTimeSelection: React.FC = () => {
   };
   
   const isDayAvailable = (date: Date) => {
-    return availableDates.some(availableDate => 
-      isSameDay(availableDate, date)
-    );
+    const dateString = date.toISOString().split('T')[0];
+    return availableDates.includes(dateString);
   };
   
   return (
@@ -274,7 +286,7 @@ const DateTimeSelection: React.FC = () => {
         <WeekContainer>
           {visibleDays.map(date => {
             const available = isDayAvailable(date);
-            const isSelected = selectedDate ? isSameDay(date, selectedDate) : false;
+            const isSelected = selectedDate ? isSameDay(date, parseISO(selectedDate)) : false;
             
             return (
               <DayButton 
@@ -294,16 +306,16 @@ const DateTimeSelection: React.FC = () => {
       
       {selectedDate && (
         <>
-          <h3>Available Times for {format(selectedDate, 'MMMM d, yyyy')}</h3>
+          <h3>Available Times for {format(parseISO(selectedDate), 'MMMM d, yyyy')}</h3>
           {availableTimeSlots.length > 0 ? (
             <TimeSlotsContainer>
               {availableTimeSlots.map(time => (
                 <TimeSlot 
-                  key={time.toISOString()}
-                  isSelected={selectedTime ? time.getTime() === selectedTime.getTime() : false}
+                  key={time.id}
+                  isSelected={selectedTime === time.startTime}
                   onClick={() => handleTimeSelection(time)}
                 >
-                  <TimeText>{format(time, 'h:mm a')}</TimeText>
+                  <TimeText>{format(parseISO(time.startTime), 'h:mm a')}</TimeText>
                 </TimeSlot>
               ))}
             </TimeSlotsContainer>

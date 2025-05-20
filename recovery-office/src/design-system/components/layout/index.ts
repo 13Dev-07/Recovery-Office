@@ -16,15 +16,30 @@ export { default as Container } from './Container';
 export { default as Stack } from './Stack';
 export { default as AspectRatio } from './AspectRatio';
 export { default as Divider } from './Divider';
+export { Section, SectionContent, SectionTitle } from './Section/index';
 
 // Also export any utility functions from the layout components
 export { generateGridTemplateColumns } from './Grid';
 
-// Export types from the types directory
-export type { BoxProps, GoldenSectionProps, ContainerProps, StackProps } from '../../types';
+// Export DividerProps since it's directly defined in the component
+export type { DividerProps } from './Divider';
 
-// Export types from components
-export type { DividerProps } from './Divider'; 
+// Export additional types from the layout components
+export type { 
+  BotanicalPosition,
+  SectionVariant,
+  SectionProps 
+} from './Section/Section';
+
+// Export types from the types directory
+export type { 
+  BoxProps, 
+  FlexProps,
+  GridProps,
+  ContainerProps,
+  StackProps,
+  GoldenSectionProps
+} from '../../types/styled.types';
 
 
 

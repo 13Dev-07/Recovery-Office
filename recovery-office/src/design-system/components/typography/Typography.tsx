@@ -7,14 +7,15 @@
  */
 
 import * as React from 'react';
-import styled, { DefaultTheme } from 'styled-components';
 import { BoxProps } from '../../types';
-import Heading, { HeadingLevel } from './Heading';
+import Heading from './Heading';
 import Text from './Text';
 import Paragraph from './Paragraph';
 import BlockQuote from './BlockQuote';
 
-// Typography variants
+/**
+ * Typography variant types
+ */
 export type TypographyVariant = 
   | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'  // Headings
   | 'body1' | 'body2'                         // Body text
@@ -24,7 +25,9 @@ export type TypographyVariant =
   | 'display1' | 'display2'                   // Large display text
   | 'quote';                                  // Blockquote text
 
-// Interface for Typography props
+/**
+ * Typography component props
+ */
 interface TypographyProps extends Omit<BoxProps, 'display'> {
   /**
    * The typography variant to use
@@ -89,22 +92,19 @@ interface TypographyProps extends Omit<BoxProps, 'display'> {
  * Creates harmonious typography elements based on sacred geometry principles
  */
 export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
-  (props, ref) => {
-    // Destructure props
-    const { 
-      variant = 'body1',
-      harmonized = true,
-      truncate = false,
-      noOfLines,
-      italic = false,
-      weight,
-      color,
-      sacredSpacing = true,
-      cssDisplay,
-      children,
-      ...rest 
-    } = props;
-    
+  ({
+    variant = 'body1',
+    harmonized = true,
+    truncate = false,
+    noOfLines,
+    italic = false,
+    weight,
+    color,
+    sacredSpacing = true,
+    cssDisplay,
+    children,
+    ...rest
+  }, ref) => {
     // Helper to get margin values based on variant and sacredSpacing option
     const getMargin = () => {
       if (!sacredSpacing) return undefined;
@@ -189,7 +189,7 @@ export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
       return (
         <BlockQuote
           {...rest}
-          {...marginProps}
+          {...marginProps as any}
           variant="default"
           size="md"
           ref={ref as React.Ref<HTMLQuoteElement>}

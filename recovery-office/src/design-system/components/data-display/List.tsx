@@ -1,12 +1,14 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { Box } from '../layout';
+import { PHI_INVERSE } from '../../../constants/sacred-geometry';
+import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
 
 // Import sacred geometry constants
 
 
 
 // Import design system components
-import { Box } from '../layout';
 
 // TypeScript interfaces
 export interface ListProps {

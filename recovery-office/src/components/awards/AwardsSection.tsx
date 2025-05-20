@@ -16,14 +16,21 @@ import { Section } from '@design-system/components/layout/Section';
 import { Box } from '@design-system/components/layout/Box';
 import { Flex } from '@design-system/components/layout/Flex';
 import { BotanicalElement } from '@design-system/botanical/BotanicalElement';
-import { SectionTitle } from '@design-system/components/typography/SectionTitle';
+import SectionTitle from '@design-system/components/layout/Section/SectionTitle';
 import { Text } from '@design-system/components/typography/Text';
 import { FadeIn } from '@design-system/components/animation/FadeIn';
 import AwardsShowcase from './AwardsShowcase';
 import { Award } from './AwardsShowcase';
 
-// Icons import (assuming you have icon components)
-import { StarIcon, RibbonIcon, TrophyIcon, CertificateIcon } from '@design-system/icons';
+// Icons import from Feather icons
+import { FiStar, FiAward, FiGift, FiFileText } from 'react-icons/fi';
+
+// Utility function to get Fibonacci numbers
+function getFibonacciByIndex(index: number): number {
+  // This should be replaced with the actual implementation from your project
+  const fibonacciNumbers = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377];
+  return fibonacciNumbers[index] || index;
+}
 
 // Props interface for the AwardsSection component
 interface AwardsSectionProps {
@@ -74,21 +81,21 @@ const BackgroundDecoration = styled.div`
 `;
 
 const TopLeftDecoration = styled(BackgroundDecoration)`
-  top: -${() => getFibonacciByIndex(8)}px;
-  left: -${() => getFibonacciByIndex(7)}px;
+  top: -${getFibonacciByIndex(8)}px;
+  left: -${getFibonacciByIndex(7)}px;
   transform: rotate(-${PHI * 10}deg);
 `;
 
 const BottomRightDecoration = styled(BackgroundDecoration)`
-  bottom: -${() => getFibonacciByIndex(8)}px;
-  right: -${() => getFibonacciByIndex(7)}px;
+  bottom: -${getFibonacciByIndex(8)}px;
+  right: -${getFibonacciByIndex(7)}px;
   transform: rotate(${PHI * 10}deg);
 `;
 
 const ContentContainer = styled.div`
   position: relative;
   z-index: 1;
-  max-width: ${() => getFibonacciByIndex(13)}px;
+  max-width: ${getFibonacciByIndex(13)}px;
   margin: 0 auto;
   padding: 0 ${SACRED_SPACING.lg}px;
 `;
@@ -99,9 +106,9 @@ const IntroContent = styled.div`
 `;
 
 const IntroText = styled(Text)`
-  max-width: ${() => getFibonacciByIndex(12)}px;
+  max-width: ${getFibonacciByIndex(12)}px;
   margin: ${SACRED_SPACING.md}px auto 0;
-  font-size: ${() => getFibonacciByIndex(5)}px;
+  font-size: ${getFibonacciByIndex(5)}px;
   line-height: ${PHI * 1.5};
 `;
 
@@ -115,7 +122,7 @@ const sampleAwards: Award[] = [
     issuedBy: 'Holistic Practitioners Association',
     variant: 'gold',
     shape: 'circle',
-    icon: <StarIcon />,
+    icon: <FiStar />,
     detailsUrl: '/awards/excellence-therapy'
   },
   {
@@ -126,7 +133,7 @@ const sampleAwards: Award[] = [
     issuedBy: 'Wellness Industry Awards',
     variant: 'gold',
     shape: 'shield',
-    icon: <TrophyIcon />,
+    icon: <FiGift />,
     detailsUrl: '/awards/best-recovery'
   },
   {
@@ -137,7 +144,7 @@ const sampleAwards: Award[] = [
     issuedBy: 'Healthcare Innovation Board',
     variant: 'silver',
     shape: 'laurel',
-    icon: <RibbonIcon />,
+    icon: <FiAward />,
     detailsUrl: '/awards/innovation-care'
   },
   {
@@ -148,7 +155,7 @@ const sampleAwards: Award[] = [
     issuedBy: 'Quality Care Certification',
     variant: 'certification',
     shape: 'ribbon',
-    icon: <CertificateIcon />,
+    icon: <FiFileText />,
     detailsUrl: '/awards/certified-excellence'
   },
   {
@@ -196,10 +203,15 @@ const AwardsSection: React.FC<AwardsSectionProps> = ({
       {showBotanical && (
         <>
           <TopLeftDecoration>
-            <BotanicalElement type="branch" size="xl" rotation={45} />
+            <BotanicalElement width="100%" height="100%">
+              <path d="M10,90 Q20,60 40,80 T70,60 T90,40" stroke="currentColor" strokeWidth="1.5" fill="none" />
+            </BotanicalElement>
           </TopLeftDecoration>
           <BottomRightDecoration>
-            <BotanicalElement type="leaf-cluster" size="xl" rotation={-30} />
+            <BotanicalElement width="100%" height="100%">
+              <circle cx="50" cy="50" r="30" stroke="currentColor" strokeWidth="1.5" fill="none" />
+              <path d="M20,80 Q35,65 50,80 T80,50" stroke="currentColor" strokeWidth="1.5" fill="none" />
+            </BotanicalElement>
           </BottomRightDecoration>
         </>
       )}
@@ -208,10 +220,10 @@ const AwardsSection: React.FC<AwardsSectionProps> = ({
         {/* Section intro */}
         <IntroContent>
           <FadeIn duration={getFibonacciByIndex(6) * 10}>
-            <SectionTitle>{title}</SectionTitle>
+            <SectionTitle title={title} />
             {subtitle && (
               <Text 
-                fontSize={getFibonacciByIndex(6)} 
+                size="lg"
                 mt={SACRED_SPACING.sm}
                 fontWeight="medium"
               >
@@ -250,19 +262,4 @@ const AwardsSection: React.FC<AwardsSectionProps> = ({
   );
 };
 
-export default AwardsSection; 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export default AwardsSection;

@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { useBooking } from '@context/BookingContext';
+import { useState } from 'react';
+import { useBooking } from '../../context/BookingContext';
+import { getFibonacciByIndex } from '../../utils/getFibonacciByIndex';
+import { PHI } from '../../constants/sacred-geometry';
+import { RecoveryOfficeTheme } from '../../design-system/types/theme.types';
 
 import styled from 'styled-components';
-import { DefaultTheme } from 'styled-components';
 import { z } from 'zod';
-
 
 // Styled components using sacred geometry principles
 const Container = styled.div`
@@ -33,31 +35,31 @@ const FieldRow = styled.div`
 
 const Label = styled.label`
   font-size: ${getFibonacciByIndex(5)}px;
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.text.primary};
+  color: ${(props: { theme: RecoveryOfficeTheme }) => props.theme.colors.text.primary};
   font-weight: 500;
 `;
 
 const Input = styled.input<{ hasError?: boolean }>`
   padding: ${getFibonacciByIndex(5)}px;
   border-radius: ${getFibonacciByIndex(3)}px;
-  border: 1px solid ${(props: { theme: DefaultTheme; hasError?: boolean }) => 
-    props.hasError ? props.theme.colors.error.main : props.theme.colors.border.main};
+  border: 1px solid ${(props: { theme: RecoveryOfficeTheme; hasError?: boolean }) => 
+    props.hasError ? props.theme.colors.feedback.error.main : '#DDDDDD'};
   font-size: ${getFibonacciByIndex(5)}px;
   transition: all ${getFibonacciByIndex(5) * 10}ms ease;
   width: 100%;
   
   &:focus {
     outline: none;
-    border-color: ${(props: { theme: DefaultTheme }) => props.theme.colors.primary[500]};
-    box-shadow: 0 0 0 ${getFibonacciByIndex(2)}px ${(props: { theme: DefaultTheme }) => props.theme.colors.primary[200]};
+    border-color: ${(props: { theme: RecoveryOfficeTheme }) => props.theme.colors.primary[500]};
+    box-shadow: 0 0 0 ${getFibonacciByIndex(2)}px ${(props: { theme: RecoveryOfficeTheme }) => props.theme.colors.primary[200]};
   }
 `;
 
 const TextArea = styled.textarea<{ hasError?: boolean }>`
   padding: ${getFibonacciByIndex(5)}px;
   border-radius: ${getFibonacciByIndex(3)}px;
-  border: 1px solid ${(props: { theme: DefaultTheme; hasError?: boolean }) => 
-    props.hasError ? props.theme.colors.error.main : props.theme.colors.border.main};
+  border: 1px solid ${(props: { theme: RecoveryOfficeTheme; hasError?: boolean }) => 
+    props.hasError ? props.theme.colors.feedback.error.main : '#DDDDDD'};
   font-size: ${getFibonacciByIndex(5)}px;
   min-height: ${getFibonacciByIndex(9)}px;
   resize: vertical;
@@ -66,13 +68,13 @@ const TextArea = styled.textarea<{ hasError?: boolean }>`
   
   &:focus {
     outline: none;
-    border-color: ${(props: { theme: DefaultTheme }) => props.theme.colors.primary[500]};
-    box-shadow: 0 0 0 ${getFibonacciByIndex(2)}px ${(props: { theme: DefaultTheme }) => props.theme.colors.primary[200]};
+    border-color: ${(props: { theme: RecoveryOfficeTheme }) => props.theme.colors.primary[500]};
+    box-shadow: 0 0 0 ${getFibonacciByIndex(2)}px ${(props: { theme: RecoveryOfficeTheme }) => props.theme.colors.primary[200]};
   }
 `;
 
 const ErrorMessage = styled.span`
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.error.main};
+  color: ${(props: { theme: RecoveryOfficeTheme }) => props.theme.colors.feedback.error.main};
   font-size: ${getFibonacciByIndex(4)}px;
   margin-top: ${getFibonacciByIndex(2)}px;
 `;
@@ -96,28 +98,44 @@ const ActionContainer = styled.div`
 
 const Button = styled.button<{ isPrimary?: boolean }>`
   padding: ${getFibonacciByIndex(4)}px ${getFibonacciByIndex(6)}px;
-  background-color: ${(props: { theme: DefaultTheme; isPrimary?: boolean }) => 
-    props.isPrimary ? props.theme.colors.primary[500] : props.theme.colors.background.default};
-  color: ${(props: { theme: DefaultTheme; isPrimary?: boolean }) => 
+  background-color: ${(props: { theme: RecoveryOfficeTheme; isPrimary?: boolean }) => 
+    props.isPrimary ? props.theme.colors.primary[500] : props.theme.colors.background[50]};
+  color: ${(props: { theme: RecoveryOfficeTheme; isPrimary?: boolean }) => 
     props.isPrimary ? 'white' : props.theme.colors.text.primary};
-  border: 1px solid ${(props: { theme: DefaultTheme; isPrimary?: boolean }) => 
-    props.isPrimary ? props.theme.colors.primary[500] : props.theme.colors.border.main};
+  border: 1px solid ${(props: { theme: RecoveryOfficeTheme; isPrimary?: boolean }) => 
+    props.isPrimary ? props.theme.colors.primary[500] : '#DDDDDD'};
   border-radius: ${getFibonacciByIndex(3)}px;
   font-size: ${getFibonacciByIndex(5)}px;
   cursor: pointer;
   transition: all ${getFibonacciByIndex(5) * 10}ms ease;
   
   &:hover {
-    background-color: ${(props: { theme: DefaultTheme; isPrimary?: boolean }) => 
-      props.isPrimary ? props.theme.colors.primary[600] : props.theme.colors.background.light};
+    background-color: ${(props: { theme: RecoveryOfficeTheme; isPrimary?: boolean }) => 
+      props.isPrimary ? props.theme.colors.primary[600] : props.theme.colors.background[100]};
     transform: scale(${1 + (1 / PHI) * 0.02});
   }
   
   &:disabled {
-    background-color: ${(props: { theme: DefaultTheme }) => props.theme.colors.disabled};
-    border-color: ${(props: { theme: DefaultTheme }) => props.theme.colors.disabled};
+    background-color: #E0E0E0;
+    border-color: #E0E0E0;
     cursor: not-allowed;
     transform: none;
+  }
+`;
+
+const Select = styled.select<{ hasError?: boolean }>`
+  padding: ${getFibonacciByIndex(5)}px;
+  border-radius: ${getFibonacciByIndex(3)}px;
+  border: 1px solid ${(props: { theme: RecoveryOfficeTheme; hasError?: boolean }) => 
+    props.hasError ? props.theme.colors.feedback.error.main : '#DDDDDD'};
+  font-size: ${getFibonacciByIndex(5)}px;
+  transition: all ${getFibonacciByIndex(5) * 10}ms ease;
+  width: 100%;
+  
+  &:focus {
+    outline: none;
+    border-color: ${(props: { theme: RecoveryOfficeTheme }) => props.theme.colors.primary[500]};
+    box-shadow: 0 0 0 ${getFibonacciByIndex(2)}px ${(props: { theme: RecoveryOfficeTheme }) => props.theme.colors.primary[200]};
   }
 `;
 
@@ -127,11 +145,11 @@ const customerSchema = z.object({
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().regex(/^\d{10}$/, "Please enter a valid 10-digit phone number"),
-  address: z.string().optional(),
-  notes: z.string().optional(),
-  termsAccepted: z.boolean().refine(val => val === true, {
-    message: "You must accept the terms and conditions"
-  })
+  preferredContactMethod: z.enum(["email", "phone", "text"], {
+    required_error: "Please select a preferred contact method"
+  }),
+  isNewClient: z.boolean(),
+  additionalNotes: z.string().optional()
 });
 
 // Define the type based on the schema
@@ -152,24 +170,60 @@ const CustomerInformation: React.FC = () => {
     lastName: customerInfo?.lastName || '',
     email: customerInfo?.email || '',
     phone: customerInfo?.phone || '',
-    address: customerInfo?.address || '',
-    notes: customerInfo?.notes || '',
-    termsAccepted: customerInfo?.termsAccepted || false
+    preferredContactMethod: customerInfo?.preferredContactMethod || 'email',
+    isNewClient: customerInfo?.isNewClient || true,
+    additionalNotes: customerInfo?.additionalNotes || ''
   });
   
-  // State for tracking validation errors
-  const [errors, setErrors] = useState<Partial<Record<keyof CustomerInfo, string>>>({});
-  const [touched, setTouched] = useState<Partial<Record<keyof CustomerInfo, boolean>>>({});
+  // Separate termsAccepted state since it's not part of ClientInformation
+  const [termsAccepted, setTermsAccepted] = useState(false);
   
-  // Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  // State for tracking validation errors
+  const [errors, setErrors] = useState<Partial<Record<keyof CustomerInfo | 'termsAccepted', string>>>({});
+  const [touched, setTouched] = useState<Partial<Record<keyof CustomerInfo | 'termsAccepted', boolean>>>({});
+  
+  // Handle input changes for text and select inputs
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value, type } = e.target;
-    const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
     
-    // Update form data
+    // Handle checkbox separately
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      
+      if (name === 'termsAccepted') {
+        setTermsAccepted(checked);
+        
+        // Clear error when user checks the box
+        if (checked && errors.termsAccepted) {
+          setErrors(prev => ({
+            ...prev,
+            termsAccepted: undefined
+          }));
+        }
+        return;
+      }
+      
+      // Handle isNewClient checkbox
+      setFormData(prev => ({
+        ...prev,
+        [name]: checked
+      }));
+      
+      // Mark field as touched
+      setTouched(prev => ({
+        ...prev,
+        [name]: true
+      }));
+      
+      return;
+    }
+    
+    // Update form data for other input types
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
     
     // Mark field as touched
@@ -188,7 +242,9 @@ const CustomerInformation: React.FC = () => {
   };
   
   // Handle blur event for validation
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name } = e.target;
     
     // Mark field as touched
@@ -197,16 +253,36 @@ const CustomerInformation: React.FC = () => {
       [name]: true
     }));
     
+    // Skip validation for termsAccepted (will be validated on submit)
+    if (name === 'termsAccepted') return;
+    
     // Validate individual field
-    validateField(name as keyof CustomerInfo);
+    validateField(name as keyof CustomerInfo | 'termsAccepted');
   };
   
   // Validate a single field
-  const validateField = (field: keyof CustomerInfo) => {
+  const validateField = (field: keyof CustomerInfo | 'termsAccepted') => {
+    // Handle termsAccepted field separately since it's not in the schema
+    if (field === 'termsAccepted') {
+      if (!termsAccepted) {
+        setErrors(prev => ({
+          ...prev,
+          termsAccepted: "You must accept the terms and conditions"
+        }));
+        return false;
+      } else {
+        setErrors(prev => ({
+          ...prev,
+          termsAccepted: undefined
+        }));
+        return true;
+      }
+    }
+    
     try {
       // Create a partial schema for just this field
       const fieldSchema = z.object({ [field]: customerSchema.shape[field] });
-      fieldSchema.parse({ [field]: formData[field] });
+      fieldSchema.parse({ [field]: formData[field as keyof CustomerInfo] });
       
       // Clear error if validation passes
       setErrors(prev => ({
@@ -281,9 +357,9 @@ const CustomerInformation: React.FC = () => {
     setCurrentStep(currentStep - 1);
   };
   
-  // Get validation state for a field
-  const getFieldError = (field: keyof CustomerInfo): string | undefined => {
-    return touched[field] ? errors[field] : undefined;
+  // Get field error
+  const getFieldError = (field: keyof CustomerInfo | 'termsAccepted'): string | undefined => {
+    return errors[field];
   };
   
   return (
@@ -362,23 +438,44 @@ const CustomerInformation: React.FC = () => {
         </FieldRow>
         
         <FieldGroup>
-          <Label htmlFor="address">Address (Optional)</Label>
-          <Input
-            type="text"
-            id="address"
-            name="address"
-            value={formData.address || ''}
+          <Label htmlFor="preferredContactMethod">Preferred Contact Method*</Label>
+          <Select
+            id="preferredContactMethod"
+            name="preferredContactMethod"
+            value={formData.preferredContactMethod}
             onChange={handleChange}
             onBlur={handleBlur}
-          />
+          >
+            <option value="email">Email</option>
+            <option value="phone">Phone</option>
+            <option value="text">Text</option>
+          </Select>
+          {getFieldError('preferredContactMethod') && (
+            <ErrorMessage>{getFieldError('preferredContactMethod')}</ErrorMessage>
+          )}
         </FieldGroup>
         
         <FieldGroup>
-          <Label htmlFor="notes">Additional Notes (Optional)</Label>
+          <Label htmlFor="isNewClient">New Client*</Label>
+          <Checkbox>
+            <input
+              type="checkbox"
+              id="isNewClient"
+              name="isNewClient"
+              checked={formData.isNewClient}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <Label htmlFor="isNewClient">I am a new client</Label>
+          </Checkbox>
+        </FieldGroup>
+        
+        <FieldGroup>
+          <Label htmlFor="additionalNotes">Additional Notes (Optional)</Label>
           <TextArea
-            id="notes"
-            name="notes"
-            value={formData.notes || ''}
+            id="additionalNotes"
+            name="additionalNotes"
+            value={formData.additionalNotes || ''}
             onChange={handleChange}
             onBlur={handleBlur}
           />
@@ -389,7 +486,7 @@ const CustomerInformation: React.FC = () => {
             type="checkbox"
             id="termsAccepted"
             name="termsAccepted"
-            checked={formData.termsAccepted}
+            checked={termsAccepted}
             onChange={handleChange}
           />
           <Label htmlFor="termsAccepted">

@@ -1,135 +1,140 @@
 import * as React from 'react';
+import { SEO } from '../../components/common';
 import { 
   Hero, 
   Services, 
-  Testimonials, 
+  TestimonialsSection, 
   Team, 
   Contact 
-} from '../design-system/components/feature-sections';
+} from '../../design-system/components/feature-sections';
 import { 
-  FlowerOfLife, 
-  OliveBranch, 
-  VesicaPiscis 
-} from '../design-system/botanical';
+  SecurityShield, 
+  ComplianceBadge, 
+  AssetRecovery 
+} from '../../design-system/components/utility/FinancialIcons';
 import { 
   Box, 
   Container, 
   GoldenSection 
-} from '../design-system/components/layout';
+} from '../../design-system/components/layout';
 import { 
   Section, 
   SectionTitle, 
   SectionContent 
-} from '../design-system/components/layout/Section';
-import { Text, Paragraph } from '../design-system/components/typography';
+} from '../../design-system/components/layout/Section';
+import { Text, Paragraph } from '../../design-system/components/typography';
 import { 
   FadeIn, 
   ScaleFade, 
   SlideIn, 
   ScrollReveal 
 } from '../../animation';
-import { PHI, PHI_INVERSE } from '../constants/sacred-geometry';
+import { PHI, PHI_INVERSE } from '../../constants/sacred-geometry';
+import { 
+  ServiceItem,
+  TestimonialItem,
+  TeamMember
+} from '../../types/feature-sections.types';
 
 /**
  * Home Page Component
  * 
  * This component represents the main landing page of the Recovery Office website.
- * It uses sacred geometry principles throughout its layout and animations.
  */
 const Home: React.FC = () => {
   // Sample data for feature sections 
-  const services = [
+  const services: ServiceItem[] = [
     {
       id: 'recovery-consultation',
       title: 'Recovery Consultation',
-      description: 'Personalized assessment and recovery planning based on sacred geometry principles.',
+      description: 'Personalized assessment and recovery planning for your financial assets.',
       icon: 'consultation',
-      path: '/services/recovery-consultation',
+      url: '/services/recovery-consultation',
       accentColor: '#4a6eb3'
     },
     {
-      id: 'therapeutic-sessions',
-      title: 'Therapeutic Sessions',
-      description: 'Guided sessions using golden ratio principles to restore harmony and balance.',
+      id: 'investment-fraud',
+      title: 'Investment Fraud Recovery',
+      description: 'Specialized recovery services for victims of investment fraud and scams.',
       icon: 'therapy',
-      path: '/services/therapeutic-sessions',
+      url: '/services/investment-fraud',
       accentColor: '#63a98c'
     },
     {
-      id: 'botanical-therapy',
-      title: 'Botanical Therapy',
-      description: 'Nature-based therapeutic approaches harnessing the healing power of plants.',
+      id: 'crypto-recovery',
+      title: 'Cryptocurrency Recovery',
+      description: 'Expert assistance in recovering lost or stolen cryptocurrency assets.',
       icon: 'botanical',
-      path: '/services/botanical-therapy',
+      url: '/services/crypto-recovery',
       accentColor: '#86b378'
     },
     {
-      id: 'sacred-education',
-      title: 'Sacred Education',
-      description: 'Learn how to apply sacred geometry principles in your daily life for improved wellbeing.',
+      id: 'regulatory-assistance',
+      title: 'Regulatory Assistance',
+      description: 'Navigate complex regulatory procedures to maximize your recovery potential.',
       icon: 'education',
-      path: '/services/sacred-education',
+      url: '/services/regulatory-assistance',
       accentColor: '#d4a76a'
     }
   ];
 
-  const testimonials = [
+  const testimonials: TestimonialItem[] = [
     {
       id: 't1',
-      content: 'The Recovery Office\'s approach to healing through sacred geometry principles has transformed my recovery journey. I\'ve experienced improvements I never thought possible.',
+      content: 'The Recovery Office\'s approach to recovering my lost investments has been transformative. Their regulated process gave me confidence and they recovered funds I thought were lost forever.',
       author: 'Sarah M.',
-      authorRole: 'Recovery Client',
+      authorRole: 'Investment Fraud Client',
       rating: 5,
       accentColor: '#4a6eb3'
     },
     {
       id: 't2',
-      content: 'As a healthcare professional, I was skeptical at first. But after experiencing their therapeutic approach firsthand, I now recommend The Recovery Office to my own patients.',
-      author: 'Dr. James Wilson',
-      authorRole: 'Medical Doctor',
+      content: 'As a financial advisor, I was skeptical at first. But after seeing their recovery process firsthand, I now recommend Recovery Office to my own clients who have experienced fraud.',
+      author: 'James Wilson',
+      authorRole: 'Financial Advisor',
       rating: 5,
       accentColor: '#63a98c'
     },
     {
       id: 't3',
-      content: 'The botanical therapy sessions helped me reconnect with nature in a profound way. My stress levels have decreased significantly since starting treatment.',
+      content: 'After losing significant crypto assets to a scam, the Recovery Office team provided expert guidance through the complex recovery process. They helped me recover a substantial portion of my investment.',
       author: 'Michael T.',
-      authorRole: 'Stress Management Client',
+      authorRole: 'Cryptocurrency Client',
       rating: 5,
       accentColor: '#86b378'
     }
   ];
 
-  const teamMembers = [
+  const teamMembers: TeamMember[] = [
     {
       id: 'tm1',
       name: 'Dr. Elizabeth Harper',
-      role: 'Therapeutic Director',
+      role: 'Recovery Director',
       photoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80',
-      bio: 'With over 15 years of experience in therapeutic care, Dr. Harper specializes in integrating sacred geometry principles into modern recovery approaches.',
-      specialties: ['Recovery Consultation', 'Therapeutic Planning', 'Sacred Geometry Application'],
+      bio: 'With over 15 years of experience in financial recovery, Dr. Harper specializes in complex investment fraud cases and regulatory compliance.',
+      specialties: ['Recovery Consultation', 'Investment Fraud', 'Regulatory Compliance'],
       accentColor: '#4a6eb3',
-      credentials: 'Ph.D. in Therapeutic Sciences'
+      credentials: ['Ph.D. in Financial Law']
     },
     {
       id: 'tm2',
       name: 'Jonathan Rivers',
-      role: 'Botanical Specialist',
+      role: 'Cryptocurrency Specialist',
       photoUrl: 'https://images.unsplash.com/photo-1556157382-97eda2f9e946?auto=format&fit=crop&w=600&q=80',
-      bio: 'Jonathan brings together his expertise in botany and sacred patterns to create customized botanical therapy programs for clients seeking natural recovery paths.',
-      specialties: ['Botanical Therapy', 'Natural Remedies', 'Plant-Based Recovery'],
+      bio: 'Jonathan brings together his expertise in blockchain technology and financial regulations to create customized recovery solutions for cryptocurrency-related cases.',
+      specialties: ['Cryptocurrency Recovery', 'Blockchain Analysis', 'Digital Asset Protection'],
       accentColor: '#86b378',
-      credentials: 'M.S. in Botanical Sciences'
+      credentials: ['M.S. in Computer Science']
     },
     {
       id: 'tm3',
       name: 'Maya Chen',
-      role: 'Therapeutic Educator',
+      role: 'Client Education Specialist',
       photoUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80',
-      bio: 'Maya specializes in teaching clients how to apply sacred geometry principles in their daily lives for continued wellness and recovery maintenance.',
-      specialties: ['Sacred Education', 'Wellness Programs', 'Client Empowerment'],
+      bio: 'Maya specializes in educating clients about protecting their financial assets and navigating the recovery process with confidence.',
+      specialties: ['Financial Education', 'Fraud Prevention', 'Client Empowerment'],
       accentColor: '#d4a76a',
-      credentials: 'Certified Therapeutic Educator'
+      credentials: ['Certified Financial Educator']
     }
   ];
 
@@ -138,10 +143,16 @@ const Home: React.FC = () => {
 
   return (
     <Box as="main">
+      <SEO 
+        title="Home"
+        description="Recovery Office provides premium financial recovery services backed by regulatory compliance and expert specialists."
+        canonical="https://recoveryoffice.com"
+      />
+      
       {/* Hero Section */}
       <Hero
-        heading="Discover Holistic Healing"
-        subheading="Recovery Office provides therapeutic solutions guided by sacred geometry and natural harmony"
+        heading="Financial Asset Recovery Experts"
+        subheading="Recovery Office provides regulated premium services for individuals and businesses who have lost financial assets"
         background={{
           image: heroBackgroundUrl,
           overlay: 'rgba(21, 45, 85, 0.7)'
@@ -149,12 +160,6 @@ const Home: React.FC = () => {
         align="center"
         minHeight="85vh"
         animated={true}
-        botanical={{
-          type: 'flowerOfLife',
-          position: 'bottomRight',
-          opacity: 0.15,
-          animated: true
-        }}
         buttons={[
           {
             label: 'Book a Consultation',
@@ -169,8 +174,8 @@ const Home: React.FC = () => {
         ]}
       >
         <Text variant="body1" style={{ maxWidth: `${PHI * 400}px`, margin: '0 auto', color: 'white' }}>
-          Our approach integrates ancient wisdom with modern therapeutic techniques, 
-          creating harmony and balance in both physical and mental well-being.
+          Our approach integrates regulatory expertise with advanced recovery techniques, 
+          maximizing your chances of recovering lost or stolen financial assets.
         </Text>
       </Hero>
 
@@ -180,20 +185,21 @@ const Home: React.FC = () => {
           <Container>
             <SectionTitle 
               title="Our Services" 
-              subtitle="Therapeutic approaches based on sacred geometry"
-              decoratorBefore={<FlowerOfLife size="sm" opacity={0.15} />}
-              decoratorAfter={<FlowerOfLife size="sm" opacity={0.15} />}
+              subtitle="Specialized financial recovery solutions"
+              decoratorBefore={<SecurityShield size="sm" opacity={0.15} />}
+              decoratorAfter={<SecurityShield size="sm" opacity={0.15} />}
             />
             <SectionContent>
               <Services 
+                title="Our Services"
+                subtitle="Comprehensive recovery services that combine regulatory expertise with advanced techniques"
                 services={services}
                 displayStyle="grid"
-                columns={2}
+                columns={3}
                 animated={true}
-                botanical={true}
                 cta={{
                   label: "View All Services",
-                  path: "/services"
+                  url: "/services"
                 }}
               />
             </SectionContent>
@@ -214,38 +220,35 @@ const Home: React.FC = () => {
                     left={`${PHI_INVERSE * 100}%`} 
                     transform="translate(-50%, -50%)"
                   >
-                    <FlowerOfLife 
-                      size="xl" 
-                      primaryColor="#4a6eb3"
-                      secondaryColor="rgba(0,0,0,0)"
+                    <SecurityShield 
+                      size="lg"
                       opacity={0.8}
-                      animated
                     />
                   </Box>
                 </Box>
               }
             >
               <SectionTitle 
-                title="Our Sacred Approach" 
-                subtitle="Healing guided by golden ratio principles"
+                title="Our Regulated Approach" 
+                subtitle="Recovery backed by regulatory compliance"
                 size="medium"
                 align="left"
-                decoratorBefore={<OliveBranch size="sm" opacity={0.5} />}
+                decoratorBefore={<ComplianceBadge size="sm" opacity={0.5} />}
               />
               <Box mt={4}>
                 <Paragraph variant="body1">
-                  Using principles derived from the golden ratio (Φ ≈ 1.618) and Fibonacci sequence,
-                  we create therapeutic environments and treatments that resonate with the natural
-                  patterns found throughout the universe and within our own bodies.
+                  Using principles derived from financial regulations and industry best practices,
+                  we create comprehensive recovery strategies that maximize your chances of recovering
+                  lost assets while ensuring full compliance with applicable laws.
                 </Paragraph>
                 <Paragraph variant="body1">
-                  This approach creates harmony between mind, body, and spirit, facilitating
-                  a more complete and balanced recovery journey. Our methods have been refined
-                  through years of practical application and research.
+                  Our approach creates a systematic pathway to recovery, offering clarity and transparency
+                  throughout the process. Our methods have been refined through years of successful
+                  case resolutions and regulatory adaptation.
                 </Paragraph>
                 <Box mt={4} display="flex" alignItems="center">
-                  <OliveBranch width={24} height={24} opacity={0.7} style={{ marginRight: '8px' }} />
-                  <Text variant="subtitle2">Harmony in every aspect of recovery</Text>
+                  <ComplianceBadge size="sm" opacity={0.7} style={{ marginRight: '8px' }} />
+                  <Text variant="subtitle2">Regulated expertise in every aspect of recovery</Text>
                 </Box>
               </Box>
             </GoldenSection>
@@ -260,15 +263,16 @@ const Home: React.FC = () => {
             <SectionTitle 
               title="Client Experiences" 
               subtitle="Discover how our approach has helped others"
-              decoratorBefore={<VesicaPiscis size="sm" opacity={0.2} />}
-              decoratorAfter={<VesicaPiscis size="sm" opacity={0.2} />}
+              decoratorBefore={<AssetRecovery size="sm" opacity={0.2} />}
+              decoratorAfter={<AssetRecovery size="sm" opacity={0.2} />}
             />
             <SectionContent>
-              <Testimonials
+              <TestimonialsSection
+                title="Client Experiences"
+                subtitle="Discover how our approach has helped others"
                 testimonials={testimonials}
                 displayStyle="grid"
                 animated={true}
-                botanical={true}
               />
             </SectionContent>
           </Container>
@@ -281,20 +285,21 @@ const Home: React.FC = () => {
           <Container>
             <SectionTitle 
               title="Our Team" 
-              subtitle="Specialists in sacred geometry therapeutic approaches"
-              decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
-              decoratorAfter={<OliveBranch size="sm" opacity={0.3} mirror />}
+              subtitle="Specialists in financial recovery and regulatory compliance"
+              decoratorBefore={<ComplianceBadge size="sm" opacity={0.3} />}
+              decoratorAfter={<ComplianceBadge size="sm" opacity={0.3} />}
             />
             <SectionContent>
               <Team
+                title="Our Expert Team"
+                subtitle="Meet our experienced specialists committed to your financial recovery"
                 members={teamMembers}
                 displayStyle="grid"
                 columns={3}
                 animated={true}
-                botanical={true}
                 cta={{
-                  label: "View Full Team",
-                  path: "/about#team"
+                  label: "Meet The Team",
+                  url: "/about#team"
                 }}
               />
             </SectionContent>
@@ -314,20 +319,12 @@ const Home: React.FC = () => {
         >
           <Container>
             <Contact
-              title="Begin Your Recovery Journey"
+              title="Begin Your Recovery Process"
               subtitle="Schedule a consultation with our specialists"
-              buttonText="Book a Consultation"
-              buttonLink="/booking"
-              secondaryButtonText="Contact Us"
-              secondaryButtonLink="/contact"
-              showContactInfo={true}
+              submitText="Book a Consultation"
+              formAction="/booking"
+              className="contact-form-section"
               animated={true}
-              botanical={{
-                type: 'flowerOfLife',
-                position: 'bottomRight',
-                opacity: 0.1,
-                animated: true
-              }}
             />
           </Container>
         </Section>

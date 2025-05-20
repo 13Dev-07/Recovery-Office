@@ -12,6 +12,8 @@
  */
 
 import * as React from 'react';
+import { forwardRef } from 'react';
+import { PHI } from '../../constants/sacred-geometry';
 import BotanicalElement, { BotanicalElementProps } from './BotanicalElement';
 
 
@@ -188,7 +190,7 @@ const calculateVesicaPiscis = (
  * 
  * Creates the Vesica Piscis sacred geometry pattern
  */
-export const VesicaPiscis = React.forwardRef<SVGSVGElement, VesicaPiscisProps>(
+export const VesicaPiscis = forwardRef<SVGSVGElement, VesicaPiscisProps>(
   ({ 
     radius = 30,
     showCircles = true,

@@ -1,22 +1,17 @@
 /**
  * Footer Components
  * 
- * Export all footer components for easy imports.
- * Each component is built with sacred geometry principles
- * for consistent proportions and spacing.
+ * Export all footer-related components and their types.
+ * These components provide the main footer structure for the application,
+ * following sacred geometry principles for spacing and proportions.
  */
 
-// Component exports
 export { default as Footer } from './Footer';
-export { default as FooterLinks } from './FooterLinks';
-export { default as FooterSocial } from './FooterSocial';
-export { default as FooterNewsletter } from './FooterNewsletter';
-
-// Type exports
 export type { FooterProps } from './Footer';
-export type { FooterLinksProps, FooterLink } from './FooterLinks';
-export type { FooterSocialProps, SocialLink } from './FooterSocial';
-export type { FooterNewsletterProps } from './FooterNewsletter'; 
+
+export { default as FooterLinks } from './FooterLinks';
+export { default as FooterNewsletter } from './FooterNewsletter';
+export { default as FooterSocial } from './FooterSocial'; 
 
 
 

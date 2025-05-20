@@ -13,7 +13,6 @@ import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import FocusLock from 'react-focus-lock';
 import { RemoveScroll } from 'react-remove-scroll';
-import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
 import { 
   PHI, 
   PHI_INVERSE, 
@@ -21,7 +20,8 @@ import {
   SACRED_SPACING, 
   SACRED_RADIUS,
   SACRED_EASINGS,
-  ANIMATION_TIMING
+  ANIMATION_TIMING,
+  getFibonacciByIndex
 } from '../../../constants/sacred-geometry';
 import { Box } from '../layout/Box';
 import { Portal } from '../utility/Portal';
@@ -142,7 +142,7 @@ const getPositionStyles = (position: ModalPosition) => {
 };
 
 // Styled components for modal
-const ModalOverlay = styled(motion.div)`
+const ModalOverlay = styled(motion.div)<{ $position: ModalPosition }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -152,7 +152,7 @@ const ModalOverlay = styled(motion.div)`
   display: flex;
   z-index: 1000;
   
-  ${props => getPositionStyles(props.position)};
+  ${props => getPositionStyles(props.$position)};
 `;
 
 const ModalContent = styled(motion.div)<{ size: ModalSize }>`
@@ -237,15 +237,15 @@ const overlayVariants = {
   visible: { 
     opacity: 1,
     transition: { 
-      duration: ANIMATION_TIMING.standard / 1000,
-      ease: SACRED_EASINGS.easeOutSine
+      duration: ANIMATION_TIMING.standard,
+      ease: SACRED_EASINGS.standard
     }
   },
   exit: { 
     opacity: 0,
     transition: { 
-      duration: ANIMATION_TIMING.short / 1000,
-      ease: SACRED_EASINGS.easeInSine
+      duration: ANIMATION_TIMING.quick,
+      ease: SACRED_EASINGS.standard
     }
   }
 };
@@ -261,8 +261,8 @@ const contentVariants = {
     y: 0,
     scale: 1,
     transition: { 
-      duration: ANIMATION_TIMING.standard / 1000,
-      ease: SACRED_EASINGS.easeOutQuint
+      duration: ANIMATION_TIMING.standard,
+      ease: SACRED_EASINGS.goldenDecelerate
     }
   },
   exit: { 
@@ -270,8 +270,8 @@ const contentVariants = {
     y: getFibonacciByIndex(5) * -1,
     scale: PHI_INVERSE,
     transition: { 
-      duration: ANIMATION_TIMING.short / 1000,
-      ease: SACRED_EASINGS.easeInSine
+      duration: ANIMATION_TIMING.quick,
+      ease: SACRED_EASINGS.standard
     }
   }
 };
@@ -377,14 +377,13 @@ export const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
             <RemoveScroll enabled={blockScrollOnMount && isOpen}>
               <FocusLock disabled={!trapFocus} returnFocus>
                 <ModalOverlay
+                  $position={position}
+                  onClick={handleOverlayClick}
+                  variants={overlayVariants}
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  variants={overlayVariants}
-                  onClick={handleOverlayClick}
                   className={className}
-                  position={position}
-                  {...rest}
                 >
                   <ModalContent
                     ref={ref}

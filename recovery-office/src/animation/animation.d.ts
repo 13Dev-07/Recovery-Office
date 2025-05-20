@@ -5,8 +5,231 @@
  * in the Recovery Office design system.
  */
 
-import { BoxProps, AsProps } from '@design-system/types';
-import { SACRED_EASINGS } from '@constants/sacred-geometry';
+import { BoxProps, AsProps } from '../design-system/types';
+import { SACRED_EASINGS } from '../constants/sacred-geometry';
+import { ReactNode, CSSProperties } from 'react';
+import { SacredGeometryConfig } from '../types/general.types';
+
+/**
+ * Animation Type Definitions
+ * 
+ * This file contains TypeScript interfaces and types for the animation system,
+ * incorporating sacred geometry principles into motion and transitions.
+ */
+
+/**
+ * Base animation props
+ */
+export interface AnimationProps {
+  /** Whether the animation is enabled */
+  isEnabled?: boolean;
+  
+  /** Animation duration in milliseconds */
+  duration?: number;
+  
+  /** Animation delay in milliseconds */
+  delay?: number;
+  
+  /** Animation easing function */
+  easing?: 'standard' | 'easeIn' | 'easeOut' | 'botanical';
+  
+  /** Whether to use golden ratio timing */
+  useGoldenRatio?: boolean;
+  
+  /** Whether to use Fibonacci sequence for timing */
+  useFibonacciTiming?: boolean;
+  
+  /** Children elements to animate */
+  children: ReactNode;
+  
+  /** Callback when animation starts */
+  onStart?: () => void;
+  
+  /** Callback when animation completes */
+  onComplete?: () => void;
+}
+
+/**
+ * Fade animation props
+ */
+export interface FadeProps extends AnimationProps {
+  /** Initial opacity */
+  initialOpacity?: number;
+  
+  /** Final opacity */
+  finalOpacity?: number;
+}
+
+/**
+ * Slide animation props
+ */
+export interface SlideProps extends AnimationProps {
+  /** Direction to slide from */
+  direction?: 'up' | 'down' | 'left' | 'right';
+  
+  /** Distance to slide (px or % values) */
+  distance?: string | number;
+}
+
+/**
+ * Scale animation props
+ */
+export interface ScaleProps extends AnimationProps {
+  /** Initial scale value */
+  initialScale?: number;
+  
+  /** Final scale value */
+  finalScale?: number;
+  
+  /** Origin point for scaling transformation */
+  origin?: string;
+}
+
+/**
+ * Rotate animation props
+ */
+export interface RotateProps extends AnimationProps {
+  /** Rotation amount in degrees */
+  degrees?: number;
+  
+  /** Origin point for rotation transformation */
+  origin?: string;
+}
+
+/**
+ * Golden spiral animation props
+ */
+export interface GoldenSpiralProps extends AnimationProps {
+  /** Number of rotations */
+  rotations?: number;
+  
+  /** Whether to animate in or out */
+  direction?: 'in' | 'out';
+  
+  /** Scale amount */
+  scale?: number;
+}
+
+/**
+ * Stagger animation props
+ */
+export interface StaggerProps extends AnimationProps {
+  /** Stagger delay between children */
+  staggerDelay?: number;
+  
+  /** Whether to use Fibonacci sequence for stagger timing */
+  useFibonacciStagger?: boolean;
+}
+
+/**
+ * Scroll animation props
+ */
+export interface ScrollAnimationProps extends AnimationProps {
+  /** Threshold for triggering animation (0-1) */
+  threshold?: number;
+  
+  /** Whether to reset animation when scrolling out of view */
+  reset?: boolean;
+  
+  /** Root margin for intersection observer */
+  rootMargin?: string;
+}
+
+/**
+ * Animation trigger options
+ */
+export type AnimationTrigger = 'onMount' | 'onScroll' | 'onHover' | 'onClick' | 'manual';
+
+/**
+ * Animation sequence step
+ */
+export interface AnimationStep {
+  /** Animation type */
+  type: 'fade' | 'slide' | 'scale' | 'rotate' | 'goldenSpiral';
+  
+  /** Animation properties */
+  props: Partial<AnimationProps>;
+  
+  /** Animation duration */
+  duration: number;
+  
+  /** Animation delay */
+  delay?: number;
+}
+
+/**
+ * Animation sequence props
+ */
+export interface AnimationSequenceProps {
+  /** Animation steps to perform in sequence */
+  steps: AnimationStep[];
+  
+  /** Whether the sequence is enabled */
+  isEnabled?: boolean;
+  
+  /** Whether to loop the sequence */
+  loop?: boolean;
+  
+  /** How many times to loop (if loop is true) */
+  loopCount?: number;
+  
+  /** Whether to alternate direction on loop */
+  yoyo?: boolean;
+  
+  /** Callback when sequence completes */
+  onComplete?: () => void;
+  
+  /** Children to animate */
+  children: ReactNode;
+}
+
+/**
+ * Sacred geometry animation configuration
+ */
+export interface SacredAnimationConfig extends SacredGeometryConfig {
+  /** Whether to use Fibonacci sequence for timing */
+  useFibonacciTiming: boolean;
+  
+  /** Whether to use golden ratio for animation properties */
+  useGoldenRatio: boolean;
+  
+  /** Whether to use sacred easing functions */
+  useSacredEasing: boolean;
+}
+
+/**
+ * Animation provider context
+ */
+export interface AnimationContextProps {
+  /** Global animation configuration */
+  config: SacredAnimationConfig;
+  
+  /** Whether animations are globally enabled */
+  animationsEnabled: boolean;
+  
+  /** Whether to use reduced motion (for accessibility) */
+  reducedMotion: boolean;
+  
+  /** Set global animation configuration */
+  setConfig: (config: Partial<SacredAnimationConfig>) => void;
+  
+  /** Enable/disable animations globally */
+  setAnimationsEnabled: (enabled: boolean) => void;
+}
+
+/**
+ * Animation keyframes
+ */
+export type KeyframeObject = Record<string, CSSProperties>;
+
+/**
+ * Animation variants for framer-motion
+ */
+export interface AnimationVariants {
+  initial: CSSProperties;
+  animate: CSSProperties;
+  exit?: CSSProperties;
+}
 
 /**
  * FadeIn component props

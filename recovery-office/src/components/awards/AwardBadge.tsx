@@ -6,14 +6,15 @@
  */
 
 import * as React from 'react';
-import styled, { css, keyframes } from 'styled-components';
-import { Text } from '@design-system/components/typography/Text';
+import styled, { css, keyframes, DefaultTheme } from 'styled-components';
+import { Text } from '../../design-system/components/typography/Text';
 import { 
   PHI, 
   SACRED_SPACING 
-} from '@constants/sacred-geometry';
-import { getFibonacciByIndex } from "@utils/getFibonacciByIndex";
-import { BotanicalElement } from '@design-system/botanical/BotanicalElement';
+} from '../../constants/sacred-geometry';
+import { getFibonacciByIndex } from "../../utils/getFibonacciByIndex";
+import { BotanicalElement } from '../../design-system/components/botanical/BotanicalElement';
+import { ReactNode } from 'react';
 
 // Award badge shapes
 export type AwardBadgeShape = 'circle' | 'shield' | 'star' | 'ribbon' | 'laurel' | 'medal';
@@ -143,7 +144,7 @@ const pulse = keyframes`
     box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4);
   }
   70% {
-    box-shadow: 0 0 0 ${() => getFibonacciByIndex(6)}px rgba(255, 215, 0, 0);
+    box-shadow: 0 0 0 ${getFibonacciByIndex(6)}px rgba(255, 215, 0, 0);
   }
   100% {
     box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
@@ -152,12 +153,15 @@ const pulse = keyframes`
 
 const shine = keyframes`
   0% {
-    background-position: -${() => getFibonacciByIndex(9)}px;
+    background-position: -${getFibonacciByIndex(9)}px;
   }
   40%, 100% {
-    background-position: ${() => getFibonacciByIndex(10)}px;
+    background-position: ${getFibonacciByIndex(10)}px;
   }
 `;
+
+// Make sure Typescript is aware of the custom props
+type StyledProps<P> = P & { theme?: DefaultTheme };
 
 // Styled components for the badge
 const BadgeContainer = styled.div<{
@@ -168,7 +172,7 @@ const BadgeContainer = styled.div<{
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  transition: transform ${() => getFibonacciByIndex(5) * 10}ms ease;
+  transition: transform ${getFibonacciByIndex(5) * 10}ms ease;
   
   &:hover {
     transform: scale(${1 + (1 / PHI) * 0.1});
@@ -187,16 +191,16 @@ const BadgeWrapper = styled.div<BadgeWrapperProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${props => sizeMap[props.$size].badge()}px;
-  height: ${props => sizeMap[props.$size].badge()}px;
-  background: ${props => props.$customColor || variantColorMap[props.$variant].primary};
-  color: ${props => variantColorMap[props.$variant].text};
+  width: ${(props: StyledProps<BadgeWrapperProps>) => sizeMap[props.$size].badge()}px;
+  height: ${(props: StyledProps<BadgeWrapperProps>) => sizeMap[props.$size].badge()}px;
+  background: ${(props: StyledProps<BadgeWrapperProps>) => props.$customColor || variantColorMap[props.$variant].primary};
+  color: ${(props: StyledProps<BadgeWrapperProps>) => variantColorMap[props.$variant].text};
   
-  ${props => props.$shape === 'circle' && css`
+  ${(props: StyledProps<BadgeWrapperProps>) => props.$shape === 'circle' && css`
     border-radius: 50%;
   `}
   
-  ${props => props.$shape === 'shield' && css`
+  ${(props: StyledProps<BadgeWrapperProps>) => props.$shape === 'shield' && css`
     clip-path: polygon(
       50% 0%, 
       100% 25%, 
@@ -207,7 +211,7 @@ const BadgeWrapper = styled.div<BadgeWrapperProps>`
     );
   `}
   
-  ${props => props.$shape === 'star' && css`
+  ${(props: StyledProps<BadgeWrapperProps>) => props.$shape === 'star' && css`
     clip-path: polygon(
       50% 0%, 
       61.8% 35.4%, 
@@ -222,7 +226,7 @@ const BadgeWrapper = styled.div<BadgeWrapperProps>`
     );
   `}
   
-  ${props => props.$shape === 'ribbon' && css`
+  ${(props: StyledProps<BadgeWrapperProps>) => props.$shape === 'ribbon' && css`
     clip-path: polygon(
       0% 0%, 
       100% 0%, 
@@ -232,50 +236,50 @@ const BadgeWrapper = styled.div<BadgeWrapperProps>`
     );
   `}
   
-  ${props => props.$shape === 'medal' && css`
+  ${(props: StyledProps<BadgeWrapperProps>) => props.$shape === 'medal' && css`
     border-radius: 50%;
-    border: ${() => getFibonacciByIndex(3)}px solid ${props => variantColorMap[props.$variant].secondary};
+    border: ${getFibonacciByIndex(3)}px solid ${(props: StyledProps<BadgeWrapperProps>) => variantColorMap[props.$variant].secondary};
   `}
   
-  ${props => props.$shape === 'laurel' && css`
+  ${(props: StyledProps<BadgeWrapperProps>) => props.$shape === 'laurel' && css`
     border-radius: 50%;
     &::before, &::after {
       content: '';
       position: absolute;
-      width: ${props => sizeMap[props.$size].badge() * 0.8}px;
-      height: ${props => sizeMap[props.$size].badge() * 0.8}px;
-      border: ${() => getFibonacciByIndex(2)}px solid ${props => variantColorMap[props.$variant].secondary};
+      width: ${(props: StyledProps<BadgeWrapperProps>) => sizeMap[props.$size].badge() * 0.8}px;
+      height: ${(props: StyledProps<BadgeWrapperProps>) => sizeMap[props.$size].badge() * 0.8}px;
+      border: ${getFibonacciByIndex(2)}px solid ${(props: StyledProps<BadgeWrapperProps>) => variantColorMap[props.$variant].secondary};
       border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
     }
     &::before {
-      left: -${() => getFibonacciByIndex(5)}px;
+      left: -${getFibonacciByIndex(5)}px;
       clip-path: polygon(100% 0%, 100% 100%, 50% 100%, 50% 0%);
     }
     &::after {
-      right: -${() => getFibonacciByIndex(5)}px;
+      right: -${getFibonacciByIndex(5)}px;
       clip-path: polygon(0% 0%, 0% 100%, 50% 100%, 50% 0%);
     }
   `}
   
-  ${props => props.$animated && css`
-    animation: ${pulse} ${() => getFibonacciByIndex(8) * 100}ms infinite;
+  ${(props: StyledProps<BadgeWrapperProps>) => props.$animated && css`
+    animation: ${pulse} ${getFibonacciByIndex(8) * 100}ms infinite;
     background: linear-gradient(
       90deg, 
       ${props.$customColor || variantColorMap[props.$variant].primary} 0%, 
-      ${props => variantColorMap[props.$variant].secondary} 50%,
+      ${(props: StyledProps<BadgeWrapperProps>) => variantColorMap[props.$variant].secondary} 50%,
       ${props.$customColor || variantColorMap[props.$variant].primary} 100%
     );
-    background-size: ${() => getFibonacciByIndex(10)}px;
-    animation: ${shine} ${() => getFibonacciByIndex(10) * 100}ms infinite linear;
+    background-size: ${getFibonacciByIndex(10)}px;
+    animation: ${shine} ${getFibonacciByIndex(10) * 100}ms infinite linear;
   `}
   
-  box-shadow: 0 ${() => getFibonacciByIndex(3)}px ${() => getFibonacciByIndex(5)}px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 ${getFibonacciByIndex(3)}px ${getFibonacciByIndex(5)}px rgba(0, 0, 0, 0.2);
 `;
 
 const IconWrapper = styled.div<{
   $size: AwardBadgeSize;
 }>`
-  font-size: ${props => sizeMap[props.$size].icon()}px;
+  font-size: ${(props: StyledProps<{$size: AwardBadgeSize}>) => sizeMap[props.$size].icon()}px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -284,13 +288,13 @@ const IconWrapper = styled.div<{
 const BadgeInfo = styled.div`
   margin-top: ${SACRED_SPACING.sm}px;
   text-align: center;
-  max-width: ${() => getFibonacciByIndex(9)}px;
+  max-width: ${getFibonacciByIndex(9)}px;
 `;
 
 const BadgeTitle = styled(Text)<{
   $size: AwardBadgeSize;
 }>`
-  font-size: ${props => sizeMap[props.$size].title()}px;
+  font-size: ${(props: StyledProps<{$size: AwardBadgeSize}>) => sizeMap[props.$size].title()}px;
   font-weight: 600;
   margin-bottom: ${SACRED_SPACING.xs}px;
   line-height: ${1 * PHI};
@@ -299,7 +303,7 @@ const BadgeTitle = styled(Text)<{
 const BadgeDetails = styled(Text)<{
   $size: AwardBadgeSize;
 }>`
-  font-size: ${props => sizeMap[props.$size].info()}px;
+  font-size: ${(props: StyledProps<{$size: AwardBadgeSize}>) => sizeMap[props.$size].info()}px;
   color: #666;
   line-height: ${1 * PHI};
 `;
@@ -311,21 +315,32 @@ interface BotanicalDecorationProps {
 const BotanicalDecoration = styled.div<BotanicalDecorationProps>`
   position: absolute;
   opacity: 0.2;
-  color: ${props => variantColorMap[props.$variant].secondary};
+  color: ${(props: StyledProps<BotanicalDecorationProps>) => variantColorMap[props.$variant].secondary};
   pointer-events: none;
 `;
 
 const LeftBotanical = styled(BotanicalDecoration)`
-  left: -${() => getFibonacciByIndex(6)}px;
+  left: -${getFibonacciByIndex(6)}px;
   top: 50%;
   transform: translateY(-50%) rotate(-90deg);
 `;
 
 const RightBotanical = styled(BotanicalDecoration)`
-  right: -${() => getFibonacciByIndex(6)}px;
+  right: -${getFibonacciByIndex(6)}px;
   top: 50%;
   transform: translateY(-50%) rotate(90deg);
 `;
+
+// Define a mapping for leaf sizes
+const getBotanicalSize = (size: AwardBadgeSize): string => {
+  switch (size) {
+    case 'small': return 'sm';
+    case 'medium': return 'md';
+    case 'large': return 'lg';
+    case 'xlarge': return 'xl';
+    default: return 'md';
+  }
+};
 
 // AwardBadge component implementation
 const AwardBadge: React.FC<AwardBadgeProps> = ({
@@ -366,15 +381,29 @@ const AwardBadge: React.FC<AwardBadgeProps> = ({
           <>
             <LeftBotanical $variant={variant} $size={size}>
               <BotanicalElement 
-                type="leaf" 
-                size={size === 'small' ? 'sm' : size === 'medium' ? 'md' : size === 'large' ? 'lg' : 'xl'} 
-              />
+                width={sizeMap[size].badge() * 0.7}
+                height={sizeMap[size].badge() * 0.7}
+              >
+                <path 
+                  d="M10,90 Q30,40 50,90 Q70,40 90,90" 
+                  stroke="currentColor" 
+                  fill="none" 
+                  strokeWidth={2}
+                />
+              </BotanicalElement>
             </LeftBotanical>
             <RightBotanical $variant={variant} $size={size}>
               <BotanicalElement 
-                type="leaf" 
-                size={size === 'small' ? 'sm' : size === 'medium' ? 'md' : size === 'large' ? 'lg' : 'xl'} 
-              />
+                width={sizeMap[size].badge() * 0.7}
+                height={sizeMap[size].badge() * 0.7} 
+              >
+                <path 
+                  d="M10,90 Q30,40 50,90 Q70,40 90,90" 
+                  stroke="currentColor" 
+                  fill="none" 
+                  strokeWidth={2} 
+                />
+              </BotanicalElement>
             </RightBotanical>
           </>
         )}

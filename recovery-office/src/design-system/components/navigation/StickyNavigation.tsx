@@ -1,18 +1,15 @@
 // TODO: This file contains direct document access without SSR checks
 // TODO: This file contains direct window access without SSR checks
 import * as React from 'react';
-import { useState, useEffect } from 'react';;
-import { getFibonacciByIndex } from '../../../utils';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { getFibonacciByIndex } from '../../../utils';
 
 // Import sacred geometry constants
-
-import { getFibonacciByIndex } from '../../../utils';
+import { PHI_INVERSE } from '../../../constants/sacred-geometry';
+import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
 
 // Import components
 import NavBar, { NavBarItem, NavBarCTA, NavBarProps } from './NavBar';
-import { getFibonacciByIndex } from '../../../utils';
 
 // TypeScript interfaces
 export interface StickyNavigationProps extends Omit<NavBarProps, 'isTransparent'> {
@@ -88,6 +85,51 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({
     };
   }, [transparencyThreshold, showScrollProgress]);
   
+  // Generate progress indicator styles
+  const getProgressIndicatorStyle = (): React.CSSProperties => {
+    const baseStyle: React.CSSProperties = {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      height: `${scrollIndicatorThickness}px`,
+      width: `${scrollProgress * 100}%`,
+      backgroundColor: scrollIndicatorVariant === 'primary' ? '#3498db' : 
+                       scrollIndicatorVariant === 'secondary' ? '#2ecc71' : 
+                       '#f39c12', // Default to accent color
+      transition: `width 0.1s cubic-bezier(${PHI_INVERSE}, 0, ${1 - PHI_INVERSE}, 1)`
+    };
+
+    // Apply shape-specific styles
+    if (scrollIndicatorShape === 'circle') {
+      return {
+        ...baseStyle,
+        width: `${scrollIndicatorThickness * 2}px`,
+        height: `${scrollIndicatorThickness * 2}px`,
+        borderRadius: '50%',
+        left: `calc(${scrollProgress * 100}% - ${scrollIndicatorThickness}px)`,
+        bottom: `-${scrollIndicatorThickness}px`,
+        transition: `left 0.1s cubic-bezier(${PHI_INVERSE}, 0, ${1 - PHI_INVERSE}, 1)`
+      };
+    }
+
+    if (scrollIndicatorShape === 'fibonacci') {
+      return {
+        ...baseStyle,
+        backgroundImage: `linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0.1) ${getFibonacciByIndex(5)}px,
+          rgba(255, 255, 255, 0.2) ${getFibonacciByIndex(6)}px,
+          rgba(255, 255, 255, 0.1) ${getFibonacciByIndex(7)}px,
+          transparent ${getFibonacciByIndex(8)}px
+        )`,
+        backgroundSize: `${getFibonacciByIndex(9)}px 100%`,
+        backgroundRepeat: 'repeat-x',
+      };
+    }
+
+    return baseStyle;
+  };
+  
   return (
     <Container 
       className={className} 
@@ -104,11 +146,8 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({
       
       {/* Scroll progress indicator */}
       {showScrollProgress && (
-        <ScrollIndicator
-          $progress={scrollProgress}
-          $shape={scrollIndicatorShape}
-          $variant={scrollIndicatorVariant}
-          $thickness={scrollIndicatorThickness}
+        <div
+          style={getProgressIndicatorStyle()}
           role="progressbar"
           aria-valuenow={scrollProgress * 100}
           aria-valuemin={0}
@@ -144,63 +183,6 @@ const Container = styled.div<ContainerProps>`
       transform: scale(${1 - (PHI_INVERSE * 0.05)});
     ` : ''
   }
-`;
-
-interface ScrollIndicatorProps {
-  $progress: number;
-  $shape: string;
-  $variant: string;
-  $thickness: number;
-}
-
-const ScrollIndicator = styled.div<ScrollIndicatorProps>`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: ${({ $thickness }) => `${$thickness}px`};
-  width: ${({ $progress }) => `${$progress * 100}%`};
-  
-  /* Color based on variant */
-  background-color: ${({ theme, $variant }) => 
-    $variant === 'primary' ? theme.colors.primary :
-    $variant === 'secondary' ? theme.colors.secondary :
-    theme.colors.accent
-  };
-  
-  /* Shape-specific styles */
-  ${({ $shape, $progress, $thickness }) => {
-    switch ($shape) {
-      case 'fibonacci':
-        // Create a fibonacci-based gradient
-        return `
-          background-image: linear-gradient(
-            to right,
-            rgba(255, 255, 255, 0.1) ${getFibonacciByIndex(5)}px,
-            rgba(255, 255, 255, 0.2) ${getFibonacciByIndex(6)}px,
-            rgba(255, 255, 255, 0.1) ${getFibonacciByIndex(7)}px,
-            transparent ${getFibonacciByIndex(8)}px
-          );
-          background-size: ${getFibonacciByIndex(9)}px 100%;
-          background-repeat: repeat-x;
-          transition: width 0.1s linear;
-        `;
-      case 'circle':
-        // Use a circle that moves along the bottom
-        return `
-          width: ${$thickness * 2}px;
-          height: ${$thickness * 2}px;
-          border-radius: 50%;
-          left: calc(${$progress * 100}% - ${$thickness}px);
-          bottom: ${-$thickness}px;
-          transition: left 0.1s cubic-bezier(${PHI_INVERSE}, 0, ${1 - PHI_INVERSE}, 1);
-        `;
-      case 'line':
-      default:
-        return `
-          transition: width 0.1s cubic-bezier(${PHI_INVERSE}, 0, ${1 - PHI_INVERSE}, 1);
-        `;
-    }
-  }}
 `;
 
 export default StickyNavigation; 

@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { Hero } from '../design-system/components/feature-sections';
-import { FlowerOfLife, OliveBranch, VesicaPiscis } from '../design-system/botanical';
-import { Box, Container } from '../design-system/components/layout';
-import { Section, SectionTitle } from '../design-system/components/layout/Section';
-import { Text, Paragraph, Heading } from '../design-system/components/typography';
-import { Button } from '../design-system/components/button';
-import { Card } from '../design-system/components/data-display';
-import { ScrollReveal } from '../design-system/components/animation';
-import { PHI } from '../constants/sacred-geometry';
+import { Hero } from '../../design-system/components/feature-sections';
+import { SecurityShield, ComplianceBadge, AssetRecovery } from '../../design-system/components/utility/FinancialIcons';
+import { Box, Container } from '../../design-system/components/layout';
+import { Section, SectionTitle } from '../../design-system/components/layout/Section';
+import { Text, Paragraph, Heading } from '../../design-system/components/typography';
+import { Button } from '../../design-system/components/button';
+import { Card } from '../../design-system/components/data-display';
+import { ScrollReveal } from '../../animation';
+import { PHI } from '../../constants/sacred-geometry';
 
 /**
  * HIPAA Compliance Page Component
@@ -26,7 +26,7 @@ const HIPAAPage: React.FC = () => {
       {/* Hero Section */}
       <Hero
         heading="HIPAA Compliance"
-        subheading="Our commitment to protecting your health information"
+        subheading="Our commitment to protecting your personal information"
         background={{
           image: heroBackgroundUrl,
           overlay: 'rgba(21, 45, 85, 0.8)'
@@ -34,12 +34,6 @@ const HIPAAPage: React.FC = () => {
         align="center"
         minHeight="40vh"
         animated={true}
-        botanical={{
-          type: 'flowerOfLife',
-          position: 'bottomRight',
-          opacity: 0.15,
-          animated: true
-        }}
       >
         <Text 
           variant="body1" 
@@ -47,7 +41,7 @@ const HIPAAPage: React.FC = () => {
           m="0 auto" 
           color="white"
         >
-          At Recovery Office, we adhere to the highest standards of patient privacy and data protection
+          At Recovery Office, we adhere to the highest standards of client privacy and data protection
           in accordance with the Health Insurance Portability and Accountability Act (HIPAA).
         </Text>
       </Hero>
@@ -67,7 +61,7 @@ const HIPAAPage: React.FC = () => {
                 alignItems="center" 
                 mb={`${PHI * 16}px`}
               >
-                <FlowerOfLife size="sm" opacity={0.6} mr={`${PHI * 12}px`} />
+                <SecurityShield size="sm" opacity={0.6} style={{ marginRight: `${PHI * 12}px` }} />
                 <Text variant="caption" fontStyle="italic">
                   Last Updated: {lastUpdated}
                 </Text>
@@ -75,15 +69,15 @@ const HIPAAPage: React.FC = () => {
               
               <Paragraph variant="body1" mb={`${PHI * 24}px`}>
                 This HIPAA Compliance Statement describes how Recovery Office may use and disclose your 
-                Protected Health Information (PHI) to carry out treatment, payment, or healthcare operations, 
+                Protected Health Information (PHI) to carry out treatment, payment, or financial operations, 
                 and for other purposes permitted or required by law. It also describes your rights to access 
                 and control your PHI.
               </Paragraph>
               
               <Paragraph variant="body1" mb={`${PHI * 24}px`}>
                 "Protected Health Information" (PHI) is information about you, including demographic information, 
-                that may identify you and that relates to your past, present, or future physical or mental health 
-                or condition and related healthcare services.
+                that may identify you and that relates to your financial history or current financial situation
+                and related recovery services.
               </Paragraph>
             </Box>
           </Container>
@@ -105,7 +99,7 @@ const HIPAAPage: React.FC = () => {
                 title="Uses and Disclosures of Protected Health Information" 
                 size="medium"
                 align="left"
-                decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
+                decoratorBefore={<ComplianceBadge size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -113,26 +107,26 @@ const HIPAAPage: React.FC = () => {
                   Treatment
                 </Heading>
                 <Paragraph variant="body2" mb={`${PHI * 16}px`}>
-                  We will use and disclose your Protected Health Information (PHI) to provide, coordinate, or manage your healthcare 
-                  and any related services. This includes coordinating or managing your healthcare with a third party. For example, 
-                  your PHI may be provided to a healthcare provider to whom you have been referred to ensure the provider has the 
-                  necessary information to diagnose or treat you.
+                  We will use and disclose your Protected Health Information (PHI) to provide, coordinate, or manage your financial recovery
+                  and any related services. This includes coordinating or managing your case with a third party. For example, 
+                  your PHI may be provided to a financial institution to whom you have been referred to ensure the provider has the 
+                  necessary information to assist you.
                 </Paragraph>
                 
                 <Heading as="h3" variant="h4" mt={`${PHI * 24}px`} mb={`${PHI * 16}px`}>
                   Payment
                 </Heading>
                 <Paragraph variant="body2" mb={`${PHI * 16}px`}>
-                  Your PHI will be used, as needed, to obtain payment for your healthcare services. For example, obtaining approval 
-                  for a treatment may require that your relevant PHI be disclosed to the health plan to obtain approval for the treatment.
+                  Your PHI will be used, as needed, to obtain payment for your recovery services. For example, obtaining approval 
+                  for a recovery plan may require that your relevant PHI be disclosed to the financial institution to obtain approval for the treatment.
                 </Paragraph>
 
                 <Heading as="h3" variant="h4" mt={`${PHI * 24}px`} mb={`${PHI * 16}px`}>
-                  Healthcare Operations
+                  Financial Operations
                 </Heading>
                 <Paragraph variant="body2" mb={`${PHI * 16}px`}>
                   We may use or disclose, as needed, your PHI in order to support the business activities of our practice. These 
-                  activities include, but are not limited to, quality assessment, employee review, training of medical students, 
+                  activities include, but are not limited to, quality assessment, employee review, training of financial specialists, 
                   licensing, and conducting or arranging for other business activities.
                 </Paragraph>
               </Box>
@@ -142,7 +136,7 @@ const HIPAAPage: React.FC = () => {
                 title="Your Rights" 
                 size="medium"
                 align="left"
-                decoratorBefore={<VesicaPiscis size="sm" opacity={0.3} />}
+                decoratorBefore={<AssetRecovery size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -150,8 +144,8 @@ const HIPAAPage: React.FC = () => {
                   Right to Access Your PHI
                 </Heading>
                 <Paragraph variant="body2" mb={`${PHI * 16}px`}>
-                  You have the right to inspect and obtain a copy of the PHI that may be used to make decisions about your care. 
-                  Usually, this includes medical and billing records, but does not include psychotherapy notes. You must submit your 
+                  You have the right to inspect and obtain a copy of the PHI that may be used to make decisions about your case. 
+                  Usually, this includes financial and billing records. You must submit your 
                   request in writing to access your PHI. If you request a copy of the information, we may charge a fee for the costs 
                   of copying, mailing, or other supplies associated with your request.
                 </Paragraph>
@@ -171,7 +165,7 @@ const HIPAAPage: React.FC = () => {
                 </Heading>
                 <Paragraph variant="body2" mb={`${PHI * 16}px`}>
                   You have the right to request an "accounting of disclosures." This is a list of the disclosures we made of 
-                  medical information about you for purposes other than treatment, payment, healthcare operations, or disclosures 
+                  your information for purposes other than recovery services, payment, business operations, or disclosures 
                   you expressly authorized.
                 </Paragraph>
 
@@ -180,15 +174,15 @@ const HIPAAPage: React.FC = () => {
                 </Heading>
                 <Paragraph variant="body2" mb={`${PHI * 16}px`}>
                   You have the right to request a restriction or limitation on the PHI we use or disclose about you for treatment, 
-                  payment, or healthcare operations. You also have the right to request a limit on the medical information we disclose 
-                  about you to someone who is involved in your care or the payment for your care, like a family member or friend.
+                  payment, or operations. You also have the right to request a limit on the information we disclose 
+                  about you to someone who is involved in your case or the payment for your services, like a family member or friend.
                 </Paragraph>
 
                 <Heading as="h3" variant="h4" mt={`${PHI * 24}px`} mb={`${PHI * 16}px`}>
                   Right to Request Confidential Communications
                 </Heading>
                 <Paragraph variant="body2" mb={`${PHI * 16}px`}>
-                  You have the right to request that we communicate with you about medical matters in a certain way or at a certain 
+                  You have the right to request that we communicate with you about financial matters in a certain way or at a certain 
                   location. For example, you can ask that we only contact you at work or by mail.
                 </Paragraph>
               </Box>
@@ -198,7 +192,7 @@ const HIPAAPage: React.FC = () => {
                 title="Data Security" 
                 size="medium"
                 align="left"
-                decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
+                decoratorBefore={<SecurityShield size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -237,7 +231,7 @@ const HIPAAPage: React.FC = () => {
                 title="Contact Us" 
                 size="medium"
                 align="left"
-                decoratorBefore={<FlowerOfLife size="sm" opacity={0.3} />}
+                decoratorBefore={<ComplianceBadge size="sm" opacity={0.3} />}
               />
               
               <Box>
@@ -255,8 +249,8 @@ const HIPAAPage: React.FC = () => {
                   </Text>
                   <Text variant="body2" mb={`${PHI * 8}px`}>
                     Recovery Office<br />
-                    123 Harmony Way, Suite 618<br />
-                    Golden Springs, CA 91234
+                    123 Financial Street, Suite 618<br />
+                    Recovery City, RC 91234
                   </Text>
                   <Text variant="body2" mb={`${PHI * 8}px`}>
                     Email: privacy@recoveryoffice.com

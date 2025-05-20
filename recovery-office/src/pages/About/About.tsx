@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { Hero, Team } from '../design-system/components/feature-sections';
+import { Hero, Team } from '../../design-system/components/feature-sections';
 
-import { Box, Container, GoldenSection } from '../design-system/components/layout';
-import { Section, SectionTitle, SectionContent } from '../design-system/components/layout/Section';
-import { Text, Paragraph, Heading } from '../design-system/components/typography';
-import { Button } from '../design-system/components/button';
-import { Card } from '../design-system/components/data-display';
+import { Box, Container, GoldenSection } from '../../design-system/components/layout';
+import { Section, SectionTitle, SectionContent } from '../../design-system/components/layout/Section';
+import { Text, Paragraph, Heading } from '../../design-system/components/typography';
+import { Button } from '../../design-system/components/button';
+import { Card } from '../../design-system/components/data-display';
 import { ScrollReveal, FadeIn } from '../../animation';
+import { PHI } from '../../constants/sacred-geometry';
+import { FibonacciSpiral, VesicaPiscis, FlowerOfLife, OliveBranch, LeafPattern, SmallFlourish } from '../../design-system/botanical';
 
 // Import new section components
 import PhilosophySection from './sections/PhilosophySection';
@@ -32,11 +34,11 @@ const AboutPage: React.FC = () => {
       bio: 'With over 15 years of experience in therapeutic care, Dr. Harper specializes in integrating sacred geometry principles into modern recovery approaches. Her doctoral research focused on the mathematical patterns that influence healing and wellbeing.',
       specialties: ['Recovery Consultation', 'Therapeutic Planning', 'Sacred Geometry Application'],
       links: [
-        { type: 'linkedin', url: 'https://linkedin.com' },
-        { type: 'twitter', url: 'https://twitter.com' }
+        { type: 'linkedin' as const, url: 'https://linkedin.com' },
+        { type: 'twitter' as const, url: 'https://twitter.com' }
       ],
       accentColor: '#4a6eb3',
-      credentials: 'Ph.D. in Therapeutic Sciences'
+      credentials: ['Ph.D. in Therapeutic Sciences']
     },
     {
       id: 'tm2',
@@ -46,11 +48,11 @@ const AboutPage: React.FC = () => {
       bio: 'Jonathan brings together his expertise in botany and sacred patterns to create customized botanical therapy programs. He has studied indigenous healing practices around the world and combines this knowledge with modern therapeutic approaches.',
       specialties: ['Botanical Therapy', 'Natural Remedies', 'Plant-Based Recovery'],
       links: [
-        { type: 'linkedin', url: 'https://linkedin.com' },
-        { type: 'instagram', url: 'https://instagram.com' }
+        { type: 'linkedin' as const, url: 'https://linkedin.com' },
+        { type: 'instagram' as const, url: 'https://instagram.com' }
       ],
       accentColor: '#86b378',
-      credentials: 'M.S. in Botanical Sciences'
+      credentials: ['M.S. in Botanical Sciences']
     },
     {
       id: 'tm3',
@@ -60,11 +62,11 @@ const AboutPage: React.FC = () => {
       bio: 'Maya specializes in teaching clients how to apply sacred geometry principles in their daily lives for continued wellness and recovery maintenance. She has developed innovative educational programs that make complex concepts accessible.',
       specialties: ['Sacred Education', 'Wellness Programs', 'Client Empowerment'],
       links: [
-        { type: 'linkedin', url: 'https://linkedin.com' },
-        { type: 'website', url: 'https://example.com' }
+        { type: 'linkedin' as const, url: 'https://linkedin.com' },
+        { type: 'website' as const, url: 'https://example.com' }
       ],
       accentColor: '#d4a76a',
-      credentials: 'Certified Therapeutic Educator'
+      credentials: ['Certified Therapeutic Educator']
     },
     {
       id: 'tm4',
@@ -74,11 +76,11 @@ const AboutPage: React.FC = () => {
       bio: 'Dr. Mitchell leads our research initiatives, exploring the scientific basis for sacred geometry in therapeutic practices. His background in physics and medicine provides a unique perspective on the mathematical aspects of healing.',
       specialties: ['Research Design', 'Therapeutic Validation', 'Mathematical Modeling'],
       links: [
-        { type: 'linkedin', url: 'https://linkedin.com' },
-        { type: 'research', url: 'https://example.com/research' }
+        { type: 'linkedin' as const, url: 'https://linkedin.com' },
+        { type: 'website' as const, url: 'https://example.com/research' }
       ],
       accentColor: '#5d6e8f',
-      credentials: 'M.D., Ph.D. in Biophysics'
+      credentials: ['M.D.', 'Ph.D. in Biophysics']
     },
     {
       id: 'tm5',
@@ -88,10 +90,10 @@ const AboutPage: React.FC = () => {
       bio: 'Sarah ensures that our client experience embodies the harmony and balance central to our philosophy. She has designed our client journey to incorporate sacred proportions at every touchpoint.',
       specialties: ['Client Experience Design', 'Recovery Support', 'Therapeutic Communication'],
       links: [
-        { type: 'linkedin', url: 'https://linkedin.com' }
+        { type: 'linkedin' as const, url: 'https://linkedin.com' }
       ],
       accentColor: '#b37c4a',
-      credentials: 'M.A. in Therapeutic Communications'
+      credentials: ['M.A. in Therapeutic Communications']
     },
     {
       id: 'tm6',
@@ -101,11 +103,11 @@ const AboutPage: React.FC = () => {
       bio: 'David creates therapeutic environments that incorporate sacred geometry principles. His designs harness the healing power of space, light, and proportion to create settings that naturally facilitate recovery.',
       specialties: ['Sacred Space Design', 'Healing Environments', 'Architectural Harmonics'],
       links: [
-        { type: 'linkedin', url: 'https://linkedin.com' },
-        { type: 'portfolio', url: 'https://example.com/portfolio' }
+        { type: 'linkedin' as const, url: 'https://linkedin.com' },
+        { type: 'website' as const, url: 'https://example.com/portfolio' }
       ],
       accentColor: '#63a98c',
-      credentials: 'M.Arch, Certified in Therapeutic Design'
+      credentials: ['M.Arch', 'Certified in Therapeutic Design']
     }
   ];
 
@@ -127,7 +129,7 @@ const AboutPage: React.FC = () => {
       year: 2015,
       title: 'Botanical Integration',
       description: 'Jonathan Rivers joined the team, bringing his expertise in botanical therapy and expanding our treatment options.',
-      icon: 'oliveBranch'
+      icon: 'leafPattern'
     },
     {
       year: 2018,
@@ -195,10 +197,8 @@ const AboutPage: React.FC = () => {
                 >
                   <FibonacciSpiral
                     size="lg"
-                    primaryColor="#4a6eb3"
-                    secondaryColor="rgba(0,0,0,0)"
+                    color="#4a6eb3"
                     opacity={0.8}
-                    animated
                   />
                 </Box>
               }
@@ -290,10 +290,10 @@ const AboutPage: React.FC = () => {
                           boxShadow="0 4px 8px rgba(0,0,0,0.1)"
                           zIndex={1}
                         >
-                          {event.icon === 'flowerOfLife' && <FlowerOfLife size="xs" opacity={0.8} />}
-                          {event.icon === 'vesicaPiscis' && <VesicaPiscis size="xs" opacity={0.8} />}
-                          {event.icon === 'oliveBranch' && <OliveBranch size="xs" opacity={0.8} />}
-                          {event.icon === 'fibonacciSpiral' && <FibonacciSpiral size="xs" opacity={0.8} />}
+                          {event.icon === 'flowerOfLife' && <FlowerOfLife size="small" opacity={0.8} />}
+                          {event.icon === 'vesicaPiscis' && <VesicaPiscis size="small" opacity={0.8} />}
+                          {event.icon === 'leafPattern' && <LeafPattern size="small" opacity={0.8} />}
+                          {event.icon === 'fibonacciSpiral' && <FibonacciSpiral size="small" opacity={0.8} />}
                         </Box>
                       </Box>
                       
@@ -345,199 +345,29 @@ const AboutPage: React.FC = () => {
         </Section>
       </ScrollReveal>
 
-      {/* Awards Section - New */}
-      <AwardsSection />
-
-      {/* Our Mission Section */}
-      <ScrollReveal>
-        <Section backgroundColor="#ffffff">
-          <Container>
-            <Box 
-              display="grid" 
-              gridTemplateColumns={["1fr", null, `1fr 1fr 1fr`]} 
-              gap={`${PHI * 24}px`}
-              padding={`${PHI * 16}px 0`}
-            >
-              <Card
-                elevation={2}
-                padding={`${PHI * 24}px`}
-                borderRadius="8px"
-                style={{
-                  backgroundColor: 'white',
-                  borderTop: `4px solid #4a6eb3`
-                }}
-              >
-                <Box 
-                  marginBottom={`${PHI * 16}px`}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <FlowerOfLife size="md" opacity={0.8} />
-                </Box>
-                <Heading 
-                  as="h3" 
-                  variant="h4" 
-                  textAlign="center"
-                  style={{ marginBottom: `${PHI * 16}px` }}
-                >
-                  Our Mission
-                </Heading>
-                <Text variant="body2" textAlign="center">
-                  To facilitate healing and recovery by applying sacred geometry principles 
-                  to therapeutic practices, creating harmony between mind, body, and spirit.
-                </Text>
-              </Card>
-              
-              <Card
-                elevation={2}
-                padding={`${PHI * 24}px`}
-                borderRadius="8px"
-                style={{
-                  backgroundColor: 'white',
-                  borderTop: `4px solid #63a98c`
-                }}
-              >
-                <Box 
-                  marginBottom={`${PHI * 16}px`}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <VesicaPiscis size="md" opacity={0.8} />
-                </Box>
-                <Heading 
-                  as="h3" 
-                  variant="h4" 
-                  textAlign="center"
-                  style={{ marginBottom: `${PHI * 16}px` }}
-                >
-                  Our Vision
-                </Heading>
-                <Text variant="body2" textAlign="center">
-                  A world where therapeutic practices honor the mathematical patterns of 
-                  the universe, creating more effective and harmonious paths to recovery.
-                </Text>
-              </Card>
-              
-              <Card
-                elevation={2}
-                padding={`${PHI * 24}px`}
-                borderRadius="8px"
-                style={{
-                  backgroundColor: 'white',
-                  borderTop: `4px solid #86b378`
-                }}
-              >
-                <Box 
-                  marginBottom={`${PHI * 16}px`}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <OliveBranch size="md" opacity={0.8} />
-                </Box>
-                <Heading 
-                  as="h3" 
-                  variant="h4" 
-                  textAlign="center"
-                  style={{ marginBottom: `${PHI * 16}px` }}
-                >
-                  Our Values
-                </Heading>
-                <Text variant="body2" textAlign="center">
-                  Harmony, Balance, Integrity, Innovation, and Compassion guide our approach 
-                  to recovery and inform every aspect of our therapeutic practice.
-                </Text>
-              </Card>
-            </Box>
-          </Container>
-        </Section>
-      </ScrollReveal>
-
       {/* Team Section */}
-      <ScrollReveal>
-        <Section id="team" backgroundColor="#f8f9fa">
-          <Container>
-            <SectionTitle 
-              title="Our Team" 
-              subtitle="The specialists behind Recovery Office"
-              decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
-              decoratorAfter={<OliveBranch size="sm" opacity={0.3} mirror />}
-            />
-            <SectionContent>
-              <Team
-                members={teamMembers}
-                displayStyle="grid"
-                columns={3}
-                animated={true}
-                botanical={true}
-                showDetailedBio={true}
-              />
-            </SectionContent>
-          </Container>
-        </Section>
-      </ScrollReveal>
+      <Team 
+        title="Our Team"
+        subtitle="Meet the experts behind Recovery Office"
+        members={teamMembers}
+        backgroundColor="#ffffff"
+        displayStyle="grid"
+        columns={3}
+        showDetailedBio={true}
+        animated={true}
+        botanical={{
+          type: 'flowerOfLife',
+          position: 'bottomRight',
+          opacity: 0.15
+        }}
+      />
 
-      {/* Testimonials Section - New */}
+      {/* Other Sections */}
+      <AwardsSection />
       <TestimonialsSection />
-
-      {/* FAQ Section - New */}
       <FAQSection />
-
-      {/* Contact CTA */}
-      <ScrollReveal>
-        <Section 
-          backgroundColor="linear-gradient(135deg, #4a6eb3 0%, #2a4073 100%)"
-          style={{
-            color: 'white',
-            paddingTop: `${PHI * 32}px`,
-            paddingBottom: `${PHI * 32}px`
-          }}
-        >
-          <Container>
-            <Box textAlign="center">
-              <Heading as="h2" variant="h2" style={{ color: 'white', marginBottom: `${PHI * 16}px` }}>
-                Join Us on the Journey
-              </Heading>
-              <Text variant="body1" style={{ 
-                maxWidth: `${PHI * 500}px`, 
-                margin: '0 auto', 
-                marginBottom: `${PHI * 24}px`
-              }}>
-                Experience the difference that sacred geometry principles can make in your recovery process.
-                Connect with our team and begin your path to harmonious well-being.
-              </Text>
-              <Box display="flex" justifyContent="center" gap={`${PHI * 16}px`}>
-                <Button 
-                  variant="accent" 
-                  size="large"
-                  href="/booking"
-                >
-                  Book a Consultation
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="large"
-                  href="/contact"
-                  style={{ color: 'white', borderColor: 'white' }}
-                >
-                  Contact Us
-                </Button>
-              </Box>
-            </Box>
-          </Container>
-        </Section>
-      </ScrollReveal>
     </Box>
   );
 };
 
-export default AboutPage; 
-
-
-
-
-
-
-
+export default AboutPage;

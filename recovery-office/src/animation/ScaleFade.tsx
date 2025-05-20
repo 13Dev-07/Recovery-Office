@@ -10,9 +10,9 @@
 
 import { forwardRef } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { PHI, PHI_INVERSE, SACRED_EASINGS } from '@constants/sacred-geometry';
+import { PHI, PHI_INVERSE, SACRED_EASINGS } from '../constants/sacred-geometry';
 import { ScaleFadeProps } from './animation.d';
-import { resolveDuration, applyGoldenRatioDuration } from '@utils/animation';
+import { resolveDuration, applyGoldenRatioDuration } from '../utils/animation';
 
 /**
  * ScaleFade Component with ref forwarding

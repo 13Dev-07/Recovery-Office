@@ -1,7 +1,7 @@
 import * as React from 'react';;
 import { AnimationProps } from 'framer-motion';
-import { PHI_INVERSE } from '@constants/sacred-geometry';
-import { prefersReducedMotion } from '@utils/animation';
+import { PHI_INVERSE } from '../constants/sacred-geometry';
+import { prefersReducedMotion } from '../utils/animation';
 
 // Define these constants here since they're used in this file
 export const sacredEasing = {

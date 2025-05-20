@@ -8,11 +8,22 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
-import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
+import { PHI_INVERSE, SACRED_SPACING_SYSTEM, getFibonacciByIndex } from '../../../constants/sacred-geometry';
 
 import { Heading } from '../typography/Heading';
 import { Text } from '../typography/Text';
-import { FooterLinkSection } from './Footer';
+
+// Define the types locally since they're not exported properly
+interface FooterLink {
+  label: string;
+  url: string;
+  external?: boolean;
+}
+
+export interface FooterLinkSection {
+  title: string;
+  links: FooterLink[];
+}
 
 interface FooterLinksProps {
   /** Array of link sections */
@@ -26,18 +37,18 @@ interface FooterLinksProps {
 const LinksContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: ${getFibonacciByIndex(6)}px;
+  gap: ${SACRED_SPACING_SYSTEM.lg}px;
 `;
 
 // Individual link section
 const LinkSection = styled.div`
-  margin-bottom: ${getFibonacciByIndex(6)}px;
+  margin-bottom: ${SACRED_SPACING_SYSTEM.lg}px;
 `;
 
 // Section heading with golden ratio underline
 const SectionTitle = styled(Heading)`
-  margin-bottom: ${getFibonacciByIndex(5)}px;
-  padding-bottom: ${getFibonacciByIndex(3)}px;
+  margin-bottom: ${SACRED_SPACING_SYSTEM.sm}px;
+  padding-bottom: ${SACRED_SPACING_SYSTEM.xs}px;
   position: relative;
   font-size: 1.1rem;
   
@@ -60,7 +71,7 @@ const LinksList = styled.ul`
   margin: 0;
   
   li + li {
-    margin-top: ${getFibonacciByIndex(3)}px;
+    margin-top: ${SACRED_SPACING_SYSTEM.xs}px;
   }
 `;
 
@@ -69,13 +80,13 @@ const LinkItem = styled.li`
   transition: transform 0.2s;
   
   &:hover {
-    transform: translateX(${getFibonacciByIndex(2)}px);
+    transform: translateX(${SACRED_SPACING_SYSTEM.xxs}px);
   }
 `;
 
 // Link styling
 const Link = styled.a`
-  color: ${props => props.theme.colors.white};
+  color: ${props => props.theme.colors.text.light};
   opacity: ${PHI_INVERSE};
   text-decoration: none;
   display: inline-block;
@@ -95,7 +106,7 @@ const FooterLinks: React.FC<FooterLinksProps> = ({ sections, className }) => {
     <LinksContainer className={className}>
       {sections.map((section, index) => (
         <LinkSection key={`section-${index}`}>
-          <SectionTitle as="h4" variant="h6">
+          <SectionTitle as="h4">
             {section.title}
           </SectionTitle>
           

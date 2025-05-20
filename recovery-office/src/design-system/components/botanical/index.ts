@@ -13,7 +13,7 @@ export { default as VesicaPiscis } from './VesicaPiscis';
 export { default as FibonacciSpiral } from './FibonacciSpiral';
 export { default as OliveBranch } from './OliveBranch';
 export { default as OliveLeaf } from './OliveLeaf';
-export { default as SmallFlourish } from './SmallFlourish';
+export { SmallFlourish } from './SmallFlourish';
 export { default as BotanicalDecorator } from './BotanicalDecorator';
 
 // Utilities

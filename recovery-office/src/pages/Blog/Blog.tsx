@@ -1,6 +1,6 @@
 // TODO: This file contains direct window access without SSR checks
 import * as React from 'react';
-import { useState, useEffect } from 'react';;
+import { useState, useEffect } from 'react';
 
 import styled from 'styled-components';
 
@@ -12,27 +12,29 @@ import { Link } from 'react-router-dom';
 
 
 // Import design system components
-import { Section, SectionTitle } from '../design-system/components/layout/Section';
+import { Section } from '../../design-system/components/layout/Section/Section';
+import SectionTitle from '../../design-system/components/typography/SectionTitle';
 
-import { Container } from '../design-system/components/layout/Container';
+import Container from '../../design-system/components/layout/Container';
 
-import { Grid } from '../design-system/components/layout/Grid';
+import Grid from '../../design-system/components/layout/Grid';
 
-import { Card } from '../design-system/components/data-display/Card';
+import Card from '../../design-system/components/data-display/Card';
 
-import { Button } from '../design-system/components/button/Button';
+import Button from '../../design-system/components/button/Button';
 
-import { FadeIn, ScrollReveal } from '../animation';
+import { FadeIn, ScrollReveal } from '../../animation';
 
-import { BotanicalElement } from '../design-system/botanical';
+import { FlowerOfLife, OliveBranch } from '../../design-system/botanical';
 
 
 // Import sacred geometry constants
-
+import { PHI, PHI_INVERSE, SACRED_EASINGS } from '../../constants/sacred-geometry';
+import getFibonacciByIndex from '../../utils/getFibonacciByIndex';
 
 
 // Import theme types
-import { ThemedProps } from '../design-system/types/styled.types';
+import { ThemedProps } from '../../design-system/types/styled.types';
 
 
 // Blog post interface
@@ -56,6 +58,11 @@ interface BlogPost {
 interface BlogProps {
   className?: string;
   style?: React.CSSProperties;
+}
+
+// Define the active prop interface for FilterButton
+interface FilterButtonProps {
+  $active: boolean;
 }
 
 // Sample blog posts data (in a real app, this would come from an API)
@@ -153,15 +160,15 @@ const sampleBlogPosts: BlogPost[] = [
 ];
 
 // Styled components
-const BlogPageContainer = styled.div<ThemedProps>`
+const BlogPageContainer = styled.div`
   width: 100%;
   min-height: 100vh;
-  background-color: ${props => props.theme.colors.background};
+  background-color: ${props => props.theme.colors.background[50]};
   padding-top: ${getFibonacciByIndex(9)}px; // 34px
   padding-bottom: ${getFibonacciByIndex(11)}px; // 89px
 `;
 
-const BlogHeader = styled.div<ThemedProps>`
+const BlogHeader = styled.div`
   width: 100%;
   max-width: ${getFibonacciByIndex(12)}px; // 144px * 10 = 1440px
   margin: 0 auto;
@@ -169,7 +176,7 @@ const BlogHeader = styled.div<ThemedProps>`
   margin-bottom: ${getFibonacciByIndex(10)}px; // 55px
 `;
 
-const BlogFilters = styled.div<ThemedProps>`
+const BlogFilters = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: ${getFibonacciByIndex(5)}px; // 5px
@@ -181,12 +188,12 @@ const BlogFilters = styled.div<ThemedProps>`
   }
 `;
 
-const FilterButton = styled.button<{ $active: boolean } & ThemedProps>`
+const FilterButton = styled.button<FilterButtonProps>`
   background-color: ${({ $active, theme }) => 
-    $active ? theme.colors.primary : 'transparent'};
+    $active ? theme.colors.primary[500] : 'transparent'};
   color: ${({ $active, theme }) => 
-    $active ? theme.colors.background : theme.colors.text};
-  border: 1px solid ${props => props.theme.colors.primary};
+    $active ? theme.colors.white : theme.colors.text.primary};
+  border: 1px solid ${props => props.theme.colors.primary[500]};
   border-radius: ${getFibonacciByIndex(3)}px; // 3px
   padding: ${getFibonacciByIndex(4)}px ${getFibonacciByIndex(6)}px; // 5px 8px
   font-size: ${16 / PHI}px; // ~9.9px
@@ -195,18 +202,18 @@ const FilterButton = styled.button<{ $active: boolean } & ThemedProps>`
   
   &:hover {
     background-color: ${({ $active, theme }) => 
-      $active ? theme.colors.primary : theme.colors.primary + '20'};
+      $active ? theme.colors.primary[600] : theme.colors.primary[50]};
   }
 `;
 
-const SearchContainer = styled.div<ThemedProps>`
+const SearchContainer = styled.div`
   position: relative;
   width: 100%;
   max-width: ${getFibonacciByIndex(10) * 10}px; // 55px * 10 = 550px
   margin-bottom: ${getFibonacciByIndex(9)}px; // 34px
 `;
 
-const SearchInput = styled.input<ThemedProps>`
+const SearchInput = styled.input`
   width: 100%;
   padding: ${getFibonacciByIndex(5)}px ${getFibonacciByIndex(7)}px; // 5px 13px
   padding-left: ${getFibonacciByIndex(8) + getFibonacciByIndex(5)}px; // 21px + 5px = 26px
@@ -216,20 +223,20 @@ const SearchInput = styled.input<ThemedProps>`
   
   &:focus {
     outline: none;
-    border-color: ${props => props.theme.colors.primary};
-    box-shadow: 0 0 0 ${getFibonacciByIndex(2)}px ${props => props.theme.colors.primary + '20'}; // 2px
+    border-color: ${props => props.theme.colors.primary[500]};
+    box-shadow: 0 0 0 ${getFibonacciByIndex(2)}px ${props => props.theme.colors.primary[200]};
   }
 `;
 
-const SearchIcon = styled.span<ThemedProps>`
+const SearchIcon = styled.span`
   position: absolute;
   left: ${getFibonacciByIndex(5)}px; // 5px
   top: 50%;
   transform: translateY(-50%);
-  color: ${props => props.theme.colors.text + '80'};
+  color: ${props => props.theme.colors.text.tertiary};
 `;
 
-const BlogGrid = styled.div<ThemedProps>`
+const BlogGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(${getFibonacciByIndex(10) * 5}px, 1fr)); // 55px * 5 = 275px
   gap: ${getFibonacciByIndex(8)}px; // 21px
@@ -243,7 +250,7 @@ const BlogGrid = styled.div<ThemedProps>`
   }
 `;
 
-const BlogCard = styled(Card)<ThemedProps>`
+const BlogCard = styled(Card)`
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -255,7 +262,7 @@ const BlogCard = styled(Card)<ThemedProps>`
   }
 `;
 
-const BlogImage = styled.div<{ $imageUrl: string } & ThemedProps>`
+const BlogImage = styled.div<{ $imageUrl: string }>`
   width: 100%;
   height: ${getFibonacciByIndex(9) * 5}px; // 34px * 5 = 170px
   background-image: url(${({ $imageUrl }) => $imageUrl});
@@ -264,112 +271,112 @@ const BlogImage = styled.div<{ $imageUrl: string } & ThemedProps>`
   border-radius: ${getFibonacciByIndex(3)}px ${getFibonacciByIndex(3)}px 0 0; // 3px
 `;
 
-const BlogContent = styled.div<ThemedProps>`
+const BlogContent = styled.div`
   padding: ${getFibonacciByIndex(7)}px; // 13px
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 `;
 
-const BlogCategory = styled.span<ThemedProps>`
+const BlogCategory = styled.span`
   display: inline-block;
-  background-color: ${props => props.theme.colors.primary + '10'};
-  color: ${props => props.theme.colors.primary};
+  background-color: ${props => props.theme.colors.primary[100]};
+  color: ${props => props.theme.colors.primary[700]};
   padding: ${getFibonacciByIndex(2)}px ${getFibonacciByIndex(4)}px; // 2px 5px
   border-radius: ${getFibonacciByIndex(2)}px; // 2px
   font-size: ${16 / (PHI * PHI)}px; // ~6.1px
   margin-bottom: ${getFibonacciByIndex(4)}px; // 5px
 `;
 
-const BlogTitle = styled.h3<ThemedProps>`
+const BlogTitle = styled.h3`
   font-size: ${16 * PHI_INVERSE + 8}px; // ~18px
   margin-bottom: ${getFibonacciByIndex(4)}px; // 5px
   line-height: ${PHI};
-  color: ${props => props.theme.colors.text};
+  color: ${props => props.theme.colors.text.primary};
 `;
 
-const BlogExcerpt = styled.p<ThemedProps>`
+const BlogExcerpt = styled.p`
   font-size: ${16 / PHI}px; // ~9.9px
   line-height: ${PHI};
-  color: ${props => props.theme.colors.text + 'CC'};
+  color: ${props => props.theme.colors.text.secondary};
   margin-bottom: ${getFibonacciByIndex(6)}px; // 8px
   flex-grow: 1;
 `;
 
-const BlogMeta = styled.div<ThemedProps>`
+const BlogMeta = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: ${getFibonacciByIndex(6)}px; // 8px
 `;
 
-const AuthorImage = styled.img<ThemedProps>`
+const AuthorImage = styled.img`
   width: ${getFibonacciByIndex(7)}px; // 13px
   height: ${getFibonacciByIndex(7)}px; // 13px
   border-radius: 50%;
   margin-right: ${getFibonacciByIndex(4)}px; // 5px
 `;
 
-const AuthorInfo = styled.div<ThemedProps>`
+const AuthorInfo = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const AuthorName = styled.span<ThemedProps>`
+const AuthorName = styled.span`
   font-size: ${16 / (PHI * PHI)}px; // ~6.1px
   font-weight: 600;
-  color: ${props => props.theme.colors.text};
+  color: ${props => props.theme.colors.text.primary};
 `;
 
-const PublishDate = styled.span<ThemedProps>`
+const PublishDate = styled.span`
   font-size: ${16 / (PHI * PHI * PHI)}px; // ~3.8px
-  color: ${props => props.theme.colors.text + '99'};
+  color: ${props => props.theme.colors.text.tertiary};
 `;
 
-const ReadTime = styled.span<ThemedProps>`
+const ReadTime = styled.span`
   font-size: ${16 / (PHI * PHI * PHI)}px; // ~3.8px
-  color: ${props => props.theme.colors.text + '99'};
+  color: ${props => props.theme.colors.text.tertiary};
   margin-left: auto;
 `;
 
-const BlogTags = styled.div<ThemedProps>`
+const BlogTags = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: ${getFibonacciByIndex(3)}px; // 3px
   margin-top: auto;
 `;
 
-const BlogTag = styled.span<ThemedProps>`
+const BlogTag = styled.span`
   font-size: ${16 / (PHI * PHI * PHI)}px; // ~3.8px
-  color: ${props => props.theme.colors.text + '99'};
-  background-color: ${props => props.theme.colors.background + 'DD'};
+  color: ${props => props.theme.colors.text.tertiary};
+  background-color: ${props => props.theme.colors.background[100]};
   padding: ${getFibonacciByIndex(2)}px ${getFibonacciByIndex(3)}px; // 2px 3px
   border-radius: ${getFibonacciByIndex(2)}px; // 2px
 `;
 
-const PaginationContainer = styled.div<ThemedProps>`
+const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-top: ${getFibonacciByIndex(10)}px; // 55px
 `;
 
-const PaginationButton = styled.button<{ $active: boolean } & ThemedProps>`
+const PaginationButton = styled.button<FilterButtonProps>`
   width: ${getFibonacciByIndex(7)}px; // 13px
   height: ${getFibonacciByIndex(7)}px; // 13px
   border-radius: 50%;
   background-color: ${({ $active, theme }) => 
-    $active ? theme.colors.primary : 'transparent'};
-  border: 1px solid ${props => props.theme.colors.primary};
+    $active ? theme.colors.primary[500] : 'transparent'};
+  border: 1px solid ${props => props.theme.colors.primary[500]};
   margin: 0 ${getFibonacciByIndex(3)}px; // 3px
   cursor: pointer;
   transition: all 0.3s cubic-bezier(${SACRED_EASINGS.standard.join(', ')});
   
   &:hover {
     background-color: ${({ $active, theme }) => 
-      $active ? theme.colors.primary : theme.colors.primary + '20'};
+      $active ? theme.colors.primary[600] : theme.colors.primary[50]};
   }
 `;
 
-const BotanicalAccent = styled.div<ThemedProps>`
+const BotanicalAccent = styled.div`
   position: absolute;
   top: ${PHI_INVERSE * 100}%;
   right: ${PHI_INVERSE * 100}%;
@@ -378,7 +385,7 @@ const BotanicalAccent = styled.div<ThemedProps>`
   z-index: 0;
 `;
 
-const BotanicalAccent2 = styled.div<ThemedProps>`
+const BotanicalAccent2 = styled.div`
   position: absolute;
   bottom: ${PHI_INVERSE * 100}%;
   left: ${PHI_INVERSE * 100}%;
@@ -448,27 +455,23 @@ const Blog: React.FC<BlogProps> = ({ className, style }) => {
     <BlogPageContainer className={className} style={style}>
       <Container>
         <BotanicalAccent>
-          <BotanicalElement 
-            variant="flowerOfLife"
+          <FlowerOfLife
             size="xl"
-            colorScheme="primary"
-            withAnimation={true}
-            animationType="reveal"
+            color="#4a6eb3"
+            opacity={0.7}
           />
         </BotanicalAccent>
         
         <BotanicalAccent2>
-          <BotanicalElement 
-            variant="oliveBranch"
+          <OliveBranch
             size="lg"
-            colorScheme="primary"
-            withAnimation={true}
-            animationType="reveal"
+            color="#4a6eb3"
+            opacity={0.7}
           />
         </BotanicalAccent2>
         
         <BlogHeader ref={headerRef}>
-          <FadeIn isVisible={headerInView} delay={0.1}>
+          <FadeIn delay={0.1}>
             <SectionTitle 
               title="Recovery Office Blog" 
               subtitle="Insights, guides, and success stories from our financial recovery experts"
@@ -477,7 +480,7 @@ const Blog: React.FC<BlogProps> = ({ className, style }) => {
             />
           </FadeIn>
           
-          <FadeIn isVisible={headerInView} delay={0.2}>
+          <FadeIn delay={0.2}>
             <BlogFilters>
               <FilterButton 
                 $active={activeCategory === null}
@@ -497,7 +500,7 @@ const Blog: React.FC<BlogProps> = ({ className, style }) => {
             </BlogFilters>
           </FadeIn>
           
-          <FadeIn isVisible={headerInView} delay={0.3}>
+          <FadeIn delay={0.3}>
             <SearchContainer>
               <SearchIcon>🔍</SearchIcon>
               <SearchInput 
@@ -511,7 +514,7 @@ const Blog: React.FC<BlogProps> = ({ className, style }) => {
         </BlogHeader>
         
         <BlogGrid ref={gridRef}>
-          <ScrollReveal isVisible={gridInView} threshold={0.1} staggerChildren={0.1}>
+          <ScrollReveal>
             {currentPosts.map((post, index) => (
               <BlogCard key={post.id}>
                 <BlogImage $imageUrl={post.imageUrl} />
@@ -536,7 +539,7 @@ const Blog: React.FC<BlogProps> = ({ className, style }) => {
                   </BlogTags>
                   
                   <Button 
-                    variant="text" 
+                    variant="outline" 
                     size="small"
                     style={{ marginTop: `${getFibonacciByIndex(5)}px`, alignSelf: 'flex-start' }}
                   >

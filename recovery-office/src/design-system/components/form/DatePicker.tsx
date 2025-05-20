@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { useState, useEffect, useMemo, useRef } from 'react';;
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';;
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
 import { Box, Flex, Grid } from '../layout';
@@ -46,13 +46,16 @@ const getFirstDayOfMonth = (year: number, month: number): number => {
 const formatDate = (date: Date, format: string = 'MM/dd/yyyy'): string => {
   const day = date.getDate().toString().padStart(2, '0');
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const year = date.getFullYear();
+  const year = date.getFullYear().toString();
+  const yearShort = year.slice(-2);
   
-  return format
-    .replace('dd', day)
-    .replace('MM', month)
-    .replace('yyyy', year)
-    .replace('yy', year.toString().slice(-2));
+  let result = format;
+  result = result.replace(/dd/g, day);
+  result = result.replace(/MM/g, month);
+  result = result.replace(/yyyy/g, year);
+  result = result.replace(/yy/g, yearShort);
+  
+  return result;
 };
 
 // Parse string to date
@@ -71,9 +74,9 @@ const parseDate = (dateString: string, format: string = 'MM/dd/yyyy'): Date | nu
       return null;
     }
     
-    const day = parseInt(parts[dayIndex] ?? 1, 10);
-    const month = parseInt(parts[monthIndex] ?? 1, 10) - 1; // JavaScript months are 0-indexed
-    const year = parseInt(parts[yearIndex] ?? 1, 10);
+    const day = parseInt(parts[dayIndex] || '1', 10);
+    const month = parseInt(parts[monthIndex] || '1', 10) - 1; // JavaScript months are 0-indexed
+    const year = parseInt(parts[yearIndex] || '2000', 10);
     
     const date = new Date(year, month, day);
     if (isNaN(date.getTime())) {
@@ -151,6 +154,7 @@ const DayCell = styled(Box)<{
   isDisabled?: boolean;
   inCurrentMonth?: boolean;
   componentSize?: 'sm' | 'md' | 'lg';
+  onClick?: () => void;
 }>`
   display: flex;
   align-items: center;
@@ -421,11 +425,12 @@ export const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         date.getMonth() === today.getMonth() &&
         date.getFullYear() === today.getFullYear();
       
-      const isSelected = (date: Date) =>
-        selectedDate &&
-        date.getDate() === selectedDate.getDate() &&
-        date.getMonth() === selectedDate.getMonth() &&
-        date.getFullYear() === selectedDate.getFullYear();
+      const isSelected = (date: Date): boolean => {
+        return selectedDate !== null &&
+          date.getDate() === selectedDate.getDate() &&
+          date.getMonth() === selectedDate.getMonth() &&
+          date.getFullYear() === selectedDate.getFullYear();
+      };
       
       for (let i = 1; i <= daysInMonth; i++) {
         const date = new Date(currentYear, currentMonth, i);
@@ -482,20 +487,21 @@ export const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
       ];
-      return monthNames[month] ?? 1;
+      return monthNames[month] || 'January'; // Use 'January' as fallback instead of 1
     };
     
     // Combine the ref with the internal ref
-    const combinedRef = useMemo(() => {
-      return (node: HTMLInputElement) => {
-        inputRef.current = node;
+    const combinedRef = useCallback((node: HTMLInputElement) => {
+      if (node) {
+        // Use type assertion to handle the read-only property
+        (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
         
         if (typeof ref === 'function') {
           ref(node);
         } else if (ref) {
           (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
         }
-      };
+      }
     }, [ref]);
     
     return (
@@ -521,28 +527,14 @@ export const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           <FadeIn isVisible={isOpen} duration={0.2}>
             <CalendarContainer ref={calendarRef} componentSize={size}>
               <CalendarHeader>
-                <Button 
-                  variant="text" 
-                  size="sm" 
-                  onClick={goToPreviousMonth}
-                  aria-label="Previous month"
-                >
-                  &lt;
-                </Button>
+                                <Button                   variant="ghost"                   size="sm"                   onClick={goToPreviousMonth}                  aria-label="Previous month"                >                  &lt;                </Button>
                 
                 <MonthYearSelector>
                   <Text>{getMonthName(currentMonth)}</Text>
                   <Text>{currentYear}</Text>
                 </MonthYearSelector>
                 
-                <Button 
-                  variant="text" 
-                  size="sm" 
-                  onClick={goToNextMonth}
-                  aria-label="Next month"
-                >
-                  &gt;
-                </Button>
+                                <Button                   variant="ghost"                   size="sm"                   onClick={goToNextMonth}                  aria-label="Next month"                >                  &gt;                </Button>
               </CalendarHeader>
               
               <CalendarGrid componentSize={size}>

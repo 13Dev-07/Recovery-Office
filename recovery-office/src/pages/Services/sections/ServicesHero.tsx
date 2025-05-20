@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { FadeIn, ScrollReveal } from '../../../animation';
-import { FlowerOfLife } from '../../../design-system/botanical';
+import { SecurityShield } from '../../../design-system/components/utility/FinancialIcons';
 import { PHI, PHI_INVERSE, GOLDEN_SECTIONS, SACRED_SPACING } from '../../../constants/sacred-geometry';
 
 /**
@@ -78,7 +78,7 @@ const HeroSubtitle = styled.p`
   opacity: 0.9;
 `;
 
-const BotanicalContainer = styled.div`
+const IconContainer = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -88,7 +88,7 @@ const BotanicalContainer = styled.div`
   pointer-events: none;
 `;
 
-const BotanicalBottomRight = styled.div`
+const IconBottomRight = styled.div`
   position: absolute;
   bottom: ${GOLDEN_SECTIONS.minor * 100}%;
   right: ${SACRED_SPACING.xl}px;
@@ -99,12 +99,11 @@ const BotanicalBottomRight = styled.div`
  * ServicesHero Component
  * 
  * A hero section specifically designed for the Services page,
- * featuring a background image, sacred geometry botanical elements,
- * and responsive typography following golden ratio principles.
+ * featuring a background image and financial icons.
  */
-const ServicesHero: React.FC<ServicesHeroProps> = ({
+export const ServicesHero: React.FC<ServicesHeroProps> = ({
   title = "Our Services",
-  subtitle = "Each of our services incorporates sacred geometry principles to create therapeutic experiences that restore harmony and facilitate recovery.",
+  subtitle = "Each of our services incorporates industry best practices and regulatory compliance to maximize your financial recovery potential.",
   backgroundImage = "https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1920&q=80",
   overlayColor = "rgba(21, 45, 85, 0.7)"
 }) => {
@@ -115,18 +114,16 @@ const ServicesHero: React.FC<ServicesHeroProps> = ({
         $overlayColor={overlayColor}
       />
       
-      <BotanicalContainer>
-        <BotanicalBottomRight>
+      <IconContainer>
+        <IconBottomRight>
           <ScrollReveal threshold={0.2} variant="slide-up">
-            <FlowerOfLife 
-              size={350} 
-              color="rgba(255, 255, 255, 0.15)" 
-              animated={true}
-              animationType="reveal"
+            <SecurityShield 
+              size="lg" 
+              opacity={0.15} 
             />
           </ScrollReveal>
-        </BotanicalBottomRight>
-      </BotanicalContainer>
+        </IconBottomRight>
+      </IconContainer>
       
       <HeroContent>
         <FadeIn delay={0.3}>
@@ -140,7 +137,8 @@ const ServicesHero: React.FC<ServicesHeroProps> = ({
   );
 };
 
-export default ServicesHero; 
+// Remove the default export to avoid conflicts with the named export
+// export default ServicesHero; 
 
 
 

@@ -10,11 +10,11 @@
  */
 
 import * as React from 'react';
-import { useEffect } from 'react';;
+import { useEffect, useRef } from 'react';
 import { motion, useAnimation, Variants } from 'framer-motion';
-import { useInView } from 'framer-motion';
+import { IntersectionOptions, useInView } from 'react-intersection-observer';
 import { PHI_INVERSE, SACRED_EASINGS } from '../../../constants/sacred-geometry';
-import { ScrollRevealProps, ScrollRevealVariant } from './animation.d';
+import { ScrollRevealProps, ScrollRevealVariant } from '../../types/animation.types';
 import { resolveDuration, applyGoldenRatioDuration, getAccessibleAnimationSettings } from '../../../utils/animation';
 
 /**
@@ -52,7 +52,7 @@ export const ScrollReveal = React.forwardRef<HTMLDivElement, ScrollRevealProps>(
     const controls = useAnimation();
     
     // Track if element is in view
-    const [inViewRef, inView] = useInView({
+    const { ref: inViewRef, inView } = useInView({
       threshold,
       rootMargin,
       triggerOnce: !resetOnExit,
@@ -60,11 +60,13 @@ export const ScrollReveal = React.forwardRef<HTMLDivElement, ScrollRevealProps>(
     
     // Combine refs
     const combinedRef = (node: HTMLDivElement) => {
-      inViewRef(node);
-      if (typeof ref === 'function') {
-        ref(node);
-      } else if (ref) {
-        ref.current = node;
+      if (node) {
+        inViewRef(node);
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
       }
     };
     

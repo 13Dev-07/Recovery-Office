@@ -1,96 +1,71 @@
 /**
  * Footer Component
  * 
- * A comprehensive footer component with support for links, newsletter signup,
- * and social media icons. Built with sacred geometry spacing and proportions.
+ * A footer component that displays site information and links.
+ * Uses sacred geometry principles for spacing and composition.
  */
 
 import * as React from 'react';
 import styled from 'styled-components';
-import { DefaultTheme } from 'styled-components';
-
-
-import { Box } from '../layout/Box';
-import { Container } from '../layout/Container';
 import { Text } from '../typography/Text';
-import { BotanicalElement, BotanicalPosition } from '../botanical';
+import { Container } from '../layout/Container';
 import FooterLinks from './FooterLinks';
 import FooterNewsletter from './FooterNewsletter';
-import FooterSocial from './FooterSocial';
-
-export interface FooterLinkSection {
-  /** Section title */
-  title: string;
-  
-  /** List of links */
-  links: {
-    /** Link label */
-    label: string;
-    
-    /** Link URL */
-    url: string;
-    
-    /** Whether link opens in a new tab */
-    external?: boolean;
-  }[];
-}
+import FooterSocial, { SocialLinkProps } from './FooterSocial';
+import { BotanicalElement } from '../botanical/BotanicalElement';
+import { BotanicalPosition, BotanicalSize } from '../botanical/botanicalUtils';
+import { PHI_INVERSE } from '../../../constants/sacred-geometry';
+import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
 
 export interface FooterProps {
-  /** Logo component or element */
+  /** Company logo React element */
   logo?: React.ReactNode;
   
   /** Company name */
   companyName: string;
   
-  /** Copyright text */
+  /** Copyright text (defaults to "© [current year] [companyName]. All rights reserved.") */
   copyrightText?: string;
   
-  /** Link sections in columns */
-  linkSections?: FooterLinkSection[];
+  /** Array of link sections for the footer */
+  linkSections?: Array<{
+    title: string;
+    links: Array<{
+      label: string;
+      url: string;
+    }>;
+  }>;
   
-  /** Social media links */
-  socialLinks?: {
-    /** Platform name */
-    platform: 'facebook' | 'twitter' | 'instagram' | 'linkedin' | 'youtube' | 'pinterest';
-    
-    /** URL to profile */
-    url: string;
-  }[];
+  /** Array of social media links */
+  socialLinks?: SocialLinkProps[];
   
-  /** Whether to include newsletter signup */
+  /** Whether to show the newsletter signup form */
   showNewsletter?: boolean;
   
-  /** Newsletter section title */
+  /** Title for the newsletter section */
   newsletterTitle?: string;
   
-  /** Newsletter description */
+  /** Description for the newsletter section */
   newsletterDescription?: string;
   
-  /** Privacy policy link */
+  /** URL for the privacy policy page */
   privacyPolicyUrl?: string;
   
-  /** Terms of service link */
+  /** URL for the terms of service page */
   termsOfServiceUrl?: string;
   
   /** Botanical decoration configuration */
   botanical?: {
-    /** Type of botanical element */
-    type: 'oliveBranch' | 'flowerOfLife' | 'vesicaPiscis' | 'fibonacciSpiral' | 'oliveLeaf';
-    
-    /** Position of the botanical element */
+    type: 'oliveBranch' | 'flowerOfLife' | 'vesicaPiscis' | 'fibonacciSpiral' | 'oliveLeaf' | 'smallFlourish';
     position: BotanicalPosition;
-    
-    /** Size of the botanical element */
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-    
-    /** Opacity of the botanical element */
+    size?: BotanicalSize;
     opacity?: number;
   };
   
-  /** Optional additional class name */
+  /** Additional className */
   className?: string;
   
-  /** Optional inline styles */
+  /** Additional style */
   style?: React.CSSProperties;
 }
 
@@ -99,7 +74,7 @@ const FooterContainer = styled.footer`
   position: relative;
   width: 100%;
   padding: ${getFibonacciByIndex(7)}px 0 ${getFibonacciByIndex(5)}px;
-  background-color: ${props => props.theme.colors.primary[900] ?? 1};
+  background-color: ${props => props.theme.colors.primary[900] ?? '#111'};
   color: ${props => props.theme.colors.white};
   overflow: hidden;
 `;
@@ -189,15 +164,19 @@ const Footer: React.FC<FooterProps> = ({
   termsOfServiceUrl = "/terms-of-service",
   botanical,
   className,
-  style,
+  style
 }) => {
+  // Filter social links to only use supported platforms
+  const validSocialLinks = socialLinks.filter(
+    link => ['facebook', 'twitter', 'instagram', 'linkedin', 'youtube', 'pinterest'].includes(link.platform as string)
+  ) as SocialLinkProps[];
+
   return (
     <FooterContainer className={className} style={style}>
       {botanical && (
-        <BotanicalElement
-          type={botanical.type}
-          position={botanical.position}
-          size={botanical.size}
+        <BotanicalElement 
+          variant={botanical.type} 
+          size={botanical.size} 
           opacity={botanical.opacity || 0.05}
         />
       )}
@@ -209,9 +188,9 @@ const Footer: React.FC<FooterProps> = ({
           )}
           
           {showNewsletter && (
-            <FooterNewsletter
-              title={newsletterTitle}
-              description={newsletterDescription}
+            <FooterNewsletter 
+              title={newsletterTitle} 
+              description={newsletterDescription} 
             />
           )}
         </UpperSection>
@@ -226,8 +205,8 @@ const Footer: React.FC<FooterProps> = ({
           <CompanyName>{companyName}</CompanyName>
           <Copyright>{copyrightText}</Copyright>
           
-          {socialLinks.length > 0 && (
-            <FooterSocial links={socialLinks} />
+          {validSocialLinks.length > 0 && (
+            <FooterSocial links={validSocialLinks} />
           )}
           
           <LegalLinks>

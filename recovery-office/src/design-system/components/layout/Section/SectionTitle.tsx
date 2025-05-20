@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import { PHI, PHI_INVERSE } from '../../../../constants/sacred-geometry';
 import { lightTheme as theme } from '../../../theme';
 import Typography from '../../typography/Typography';
+import Box from '../Box';
+import { BoxProps } from '../../../types/styled.types';
 
-export interface SectionTitleProps {
+export interface SectionTitleProps extends BoxProps {
   /** Main title text */
   title: string;
   
@@ -22,12 +24,6 @@ export interface SectionTitleProps {
   
   /** Optional decorator element to display after title */
   decoratorAfter?: React.ReactNode;
-  
-  /** Additional styles to apply */
-  style?: React.CSSProperties;
-  
-  /** Optional className for the container */
-  className?: string;
 }
 
 /**
@@ -40,7 +36,7 @@ const getTitleSize = (size: SectionTitleProps['size']) => {
     case 'large':
       return 'h1';
     case 'hero':
-      return 'display';
+      return 'display1';
     case 'medium':
     default:
       return 'h2';
@@ -64,17 +60,17 @@ const getSubtitleSize = (size: SectionTitleProps['size']) => {
   }
 };
 
-const TitleContainer = styled.div<{
-  align: 'left' | 'center' | 'right';
+const TitleContainer = styled(Box)<{
+  $align: 'left' | 'center' | 'right';
 }>`
   display: flex;
   flex-direction: column;
   align-items: ${props => {
-    if (props.align === 'center') return 'center';
-    if (props.align === 'right') return 'flex-end';
+    if (props.$align === 'center') return 'center';
+    if (props.$align === 'right') return 'flex-end';
     return 'flex-start';
   }};
-  text-align: ${props => props.align};
+  text-align: ${props => props.$align};
   width: 100%;
   
   /* Apply PHI relationships to margin between title and subtitle */
@@ -83,7 +79,7 @@ const TitleContainer = styled.div<{
   }
 `;
 
-const DecoratorContainer = styled.div`
+const DecoratorContainer = styled(Box)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,18 +100,16 @@ const SectionTitle = React.forwardRef<HTMLDivElement, SectionTitleProps>(
     size = 'medium',
     decoratorBefore,
     decoratorAfter,
-    style,
-    className,
+    ...rest
   }, ref) => {
     const titleVariant = getTitleSize(size);
     const subtitleVariant = getSubtitleSize(size);
     
     return (
       <TitleContainer
-        align={align}
-        style={style}
-        className={className}
+        $align={align}
         ref={ref}
+        {...rest}
       >
         {decoratorBefore && (
           <DecoratorContainer>

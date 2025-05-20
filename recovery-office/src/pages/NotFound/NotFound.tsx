@@ -1,13 +1,16 @@
 import * as React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { Box, Container } from '../design-system/components/layout';
-import { Section } from '../design-system/components/layout/Section';
-import { Text, Heading, Paragraph } from '../design-system/components/typography';
-import { Button } from '../design-system/components/button';
+import { Link } from 'react-router-dom';
+import { Box, Container } from '../../design-system/components/layout';
+import { Section } from '../../design-system/components/layout/Section';
+import { Text, Paragraph, Heading } from '../../design-system/components/typography';
+import { Button } from '../../design-system/components/button';
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { PHI } from '../../constants/sacred-geometry';
+import { FlowerOfLife, FibonacciSpiral } from '../../design-system/botanical';
+import { GoldenSection } from '../../design-system/components/layout/GoldenSection';
 
 import { FadeIn } from '../../animation';
-import { PHI } from '../constants/sacred-geometry';
-import GoldenSection from "@design-system/components/layout/GoldenSection";
 
 /**
  * NotFound Page Component
@@ -87,7 +90,7 @@ const NotFoundPage: React.FC = () => {
                       backgroundColor="#4a6eb3" 
                       mr={`${PHI * 8}px`}
                     />
-                    <Text size="sm">Return to the <RouterLink to="/" style={{ color: '#4a6eb3', fontWeight: 500 }}>home page</RouterLink></Text>
+                    <Text size="sm">Return to the <Link to="/" style={{ color: '#4a6eb3', fontWeight: 500 }}>home page</Link></Text>
                   </Box>
                   
                   <Box display="flex" alignItems="center">
@@ -98,7 +101,7 @@ const NotFoundPage: React.FC = () => {
                       backgroundColor="#4a6eb3" 
                       mr={`${PHI * 8}px`}
                     />
-                    <Text size="sm">Explore our <RouterLink to="/services" style={{ color: '#4a6eb3', fontWeight: 500 }}>services</RouterLink></Text>
+                    <Text size="sm">Explore our <Link to="/services" style={{ color: '#4a6eb3', fontWeight: 500 }}>services</Link></Text>
                   </Box>
                   
                   <Box display="flex" alignItems="center">
@@ -109,7 +112,7 @@ const NotFoundPage: React.FC = () => {
                       backgroundColor="#4a6eb3" 
                       mr={`${PHI * 8}px`}
                     />
-                    <Text size="sm">Contact our <RouterLink to="/contact" style={{ color: '#4a6eb3', fontWeight: 500 }}>support team</RouterLink></Text>
+                    <Text size="sm">Contact our <Link to="/contact" style={{ color: '#4a6eb3', fontWeight: 500 }}>support team</Link></Text>
                   </Box>
                 </Box>
                 
@@ -131,10 +134,11 @@ const NotFoundPage: React.FC = () => {
               >
                 <FibonacciSpiral
                   size="xl"
-                  primaryColor="#4a6eb3"
-                  secondaryColor="rgba(0,0,0,0)"
+                  color="#4a6eb3"
                   opacity={0.5}
-                  animated
+                  iterations={7}
+                  startSize={5}
+                  style={{ transform: 'rotate(45deg)' }}
                 />
               </Box>
             </GoldenSection>

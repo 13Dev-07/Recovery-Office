@@ -7,12 +7,23 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import { Box } from '../design-system/components/layout/Box';
-import { Container } from '../design-system/components/layout/Container';
-import { GoldenSection } from '../design-system/components/layout/GoldenSection';
+import { Box } from '@design-system/components/layout/Box';
+import { Container } from '@design-system/components/layout/Container';
+import { GoldenSection } from '@design-system/components/layout/GoldenSection';
+import { PHI } from '@constants/sacred-geometry';
 
 import { HeroContent } from './HeroContent';
 import { HeroBotanicals } from './HeroBotanicals';
+
+// Define the sacred aspect ratios
+const SACRED_ASPECT_RATIOS = {
+  goldenRectangle: PHI, // 1.618:1
+  goldenRectangleLandscape: 1 / PHI, // 1:1.618
+  square: 1, // 1:1
+  fourByThree: 4 / 3, // 4:3
+  sixteenByNine: 16 / 9, // 16:9
+  twentyOneByNine: 21 / 9 // 21:9
+};
 
 interface HeroWrapperProps {
   /**
@@ -39,7 +50,7 @@ const HeroWrapper = styled(Box)<HeroWrapperProps>`
       : props.height || '100vh'};
   overflow: hidden;
   background-color: ${props => 
-    props.bgColor || props.theme.colors.primary[900] ?? 1};
+    props.bgColor ? props.bgColor : (props.theme.colors.primary[900] ?? 1)};
   background-image: ${props => 
     props.bgImage ? `url(${props.bgImage})` : 'none'};
   background-size: cover;

@@ -14,6 +14,7 @@ import { Heading, Text, Paragraph } from '../../../design-system/components/typo
 import { Button } from '../../../design-system/components/button';
 import { Section, SectionHeading } from '../../../components/section';
 import { FadeIn, ScrollReveal, SlideIn } from '../../../animation';
+import { VesicaPiscis, FibonacciSpiral } from '../../../design-system/botanical';
 
 import { 
   SACRED_SPACING, 
@@ -106,11 +107,12 @@ const HomeAbout: React.FC = () => {
   
   return (
     <Section
-      backgroundStyle="gradient"
-      paddingTop={SACRED_SPACING.xxl}
-      paddingBottom={SACRED_SPACING.xxl}
+      backgroundColor="linear-gradient(45deg, var(--color-primary-700), var(--color-primary-500))"
+      variant="primary"
+      pt={SACRED_SPACING.xxl}
+      pb={SACRED_SPACING.xxl}
       id="about"
-      textColor="white"
+      textAlign="center"
     >
       <Container>
         <AboutContainer>
@@ -119,9 +121,8 @@ const HomeAbout: React.FC = () => {
             <SectionHeading
               title="About Recovery Office"
               subtitle="Trusted financial recovery consultancy guided by sacred principles"
-              alignment="center"
+              align="center"
               size="large"
-              decoration="line"
               marginBottom={SACRED_SPACING.xl}
             />
           </ScrollReveal>

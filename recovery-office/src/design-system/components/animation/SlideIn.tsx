@@ -9,11 +9,18 @@
  */
 
 import * as React from 'react';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { motion, AnimatePresence, Variants, HTMLMotionProps, ForwardRefComponent, MotionProps } from 'framer-motion';
 import { PHI, PHI_INVERSE, SACRED_EASINGS, FIBONACCI } from '../../../constants/sacred-geometry';
 import Box from '../layout/Box';
-import { SlideInProps, SlideDirection } from './animation.d';
+import { SlideInProps, SlideDirection, CustomEasingFunction } from '../../types/animation.types';
 import { resolveDuration, applyGoldenRatioDuration } from '../../../utils/animation';
+import { BoxProps } from '../../types/styled.types';
+
+/**
+ * Create a typed motion Box component
+ * This resolves the type compatibility issues between Box props and motion props
+ */
+const MotionBox = motion(Box) as ForwardRefComponent<HTMLDivElement, BoxProps & MotionProps>;
 
 /**
  * Get directional offsets based on the slide direction
@@ -61,6 +68,11 @@ export const SlideIn = React.forwardRef<HTMLDivElement, SlideInProps>(
     // Get directional offsets based on direction
     const directionalOffsets = getDirectionalOffsets(direction, distance);
     
+    // Handle custom easing function or use predefined sacred easing
+    const easingValue = typeof easing === 'function' 
+      ? easing
+      : SACRED_EASINGS[easing as keyof typeof SACRED_EASINGS] || SACRED_EASINGS.standard;
+    
     // Create animation variants
     const variants: Variants = {
       visible: { 
@@ -69,7 +81,7 @@ export const SlideIn = React.forwardRef<HTMLDivElement, SlideInProps>(
         transition: {
           duration: effectiveDuration,
           delay,
-          ease: SACRED_EASINGS[easing as keyof typeof SACRED_EASINGS],
+          ease: easingValue,
         }
       },
       hidden: { 
@@ -77,28 +89,43 @@ export const SlideIn = React.forwardRef<HTMLDivElement, SlideInProps>(
         opacity: withFade ? initialOpacity : 1,
         transition: {
           duration: effectiveDuration * PHI_INVERSE, // Slightly shorter for exit
-          ease: SACRED_EASINGS[easing as keyof typeof SACRED_EASINGS],
+          ease: easingValue,
         }
       }
     };
     
+    // Define motion props
+    const motionProps = {
+      initial: "hidden",
+      animate: isVisible ? "visible" : "hidden",
+      exit: "hidden",
+      variants
+    };
+    
+    // If not visible but should stay mounted, return a hidden div
+    if (!isVisible && stayMounted) {
+      return (
+        <MotionBox 
+          ref={ref}
+          display="none"
+          {...rest}
+        >
+          {children}
+        </MotionBox>
+      );
+    }
+    
+    // Otherwise, return the animated component
     return (
       <AnimatePresence mode="wait">
-        {(isVisible || stayMounted) && (
-          <Box
-            as={motion.div}
+        {isVisible && (
+          <MotionBox
             ref={ref}
-            initial="hidden"
-            animate={isVisible ? "visible" : "hidden"}
-            exit="hidden"
-            variants={variants}
-            style={{
-              display: (!isVisible && stayMounted) ? 'none' : undefined,
-            }}
+            {...motionProps}
             {...rest}
           >
             {children}
-          </Box>
+          </MotionBox>
         )}
       </AnimatePresence>
     );

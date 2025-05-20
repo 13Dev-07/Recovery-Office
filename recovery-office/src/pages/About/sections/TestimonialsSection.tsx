@@ -6,17 +6,17 @@
  */
 
 import * as React from 'react';
-import { useState } from 'react';;
+import { useState } from 'react';
 import styled from 'styled-components';
-import { Section } from '../design-system/components/layout/Section';
-import { SectionTitle } from '../../../design-system/components/typography/SectionTitle';
+import { Section } from '../../../design-system/components/layout/Section';
+import SectionTitle from '../../../design-system/components/typography/SectionTitle';
 import { Text } from '../../../design-system/components/typography/Text';
-import { Box } from '../design-system/components/layout';
-import { Card } from '../design-system/components/data-display';
-import { Button } from '../design-system/components/button';
+import { Box } from '../../../design-system/components/layout';
+import { Card } from '../../../design-system/components/data-display';
+import { Button } from '../../../design-system/components/button';
 import { PHI, PHI_INVERSE, SACRED_SPACING } from '../../../constants/sacred-geometry';
-import { SpiralLeaf, VesicaPiscis } from '../design-system/botanical';
-import { FadeIn } from '../../animation';
+import { VesicaPiscis, FlowerOfLife } from '../../../design-system/botanical';
+import { FadeIn } from '../../../animation';
 
 const StyledSection = styled(Section)`
   position: relative;
@@ -149,7 +149,7 @@ const TestimonialsSection: React.FC = () => {
         <Box 
           mt={SACRED_SPACING.lg} 
           display="grid" 
-          gridTemplateColumns={["1fr", null, "1fr 1fr", "1fr 1fr 1fr"]} 
+          gridTemplateColumns={{ _xs: "1fr", _sm: "1fr", _md: "1fr 1fr", _lg: "1fr 1fr 1fr" }}
           gap={SACRED_SPACING.lg * PHI}
         >
           {testmonialData.slice(0, visibleTestimonials).map((testimonial, index) => (
@@ -163,7 +163,7 @@ const TestimonialsSection: React.FC = () => {
                     ))}
                   </Box>
                   
-                  <Text fontSize="md" fontStyle="italic" mb={SACRED_SPACING.md}>
+                  <Text size="md" fontStyle="italic" mb={SACRED_SPACING.md}>
                     {testimonial.text}
                   </Text>
                   
@@ -181,7 +181,7 @@ const TestimonialsSection: React.FC = () => {
                         width={`${SACRED_SPACING.md * PHI}px`}
                         height={`${SACRED_SPACING.md * PHI}px`}
                       >
-                        <SpiralLeaf
+                        <FlowerOfLife
                           size="xs"
                           color={testimonial.accentColor}
                           opacity={0.8}
@@ -189,7 +189,7 @@ const TestimonialsSection: React.FC = () => {
                       </Box>
                       <Box>
                         <Text 
-                          fontSize="md" 
+                          size="md" 
                           fontWeight="600" 
                           style={{
                             color: testimonial.accentColor
@@ -197,8 +197,8 @@ const TestimonialsSection: React.FC = () => {
                         >
                           {testimonial.author}
                         </Text>
-                        <Text fontSize="sm" color="grey">
-                          {testimonial.location} | {testimonial.treatmentType}
+                        <Text size="sm" color="grey">
+                          {testimonial.location} • {testimonial.treatmentType}
                         </Text>
                       </Box>
                     </Box>
@@ -210,9 +210,9 @@ const TestimonialsSection: React.FC = () => {
         </Box>
         
         {visibleTestimonials < testmonialData.length && (
-          <Box mt={SACRED_SPACING.lg} textAlign="center">
+          <Box textAlign="center" mt={SACRED_SPACING.lg}>
             <Button 
-              variant="outline" 
+              variant="secondary" 
               size="medium"
               onClick={handleLoadMore}
             >
@@ -221,32 +221,30 @@ const TestimonialsSection: React.FC = () => {
           </Box>
         )}
         
-        <Box 
-          mt={SACRED_SPACING.xl * PHI} 
-          textAlign="center"
-          maxWidth="800px"
-          mx="auto"
-          padding={SACRED_SPACING.lg}
-          borderRadius="8px"
-          style={{ 
-            background: 'rgba(255, 255, 255, 0.6)',
-            border: '1px solid rgba(0, 0, 0, 0.05)' 
-          }}
-        >
-          <Text fontSize="lg" fontWeight="500">
-            Our approach has helped hundreds of clients achieve faster, more complete recovery.
+        <Box mt={SACRED_SPACING.xl * PHI} textAlign="center">
+          <Text size="lg" fontWeight="600">
+            Ready to start your recovery journey?
           </Text>
-          <Text fontSize="md" mt={SACRED_SPACING.sm}>
-            We're proud of our 4.9/5 average rating across 200+ verified reviews.
+          <Text size="md" mt={SACRED_SPACING.sm}>
+            Experience the difference our sacred geometry approach can make.
           </Text>
-          <Button 
-            variant="primary" 
-            size="medium"
-            href="/testimonials"
-            style={{ marginTop: SACRED_SPACING.md }}
-          >
-            Read All Testimonials
-          </Button>
+          
+          <Box mt={SACRED_SPACING.md} display="flex" justifyContent="center" gap={SACRED_SPACING.md}>
+            <Button 
+              variant="primary" 
+              size="large"
+              href="/booking"
+            >
+              Book a Consultation
+            </Button>
+            <Button 
+              variant="outline" 
+              size="large"
+              href="/contact"
+            >
+              Contact Us
+            </Button>
+          </Box>
         </Box>
       </ContentContainer>
     </StyledSection>

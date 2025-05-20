@@ -39,7 +39,7 @@ const createApiClient = (): AxiosInstance => {
   instance.interceptors.response.use(
     (response: AxiosResponse) => {
       // Transform successful responses to our ApiResponse format
-      const apiResponse: ApiResponse<any> = {
+      const apiResponse: ApiResponse<unknown> = {
         success: true,
         data: response.data,
         timestamp: new Date().toISOString()
@@ -54,7 +54,7 @@ const createApiClient = (): AxiosInstance => {
       let errorCode: ApiErrorCode = ApiErrorCode.UNEXPECTED_ERROR;
       let message = 'An unexpected error occurred';
       let statusCode = HttpStatusCode.INTERNAL_SERVER_ERROR;
-      let details: any = undefined;
+      let details: Record<string, unknown> | undefined = undefined;
       
       if (error.response) {
         // Server returned an error response
@@ -66,7 +66,7 @@ const createApiClient = (): AxiosInstance => {
         // Request was made but no response was received
         errorCode = ApiErrorCode.NETWORK_ERROR;
         message = 'No response received from server';
-        statusCode = 0;
+        statusCode = HttpStatusCode.SERVICE_UNAVAILABLE; // Use SERVICE_UNAVAILABLE instead of 0
       }
       
       // Create ApiError instance
@@ -123,7 +123,7 @@ export const apiClient = createApiClient();
 export const requestWithRetry = async <T>(
   method: 'get' | 'post' | 'put' | 'delete',
   url: string,
-  data?: any,
+  data?: unknown,
   retryConfig?: {
     maxRetries?: number;
     retryDelay?: number;
@@ -176,11 +176,11 @@ export const requestWithRetry = async <T>(
 
 // Convenience methods for common API operations
 export const api = {
-  get: <T>(url: string, config?: AxiosRequestConfig) => apiClient.get<T>(url, config),
-  post: <T>(url: string, data?: any, config?: AxiosRequestConfig) => apiClient.post<T>(url, data, config),
-  put: <T>(url: string, data?: any, config?: AxiosRequestConfig) => apiClient.put<T>(url, data, config),
-  delete: <T>(url: string, config?: AxiosRequestConfig) => apiClient.delete<T>(url, config),
-  patch: <T>(url: string, data?: any, config?: AxiosRequestConfig) => apiClient.patch<T>(url, data, config)
+  get: <T>(url: string, config?: AxiosRequestConfig) => apiClient.get<ApiResponse<T>>(url, config),
+  post: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => apiClient.post<ApiResponse<T>>(url, data, config),
+  put: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => apiClient.put<ApiResponse<T>>(url, data, config),
+  delete: <T>(url: string, config?: AxiosRequestConfig) => apiClient.delete<ApiResponse<T>>(url, config),
+  patch: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => apiClient.patch<ApiResponse<T>>(url, data, config)
 }; 
 
 

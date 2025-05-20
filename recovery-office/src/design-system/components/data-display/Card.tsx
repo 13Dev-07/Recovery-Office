@@ -131,10 +131,11 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         onClick={interactive ? onClick : undefined}
         className={className}
         data-testid={testId}
-        style={style}
+        {...(interactive 
+          ? { ...motionProps, ...restProps, style: style } 
+          : { ...restProps, style: style as React.CSSProperties }
+        )}
         ref={ref}
-        {...motionProps}
-        {...restProps}
       >
         {children}
         

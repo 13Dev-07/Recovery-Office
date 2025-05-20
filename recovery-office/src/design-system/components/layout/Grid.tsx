@@ -9,14 +9,17 @@
  */
 
 import * as React from 'react';
+import styled from 'styled-components';
 import Box from './Box';
-import { BoxProps } from '../../types';
-import { lightTheme } from '../../theme';
-import { PHI, FIBONACCI } from '../../../constants/sacred-geometry';
-import styled, { DefaultTheme } from 'styled-components';
+import { BoxProps } from '../../types/styled.types';
+import { PHI, FIBONACCI, FibonacciIndex } from '../../../constants/sacred-geometry';
 
-// Extended Grid Props to include special grid options not in the generic GridProps
-interface ExtendedGridProps extends BoxProps {
+// Import GridItem for re-export
+import GridItemComponent from './GridItem';
+export const GridItem = GridItemComponent;
+
+// Extended Grid Props to include special grid options
+interface GridProps extends BoxProps {
   /**
    * Number of columns or specific template
    */
@@ -49,8 +52,9 @@ interface ExtendedGridProps extends BoxProps {
   
   /**
    * CSS grid-template-columns property
+   * Can be a string or a responsive object with breakpoint keys
    */
-  templateColumns?: string;
+  templateColumns?: string | Record<string, string>;
   
   /**
    * CSS grid-template-rows property
@@ -71,19 +75,28 @@ interface ExtendedGridProps extends BoxProps {
    * CSS grid-auto-flow property
    */
   autoFlow?: string;
-  
-  /**
-   * Border radius for the grid
-   */
-  borderRadius?: string | number;
 }
+
+/**
+ * Safely gets a Fibonacci value by numeric key
+ * @param key - The numeric key to lookup in the Fibonacci sequence
+ * @returns The Fibonacci value
+ */
+const getFibonacciValue = (key: number): number => {
+  // Convert to string then to FibonacciIndex type for safe access
+  // This is a workaround for TypeScript's type checking
+  const safeKey = parseInt(key.toString()) as FibonacciIndex;
+  
+  // Default to 1 if the key doesn't exist in FIBONACCI
+  return FIBONACCI[safeKey] ?? 1;
+};
 
 /**
  * Generates grid template columns based on Fibonacci sequence
  * @param columns - Number of columns or specific template
  * @returns CSS grid-template-columns value
  */
-export const generateGridTemplateColumns = (columns: ExtendedGridProps['columns']): string => {
+export const generateGridTemplateColumns = (columns: GridProps['columns']): string => {
   if (typeof columns === 'number') {
     // For numeric columns, create a Fibonacci-based grid
     return `repeat(${columns}, minmax(0, 1fr))`;
@@ -97,7 +110,7 @@ export const generateGridTemplateColumns = (columns: ExtendedGridProps['columns'
   if (columns === 'fibonacci') {
     // Use first few Fibonacci numbers as column widths
     const fibKeys = Object.keys(FIBONACCI).map(Number).sort((a, b) => a - b);
-    const fibWidths = fibKeys.slice(0, 4).map(k => `${FIBONACCI[k] ?? 1}fr`).join(' ');
+    const fibWidths = fibKeys.slice(0, 4).map(k => `${getFibonacciValue(k)}fr`).join(' ');
     return fibWidths;
   }
   
@@ -106,10 +119,36 @@ export const generateGridTemplateColumns = (columns: ExtendedGridProps['columns'
 };
 
 /**
+ * Processes the templateColumns prop to handle responsive objects
+ * @param templateColumns - The template columns prop value
+ * @returns CSS properties for template columns 
+ */
+const processTemplateColumns = (templateColumns: GridProps['templateColumns']) => {
+  if (!templateColumns) return undefined;
+  
+  // If it's a string, use it directly
+  if (typeof templateColumns === 'string') {
+    return templateColumns;
+  }
+  
+  // If it's a responsive object, create responsive styles with media queries
+  if (typeof templateColumns === 'object') {
+    // For direct Box prop usage, we'll handle this differently
+    // The Box component will apply these styles through its responsive props system
+    const baseValue = templateColumns.base || templateColumns.xs;
+    
+    // Return the base value, and the responsive styles will be handled by the Box component
+    return baseValue;
+  }
+  
+  return undefined;
+};
+
+/**
  * Grid Component with ref forwarding
  * Provides a simplified API for grid layouts based on sacred geometry
  */
-export const Grid = React.forwardRef<HTMLDivElement, ExtendedGridProps>(
+export const Grid = React.forwardRef<HTMLDivElement, GridProps>(
   ({ 
     columns,
     rows,
@@ -122,42 +161,50 @@ export const Grid = React.forwardRef<HTMLDivElement, ExtendedGridProps>(
     autoColumns,
     autoRows,
     autoFlow,
-    borderRadius,
     children,
     ...rest 
   }, ref) => {
     // Generate grid template columns if the columns prop is provided
-    const gridTemplateColumns = columns ? generateGridTemplateColumns(columns) : templateColumns;
+    const gridTemplateColumns = columns ? generateGridTemplateColumns(columns) : processTemplateColumns(templateColumns);
     
-    // Ensure borderRadius has 'px' suffix if it's a number
-    const formattedBorderRadius = typeof borderRadius === 'number' ? `${borderRadius}px` : borderRadius;
+    // Create responsive props for grid template columns if needed
+    const responsiveProps: Record<string, any> = {};
     
-    // Create CSS styles for grid properties as a template literal
-    const gridTemplate = `
-      display: grid;
-      grid-template-columns: ${gridTemplateColumns || 'none'};
-      grid-template-rows: ${templateRows || (typeof rows === 'string' ? rows : 'none')};
-      grid-template-areas: ${templateAreas || 'none'};
-      grid-gap: ${gap || 'initial'};
-      grid-row-gap: ${rowGap || 'initial'};
-      grid-column-gap: ${columnGap || 'initial'};
-      ${autoColumns ? `grid-auto-columns: ${autoColumns};` : ''}
-      ${autoRows ? `grid-auto-rows: ${autoRows};` : ''}
-      ${autoFlow ? `grid-auto-flow: ${autoFlow};` : ''}
-    `;
+    // Handle responsive gridTemplateColumns
+    if (templateColumns && typeof templateColumns === 'object') {
+      Object.entries(templateColumns).forEach(([breakpoint, value]) => {
+        if (breakpoint === 'base') return; // Skip base, already handled
+        
+        // Create responsive props following Box component's _breakpoint format
+        const breakpointKey = `_${breakpoint}`;
+        if (!responsiveProps[breakpointKey]) {
+          responsiveProps[breakpointKey] = {};
+        }
+        
+        responsiveProps[breakpointKey].gridTemplateColumns = value;
+      });
+    }
     
-    // Create a grid box with all the CSS styles
-    const GridDiv = styled.div`${gridTemplate}`;
+    // Set all grid properties on the Box component
+    const gridProps = {
+      display: "grid",
+      gridTemplateColumns: gridTemplateColumns || undefined,
+      gridTemplateRows: templateRows || (typeof rows === 'string' ? rows : undefined),
+      gridTemplateAreas: templateAreas,
+      gridGap: gap,
+      gridRowGap: rowGap,
+      gridColumnGap: columnGap
+    };
     
-    // Return the grid box with remaining props
     return (
-      <GridDiv
+      <Box
         ref={ref}
-        style={{ borderRadius: formattedBorderRadius }}
+        {...gridProps}
+        {...responsiveProps}
         {...rest}
       >
         {children}
-      </GridDiv>
+      </Box>
     );
   }
 );

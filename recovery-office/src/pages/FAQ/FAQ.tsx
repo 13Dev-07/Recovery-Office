@@ -1,13 +1,15 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Hero } from '../design-system/components/feature-sections';
-import { FlowerOfLife, OliveBranch, VesicaPiscis } from '../design-system/botanical';
-import { Box, Container } from '../design-system/components/layout';
-import { Section, SectionTitle, SectionContent } from '../design-system/components/layout/Section';
-import { Text, Paragraph, Heading } from '../design-system/components/typography';
-import { Button } from '../design-system/components/button';
-import { Card } from '../design-system/components/data-display';
+import { Hero } from '../../design-system/components/feature-sections';
+import { FlowerOfLife, OliveBranch, VesicaPiscis } from '../../design-system/botanical';
+import { Box, Container } from '../../design-system/components/layout';
+import { Section, SectionTitle, SectionContent } from '../../design-system/components/layout/Section';
+import { Text, Paragraph, Heading } from '../../design-system/components/typography';
+import { Button } from '../../design-system/components/button';
+import { Card } from '../../design-system/components/data-display';
 import { ScrollReveal, FadeIn } from '../../animation';
+import { PHI } from '../../constants/sacred-geometry';
 
 
 /**
@@ -24,7 +26,7 @@ const FAQPage: React.FC = () => {
   const toggleExpanded = (id: string) => {
     setExpandedItems(prev => ({
       ...prev,
-      [id]: !prev[id] ?? 1
+      [id]: !(prev[id] || false)
     }));
   };
 
@@ -185,7 +187,7 @@ const FAQPage: React.FC = () => {
           <SectionContent>
             <Box 
               display="grid" 
-              gridTemplateColumns={["1fr", null, "1fr 1fr"]} 
+              gridTemplateColumns={{ xs: "1fr", sm: "1fr", md: "1fr 1fr" }}
               gap={`${PHI * 24}px`}
               marginBottom={`${PHI * 48}px`}
             >
@@ -222,11 +224,13 @@ const FAQPage: React.FC = () => {
                           borderRadius="8px"
                           backgroundColor="#f8f9fa"
                         >
-                          <Box 
-                            display="flex" 
-                            justifyContent="space-between" 
-                            alignItems="center"
-                            cursor="pointer"
+                          <div 
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              cursor: 'pointer'
+                            }}
                             onClick={() => toggleExpanded(faq.id)}
                           >
                             <Heading 
@@ -236,14 +240,16 @@ const FAQPage: React.FC = () => {
                             >
                               {faq.question}
                             </Heading>
-                            <Box 
-                              fontSize="24px" 
-                              transition="transform 0.3s ease"
-                              transform={expandedItems[faq.id] ? 'rotate(45deg)' : 'rotate(0)'}
+                            <div 
+                              style={{
+                                fontSize: '24px',
+                                transition: 'transform 0.3s ease',
+                                transform: expandedItems[faq.id] ? 'rotate(45deg)' : 'rotate(0)'
+                              }}
                             >
                               +
-                            </Box>
-                          </Box>
+                            </div>
+                          </div>
                           
                           {expandedItems[faq.id] && (
                             <FadeIn>

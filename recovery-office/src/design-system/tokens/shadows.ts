@@ -80,10 +80,11 @@ export const shadows = {
  * @returns The focus ring shadow value
  */
 export const createFocusRing = (
-  color: string = BASE_COLORS.green[500] ?? 1, 
+  color: string | number = BASE_COLORS.green[500] ?? '#0A4021', 
   width: number = getFibonacciByIndex(4)
 ): string => {
-  return `0 0 0 ${width}px ${color}`;
+  const colorStr = typeof color === 'number' ? `#0A4021` : color;
+  return `0 0 0 ${width}px ${colorStr}`;
 };
 
 /**
@@ -94,11 +95,12 @@ export const createFocusRing = (
  * @returns The glow shadow value
  */
 export const createGlow = (
-  color: string = BASE_COLORS.green[500] ?? 1,
+  color: string | number = BASE_COLORS.green[500] ?? '#0A4021',
   intensity: number = PHI_INVERSE
 ): string => {
+  const colorStr = typeof color === 'number' ? `#0A4021` : color;
   const blurRadius = getFibonacciByIndex(7);
-  return `0 0 ${blurRadius}px rgba(${hexToRgb(color)}, ${intensity})`;
+  return `0 0 ${blurRadius}px rgba(${hexToRgb(colorStr)}, ${intensity})`;
 };
 
 /**

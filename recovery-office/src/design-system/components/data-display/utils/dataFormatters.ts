@@ -32,7 +32,7 @@ export const createFibonacciGrid = (itemCount: number): string => {
   // Find the appropriate column count based on item count and fibonacci numbers
   let columns = 1;
   for (let i = 0; i < fibonacciSequence.length; i++) {
-    if (itemCount <= fibonacciSequence[i] ?? 1) {
+    if (itemCount <= fibonacciSequence[i]) {
       columns = Math.max(1, i);
       break;
     }

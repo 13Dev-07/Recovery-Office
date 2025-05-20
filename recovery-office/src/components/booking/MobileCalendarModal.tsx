@@ -1,15 +1,16 @@
-import * as React from 'react';;
+import * as React from 'react';
+import { useState, useRef } from 'react';
 import { 
   SACRED_SPACING, 
   PHI, 
   FIBONACCI, 
   ANIMATION_TIMING 
-} from '@constants/sacred-geometry';
+} from '../../constants/sacred-geometry';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
-import { BOOKING_MIN_DATE, BOOKING_MAX_DATE } from "@constants/booking.constants";
+import { BOOKING_MIN_DATE, BOOKING_MAX_DATE } from "../../constants/booking.constants";
 import styled from 'styled-components';
-import { DefaultTheme } from 'styled-components';
+import { RecoveryOfficeTheme } from '../../design-system/types/theme.types';
 
 // Create styled Modal subcomponents since they're not exported as named exports
 const ModalOverlay = styled.div`
@@ -43,7 +44,7 @@ const ModalHeader = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid ${(props: { theme: DefaultTheme }) => props.theme.colors.border.light};
+  border-bottom: 1px solid ${(props: { theme: RecoveryOfficeTheme }) => props.theme.colors.border.light};
 `;
 
 const ModalCloseButton = styled.button`
@@ -72,28 +73,47 @@ const ModalFooter = styled.footer`
   padding: ${SACRED_SPACING.md}px ${SACRED_SPACING.lg}px;
   display: flex;
   justify-content: flex-end;
-  border-top: 1px solid ${(props: { theme: DefaultTheme }) => props.theme.colors.border.light};
+  border-top: 1px solid ${(props: { theme: RecoveryOfficeTheme }) => props.theme.colors.border.light};
 `;
 
-const StyledBox = styled.div`
-  width: ${(props: { width?: string }) => props.width || '100%'};
-  padding: ${(props: { py?: number }) => props.py ? `${props.py}px 0` : '0'};
-  overflow: ${(props: { overflow?: string }) => props.overflow || 'visible'};
+interface StyledBoxProps {
+  width?: string;
+  py?: number;
+  overflow?: string;
+}
+
+const StyledBox = styled.div<StyledBoxProps>`
+  width: ${props => props.width || '100%'};
+  padding: ${props => props.py ? `${props.py}px 0` : '0'};
+  overflow: ${props => props.overflow || 'visible'};
 `;
 
-const Flex = styled.div`
+interface FlexProps {
+  justify?: string;
+  align?: string;
+  mb?: number;
+  px?: number;
+}
+
+const Flex = styled.div<FlexProps>`
   display: flex;
-  justify-content: ${(props: { justify?: string }) => props.justify || 'flex-start'};
-  align-items: ${(props: { align?: string }) => props.align || 'stretch'};
-  margin-bottom: ${(props: { mb?: number }) => props.mb ? `${props.mb}px` : '0'};
-  padding-left: ${(props: { px?: number }) => props.px ? `${props.px}px` : '0'};
-  padding-right: ${(props: { px?: number }) => props.px ? `${props.px}px` : '0'};
+  justify-content: ${props => props.justify || 'flex-start'};
+  align-items: ${props => props.align || 'stretch'};
+  margin-bottom: ${props => props.mb ? `${props.mb}px` : '0'};
+  padding-left: ${props => props.px ? `${props.px}px` : '0'};
+  padding-right: ${props => props.px ? `${props.px}px` : '0'};
 `;
 
-const Text = styled.p`
-  font-weight: ${(props: { fontWeight?: string }) => props.fontWeight || 'normal'};
-  font-size: ${(props: { fontSize?: string }) => props.fontSize || 'inherit'};
-  color: ${(props: { color?: string; theme: DefaultTheme }) => 
+interface TextProps {
+  fontWeight?: string;
+  fontSize?: string;
+  color?: string;
+}
+
+const Text = styled.p<TextProps>`
+  font-weight: ${props => props.fontWeight || 'normal'};
+  font-size: ${props => props.fontSize || 'inherit'};
+  color: ${(props: { color?: string; theme: RecoveryOfficeTheme }) => 
     props.color ? props.color : props.theme.colors.text.primary};
 `;
 
@@ -167,10 +187,21 @@ interface TouchPosition {
   y: number;
 }
 
+interface CalendarProps {
+  value?: Date;
+  onChange: (date: Date) => void;
+  month: Date;
+  minDate: Date;
+  maxDate: Date;
+  isDateHighlighted: (date: Date) => boolean;
+  isDateSelected: (date: Date) => boolean;
+  width: string;
+}
+
 /**
  * Simple Calendar component since we can't find the real one
  */
-const Calendar = ({ value, onChange, month, minDate, maxDate, isDateHighlighted, isDateSelected, width }) => {
+const Calendar: React.FC<CalendarProps> = ({ value, onChange, month, minDate, maxDate, isDateHighlighted, isDateSelected, width }) => {
   // This is a minimal implementation just to make the component compile
   return (
     <div style={{ width }}>
@@ -192,8 +223,8 @@ export const MobileCalendarModal: React.FC<MobileCalendarModalProps> = ({
   onClose,
   selectedDate,
   onDateChange,
-  _selectedTimeSlotId,
-  _onTimeSlotChange,
+  selectedTimeSlotId,
+  onTimeSlotChange,
   getAvailableTimeSlots,
 }) => {
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());

@@ -10,18 +10,71 @@
  */
 
 import * as React from 'react';
-import { PHI, PHI_INVERSE, FIBONACCI } from '../../../constants/sacred-geometry';
+import { forwardRef } from 'react';
 import BotanicalElement, { BotanicalElementProps } from './BotanicalElement';
+import { SmallFlourishVariant } from '../../types/botanical.types';
+
+// Define constants locally until we fix the constants directory
+const PHI = 1.618033988749895;
+const PHI_INVERSE = 0.618033988749895;
+const FIBONACCI = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+
+/**
+ * Calculate a point on a cubic bezier curve at position t (0-1)
+ */
+const calculateCubicBezierPoint = (
+  p0: number,
+  p1: number,
+  p2: number,
+  p3: number,
+  t: number
+): number => {
+  const t2 = t * t;
+  const t3 = t2 * t;
+  const mt = 1 - t;
+  const mt2 = mt * mt;
+  const mt3 = mt2 * mt;
+  
+  return (
+    p0 * mt3 +
+    3 * p1 * mt2 * t +
+    3 * p2 * mt * t2 +
+    p3 * t3
+  );
+};
+
+/**
+ * Calculate the tangent of a cubic bezier curve at position t (0-1)
+ */
+const calculateCubicBezierTangent = (
+  p0: number,
+  p1: number,
+  p2: number,
+  p3: number,
+  t: number
+): number => {
+  const t2 = t * t;
+  const mt = 1 - t;
+  const mt2 = mt * mt;
+  
+  return (
+    3 * mt2 * (p1 - p0) +
+    6 * mt * t * (p2 - p1) +
+    3 * t2 * (p3 - p2)
+  );
+};
 
 /**
  * SmallFlourish component props
+ *
+ * TypeScript fix: Redefine 'variant' by omitting it from BotanicalElementProps to allow SmallFlourishVariant
  */
-export interface SmallFlourishProps extends Omit<BotanicalElementProps, 'children'> {
+export interface SmallFlourishProps extends Omit<BotanicalElementProps, 'children' | 'variant'> {
   /**
    * The style variant of the flourish
    * @default 'curved'
    */
-  variant?: 'curved' | 'angular' | 'spiral' | 'wave';
+  variant?: SmallFlourishVariant;
   
   /**
    * The flourish complexity level
@@ -182,9 +235,9 @@ const generateSmallFlourish = (
       ];
       
       // Create the angular path
-      let angularPath = `M ${points[0] ?? 1.x},${points[0] ?? 1.y}`;
+      let angularPath = `M ${points[0]?.x ?? 0},${points[0]?.y ?? 0}`;
       for (let i = 1; i < points.length; i++) {
-        angularPath += ` L ${points[i] ?? 1.x},${points[i] ?? 1.y}`;
+        angularPath += ` L ${points[i]?.x ?? 0},${points[i]?.y ?? 0}`;
       }
       
       elements.push(
@@ -208,8 +261,8 @@ const generateSmallFlourish = (
           elements.push(
             <circle
               key={`joint-${i}`}
-              cx={points[i] ?? 1.x}
-              cy={points[i] ?? 1.y}
+              cx={points[i]?.x ?? 0}
+              cy={points[i]?.y ?? 0}
               r={decorSize}
               fill="currentColor"
               className="flourish-joint"
@@ -343,56 +396,11 @@ const generateSmallFlourish = (
 };
 
 /**
- * Calculate a point on a cubic bezier curve at position t (0-1)
- */
-const calculateCubicBezierPoint = (
-  p0: number,
-  p1: number,
-  p2: number,
-  p3: number,
-  t: number
-): number => {
-  const t2 = t * t;
-  const t3 = t2 * t;
-  const mt = 1 - t;
-  const mt2 = mt * mt;
-  const mt3 = mt2 * mt;
-  
-  return (
-    p0 * mt3 +
-    3 * p1 * mt2 * t +
-    3 * p2 * mt * t2 +
-    p3 * t3
-  );
-};
-
-/**
- * Calculate the tangent of a cubic bezier curve at position t (0-1)
- */
-const calculateCubicBezierTangent = (
-  p0: number,
-  p1: number,
-  p2: number,
-  p3: number,
-  t: number
-): number => {
-  const t2 = t * t;
-  const mt = 1 - t;
-  const mt2 = mt * mt;
-  
-  return (
-    3 * mt2 * (p1 - p0) +
-    6 * mt * t * (p2 - p1) +
-    3 * t2 * (p3 - p2)
-  );
-};
-
-/**
  * SmallFlourish Component with ref forwarding
  * 
  * Creates an elegant decorative flourish based on sacred geometry principles
  */
-export const SmallFlourish = React.forwardRef<SVGSVGElement, SmallFlourishProps>(
+export const SmallFlourish = forwardRef<SVGSVGElement, SmallFlourishProps>(
   ({ 
     variant = 'curved',
     complexity = 1,
@@ -426,10 +434,5 @@ export const SmallFlourish = React.forwardRef<SVGSVGElement, SmallFlourishProps>
 
 SmallFlourish.displayName = 'SmallFlourish';
 
-export default SmallFlourish; 
-
-
-
-
-
+export default SmallFlourish;
 

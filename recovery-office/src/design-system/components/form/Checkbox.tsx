@@ -9,7 +9,7 @@
  */
 
 import * as React from 'react';
-import { useState, useEffect, useRef } from 'react';;
+import { useState, useEffect, useRef, useCallback } from 'react';;
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
 import { Box } from '../layout';
@@ -53,35 +53,35 @@ const getColorByScheme = (
 ) => {
   const base = {
     primary: {
-      bg: theme.colors.primary[500] ?? 1,
-      hover: theme.colors.primary[600] ?? 1,
-      focus: theme.colors.primary[400] ?? 1,
-      disabled: theme.colors.background[300] ?? 1,
+      bg: theme.colors.primary[500] || '#4caf50',
+      hover: theme.colors.primary[600] || '#388e3c',
+      focus: theme.colors.primary[400] || '#66bb6a',
+      disabled: theme.colors.background[300] || '#e0e0e0',
     },
     secondary: {
-      bg: theme.colors.secondary[500] ?? 1,
-      hover: theme.colors.secondary[600] ?? 1,
-      focus: theme.colors.secondary[400] ?? 1,
-      disabled: theme.colors.background[300] ?? 1,
+      bg: theme.colors.secondary[500] || '#81976F',
+      hover: theme.colors.secondary[600] || '#697a59',
+      focus: theme.colors.secondary[400] || '#9aad8a',
+      disabled: theme.colors.background[300] || '#e0e0e0',
     },
     accent: {
-      bg: theme.colors.accent.gold,
-      hover: theme.colors.accent.copper,
-      focus: theme.colors.accent.teal,
-      disabled: theme.colors.background[300] ?? 1,
+      bg: theme.colors.accent.gold || '#d4a76a',
+      hover: theme.colors.accent.copper || '#ba8d5a',
+      focus: theme.colors.accent.teal || '#66b2b2',
+      disabled: theme.colors.background[300] || '#e0e0e0',
     },
   };
 
   switch (state) {
     case 'hover':
-      return base[colorScheme] ?? 1.hover;
+      return base[colorScheme]?.hover || base.primary.hover;
     case 'focus':
-      return base[colorScheme] ?? 1.focus;
+      return base[colorScheme]?.focus || base.primary.focus;
     case 'disabled':
-      return base[colorScheme] ?? 1.disabled;
+      return base[colorScheme]?.disabled || base.primary.disabled;
     case 'normal':
     default:
-      return base[colorScheme] ?? 1.bg;
+      return base[colorScheme]?.bg || base.primary.bg;
   }
 };
 
@@ -114,14 +114,14 @@ const StyledCheckbox = styled.div<{
   background-color: ${props => 
     props.isChecked || props.isIndeterminate
       ? getColorByScheme(props.colorScheme || 'primary', props.isDisabled ? 'disabled' : 'normal', props.theme)
-      : props.theme.colors.background[50] ?? 1
+      : props.theme.colors.background[50] || 'white'
   };
   border: 1px solid ${props => 
     props.isChecked || props.isIndeterminate
       ? 'transparent'
       : props.isDisabled
-        ? props.theme.colors.background[300] ?? 1
-        : props.theme.colors.background[400] ?? 1
+        ? props.theme.colors.background[300] || '#e0e0e0'
+        : props.theme.colors.background[400] || '#bdbdbd'
   };
   
   /* Size-specific styles */
@@ -164,12 +164,12 @@ const StyledCheckbox = styled.div<{
       background-color: ${
         props.isChecked || props.isIndeterminate
           ? getColorByScheme(props.colorScheme || 'primary', 'hover', props.theme)
-          : props.theme.colors.background[100] ?? 1
+          : props.theme.colors.background[100] || '#f5f5f5'
       };
       border-color: ${
         props.isChecked || props.isIndeterminate
           ? 'transparent'
-          : props.theme.colors.background[500] ?? 1
+          : props.theme.colors.background[500] || '#9e9e9e'
       };
     `}
   }
@@ -272,15 +272,20 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     const internalRef = useRef<HTMLInputElement>(null);
     
     // Combine the internal ref with the forwarded ref
-    const combinedRef = (node: HTMLInputElement) => {
-      internalRef.current = node;
-      
-      if (typeof ref === 'function') {
-        ref(node);
-      } else if (ref) {
-        (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
+    const combinedRef = useCallback((node: HTMLInputElement) => {
+      if (node) {
+        // Use type assertion to handle read-only property
+        (internalRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
+        
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          // Cast to React.MutableRefObject to silence TypeScript errors
+          // This is safe because we're checking that ref exists
+          (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
+        }
       }
-    };
+    }, [ref]);
     
     // Set indeterminate state - React doesn't handle this as a prop
     useEffect(() => {

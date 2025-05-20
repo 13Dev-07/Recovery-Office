@@ -1,23 +1,36 @@
 /**
- * Feature Sections
+ * Feature Sections Components Export
  * 
- * This module exports feature section components that follow sacred geometry principles.
- * These components create complete, impactful sections for various page layouts.
+ * This file exports all feature section components and their types from the design system.
  */
 
-// Export components
-export { default as Hero } from './Hero';
-export { default as Services } from './Services';
-export { default as Testimonials } from './Testimonials';
-export { default as Team } from './Team';
-export { default as Contact } from './Contact';
+// Export Hero component and types
+import Hero from './Hero';
+export { Hero };
+export type { HeroProps } from '../../types/feature-sections.types';
 
-// Export types
-export type { HeroProps, HeroButton } from './Hero';
-export type { ServicesProps, ServiceItem } from './Services';
-export type { TestimonialsProps, TestimonialItem } from './Testimonials';
-export type { TeamProps, TeamMember } from './Team';
-export type { ContactProps, ContactOption, ContactFormField } from './Contact'; 
+// Export Services component and types
+import Services from './Services';
+export { Services };
+export type { ServicesProps, ServiceItem } from '../../types/feature-sections.types';
+
+// Export Team component and types
+import Team from './Team';
+export { Team };
+export type { TeamProps, TeamMember } from '../../types/feature-sections.types';
+
+// Export Testimonials component and types
+import Testimonials from './Testimonials';
+export { Testimonials as TestimonialsSection };
+export type { TestimonialsProps, TestimonialItem } from '../../types/feature-sections.types';
+
+// Export Contact component and types
+import Contact from './Contact';
+export { Contact };
+export type { ContactProps, ContactOption, ContactFormField } from '../../types/feature-sections.types';
+
+// Export common types
+export type { FeatureButton, FeatureBackground, FeatureCTA } from '../../types/feature-sections.types';
 
 
 

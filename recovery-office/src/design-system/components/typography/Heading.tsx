@@ -1,10 +1,8 @@
 /**
  * Heading Component
  * 
- * A typography component for headings (h1-h6) that implements sacred geometry
+ * A typography component for headings (h1-h6) that implements spacing
  * principles for font sizing, spacing, and visual hierarchy.
- * 
- * Font sizes follow the Golden Ratio scale to create natural progression and harmony.
  */
 
 import * as React from 'react';
@@ -12,12 +10,47 @@ import styled, { DefaultTheme } from 'styled-components';
 import { typography } from '../../tokens';
 import { BoxProps, AsProps } from '../../types';
 import Box from '../layout/Box';
+import { PHI } from '../../../constants/sacred-geometry';
 
 // Heading level type (h1-h6)
 export type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
 // Create a type that omits 'display' from BoxProps to avoid collision with our boolean display prop
 type BoxPropsWithoutDisplay = Omit<BoxProps, 'display'>;
+
+// Basic typography presets for headings if not available in tokens
+const headingPresets = {
+  h1: {
+    fontSize: '2.5rem',
+    fontWeight: 700,
+    lineHeight: String(PHI),
+  },
+  h2: {
+    fontSize: '2rem',
+    fontWeight: 700,
+    lineHeight: String(PHI),
+  },
+  h3: {
+    fontSize: '1.75rem',
+    fontWeight: 600,
+    lineHeight: String(PHI),
+  },
+  h4: {
+    fontSize: '1.5rem',
+    fontWeight: 600,
+    lineHeight: String(PHI),
+  },
+  h5: {
+    fontSize: '1.25rem',
+    fontWeight: 600,
+    lineHeight: String(PHI),
+  },
+  h6: {
+    fontSize: '1rem',
+    fontWeight: 600,
+    lineHeight: String(PHI),
+  }
+};
 
 // Interface for Heading props
 export interface HeadingProps extends BoxPropsWithoutDisplay {
@@ -74,7 +107,7 @@ export interface HeadingProps extends BoxPropsWithoutDisplay {
 /**
  * Heading Component
  * 
- * Creates headings with harmonious proportions based on sacred geometry
+ * Creates headings with harmonious proportions
  */
 export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
   (props, ref) => {
@@ -100,7 +133,7 @@ export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
     const useDisplayStyle = display || variant === 'display1' || variant === 'display2';
     
     // Get the typography preset for the heading level
-    const presetStyles = typography.typographyPresets[headingLevel] ?? 1;
+    const presetStyles = headingPresets[headingLevel] ?? {};
     
     // Create a CSS string with all styles
     let cssString = `

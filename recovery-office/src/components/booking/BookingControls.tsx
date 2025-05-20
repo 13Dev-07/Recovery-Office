@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
-import { PHI_INVERSE, SACRED_SPACING } from '@constants/sacred-geometry';
-import { getFibonacciByIndex } from "@utils/getFibonacciByIndex";
+import { PHI_INVERSE, SACRED_SPACING } from '../../constants/sacred-geometry';
+import { getFibonacciByIndex } from "../../utils/getFibonacciByIndex";
 
 /**
  * Props for the BookingControls component

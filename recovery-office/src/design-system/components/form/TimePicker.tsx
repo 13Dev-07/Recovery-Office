@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { useState, useEffect, useMemo, useRef } from 'react';;
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';;
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
 import { Box, Flex, Grid } from '../layout';
@@ -50,9 +50,10 @@ const parseTime = (timeString: string, use24Hour: boolean = false): { hours: num
   const match = timeString.match(timeRegex);
   
   if (match) {
-    let hours = parseInt(match[1] ?? 1, 10);
-    const minutes = parseInt(match[2] ?? 1, 10);
-    const period = match[3] ?? 1?.toUpperCase();
+    let hours = parseInt(match[1] || '0', 10);
+    const minutes = parseInt(match[2] || '0', 10);
+    const rawPeriod = match[3] || '';
+    const period = rawPeriod.toUpperCase();
     
     // Handle 12-hour format
     if (!use24Hour && period) {
@@ -170,6 +171,7 @@ const TimePickerHeader = styled(Flex)`
 const TimeCell = styled(Box)<{
   isSelected?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  onClick?: () => void;
 }>`
   display: flex;
   align-items: center;
@@ -204,6 +206,7 @@ const TimeCell = styled(Box)<{
 const PeriodSelector = styled(Box)<{
   isSelected?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  onClick?: () => void;
 }>`
   display: flex;
   align-items: center;
@@ -471,17 +474,18 @@ export const TimePicker = React.forwardRef<HTMLInputElement, TimePickerProps>(
       });
     };
     
-    // Combine the ref with the internal ref
-    const combinedRef = useMemo(() => {
-      return (node: HTMLInputElement) => {
-        inputRef.current = node;
+    // Fix the ref assignment issue
+    const combinedRef = useCallback((node: HTMLInputElement) => {
+      if (node) {
+        // Use type assertion to handle the read-only property
+        (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
         
         if (typeof ref === 'function') {
           ref(node);
         } else if (ref) {
           (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
         }
-      };
+      }
     }, [ref]);
     
     return (
@@ -505,7 +509,7 @@ export const TimePicker = React.forwardRef<HTMLInputElement, TimePickerProps>(
         
         {isOpen && !disabled && !readOnly && (
           <FadeIn isVisible={isOpen} duration={0.2}>
-            <TimePickerContainer ref={pickerRef} size={size}>
+            <TimePickerContainer ref={pickerRef} componentSize={size}>
               <TimePickerHeader>
                 <Text fontWeight="medium">Select Time</Text>
                 
@@ -530,7 +534,7 @@ export const TimePicker = React.forwardRef<HTMLInputElement, TimePickerProps>(
               <Flex>
                 {/* Hours column */}
                 <Box flex="1">
-                  <Text textAlign="center" fontSize="sm" mb={1}>Hours</Text>
+                  <Text textAlign="center" mb={1}>Hours</Text>
                   <TimePickerGrid 
                     size={size}
                     columns={useGoldenRatioGrid ? 3 : 4}
@@ -541,7 +545,7 @@ export const TimePicker = React.forwardRef<HTMLInputElement, TimePickerProps>(
                 
                 {/* Minutes column */}
                 <Box flex="1">
-                  <Text textAlign="center" fontSize="sm" mb={1}>Minutes</Text>
+                  <Text textAlign="center" mb={1}>Minutes</Text>
                   <TimePickerGrid 
                     size={size}
                     columns={useGoldenRatioGrid ? 3 : 4}
@@ -553,7 +557,7 @@ export const TimePicker = React.forwardRef<HTMLInputElement, TimePickerProps>(
               
               <Flex justifyContent="flex-end" p={2}>
                 <Button 
-                  variant="text" 
+                  variant="ghost" 
                   size="sm" 
                   onClick={() => setIsOpen(false)}
                 >

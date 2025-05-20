@@ -24,23 +24,39 @@ export const GoldenSection = React.forwardRef<HTMLDivElement, GoldenSectionProps
     direction = 'horizontal',
     reverseOrder = false,
     children,
+    rightContent,
+    leftContent,
     ...rest 
   }, ref) => {
     // Determine if we're using horizontal or vertical layout
     const isHorizontal = direction === 'horizontal';
     
-    // Split children into primary and secondary sections
+    // Handle both children and leftContent/rightContent props
     const childrenArray = React.Children.toArray(children);
     
-    if (childrenArray.length !== 2) {
-      console.warn('GoldenSection requires exactly two children for proper Golden Ratio implementation');
+    // Determine primary and secondary content
+    let primaryContent: React.ReactNode;
+    let secondaryContent: React.ReactNode;
+    
+    // If leftContent/rightContent are provided, use them
+    if (leftContent !== undefined || rightContent !== undefined) {
+      primaryContent = leftContent;
+      secondaryContent = rightContent;
+    } 
+    // Otherwise use children (if there are exactly 2)
+    else if (childrenArray.length === 2) {
+      [primaryContent, secondaryContent] = reverseOrder 
+        ? [childrenArray[1], childrenArray[0]]
+        : [childrenArray[0], childrenArray[1]];
+    }
+    // Fallback if neither condition is met
+    else if (childrenArray.length !== 2 && !(leftContent || rightContent)) {
+      console.warn(
+        'GoldenSection requires either exactly two children OR leftContent/rightContent props ' +
+        'for proper Golden Ratio implementation'
+      );
       return <Box ref={ref} {...rest}>{children}</Box>;
     }
-    
-    // Determine which child goes in which section
-    const [primarySection, secondarySection] = reverseOrder 
-      ? [childrenArray[1] ?? 1, childrenArray[0] ?? 1]
-      : [childrenArray[0] ?? 1, childrenArray[1] ?? 1];
     
     // Set up grid properties based on direction
     const gridTemplateColumns = isHorizontal 
@@ -63,14 +79,14 @@ export const GoldenSection = React.forwardRef<HTMLDivElement, GoldenSectionProps
           width={isHorizontal ? '100%' : undefined}
           height={!isHorizontal ? '100%' : undefined}
         >
-          {primarySection}
+          {primaryContent}
         </Box>
         <Box 
           className="golden-section-secondary"
           width={isHorizontal ? '100%' : undefined}
           height={!isHorizontal ? '100%' : undefined}
         >
-          {secondarySection}
+          {secondaryContent}
         </Box>
       </Grid>
     );

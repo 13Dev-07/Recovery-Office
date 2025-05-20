@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { Hero } from '../design-system/components/feature-sections';
-import { FlowerOfLife, OliveBranch, VesicaPiscis } from '../design-system/botanical';
-import { Box, Container } from '../design-system/components/layout';
-import { Section, SectionTitle, SectionContent } from '../design-system/components/layout/Section';
-import { Text, Paragraph, Heading } from '../design-system/components/typography';
-import { Button } from '../design-system/components/button';
-import { Card } from '../design-system/components/data-display';
-import { ScrollReveal } from '../design-system/components/animation';
-import { PHI } from '../constants/sacred-geometry';
+import { Hero } from '../../design-system/components/feature-sections';
+import { SecurityShield, ComplianceBadge, AssetRecovery } from '../../design-system/components/utility/FinancialIcons';
+import { Box, Container } from '../../design-system/components/layout';
+import { Section, SectionTitle, SectionContent } from '../../design-system/components/layout/Section';
+import { Text, Paragraph, Heading } from '../../design-system/components/typography';
+import { Button } from '../../design-system/components/button';
+import { Card } from '../../design-system/components/data-display';
+import { ScrollReveal } from '../../animation';
+import { PHI } from '../../constants/sacred-geometry';
 
 /**
  * Terms of Service Page Component
@@ -34,12 +34,6 @@ const TermsPage: React.FC = () => {
         align="center"
         minHeight="40vh"
         animated={true}
-        botanical={{
-          type: 'flowerOfLife',
-          position: 'bottomRight',
-          opacity: 0.15,
-          animated: true
-        }}
       >
         <Text size="base" maxWidth={`${PHI * 400}px`} m="0 auto" color="white">
           These Terms of Service outline the rules and regulations for using our website
@@ -62,7 +56,7 @@ const TermsPage: React.FC = () => {
                 alignItems="center" 
                 mb={`${PHI * 16}px`}
               >
-                <FlowerOfLife size="sm" opacity={0.6} style={{ marginRight: `${PHI * 12}px` }} />
+                <SecurityShield size="sm" opacity={0.6} style={{ marginRight: `${PHI * 12}px` }} />
                 <Text size="xs" italic={true}>
                   Last Updated: {lastUpdated}
                 </Text>
@@ -101,7 +95,7 @@ const TermsPage: React.FC = () => {
                 title="Use of Services" 
                 size="medium"
                 align="left"
-                decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
+                decoratorBefore={<ComplianceBadge size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -125,7 +119,7 @@ const TermsPage: React.FC = () => {
                 title="Service Policies" 
                 size="medium"
                 align="left"
-                decoratorBefore={<VesicaPiscis size="sm" opacity={0.3} />}
+                decoratorBefore={<AssetRecovery size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -133,7 +127,7 @@ const TermsPage: React.FC = () => {
                   Appointment Scheduling
                 </Heading>
                 <Paragraph size="sm" mb={`${PHI * 16}px`}>
-                  Our Services allow you to schedule appointments with our therapeutic specialists. You agree to provide accurate information when scheduling appointments and to arrive on time for scheduled sessions. We require at least 24 hours' notice for cancellations or rescheduling. Late cancellations (less than 24 hours before the appointment) or no-shows may result in a cancellation fee of up to 50% of the service price.
+                  Our Services allow you to schedule appointments with our financial recovery specialists. You agree to provide accurate information when scheduling appointments and to arrive on time for scheduled sessions. We require at least 24 hours' notice for cancellations or rescheduling. Late cancellations (less than 24 hours before the appointment) or no-shows may result in a cancellation fee of up to 50% of the service price.
                 </Paragraph>
                 
                 <Heading as="h3" mt={`${PHI * 24}px`} mb={`${PHI * 16}px`}>
@@ -156,7 +150,7 @@ const TermsPage: React.FC = () => {
                 title="User Conduct" 
                 size="medium"
                 align="left"
-                decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
+                decoratorBefore={<SecurityShield size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -193,7 +187,7 @@ const TermsPage: React.FC = () => {
                 title="Intellectual Property" 
                 size="medium"
                 align="left"
-                decoratorBefore={<FlowerOfLife size="sm" opacity={0.3} />}
+                decoratorBefore={<ComplianceBadge size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -211,7 +205,7 @@ const TermsPage: React.FC = () => {
                 title="Limitation of Liability" 
                 size="medium"
                 align="left"
-                decoratorBefore={<VesicaPiscis size="sm" opacity={0.3} />}
+                decoratorBefore={<AssetRecovery size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -242,7 +236,7 @@ const TermsPage: React.FC = () => {
                 title="Governing Law" 
                 size="medium"
                 align="left"
-                decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
+                decoratorBefore={<SecurityShield size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -256,7 +250,7 @@ const TermsPage: React.FC = () => {
                 title="Contact Us" 
                 size="medium"
                 align="left"
-                decoratorBefore={<FlowerOfLife size="sm" opacity={0.3} />}
+                decoratorBefore={<ComplianceBadge size="sm" opacity={0.3} />}
               />
               
               <Box>
@@ -273,8 +267,8 @@ const TermsPage: React.FC = () => {
                     Recovery Office
                   </Text>
                   <Text size="sm" mb={`${PHI * 8}px`}>
-                    123 Harmony Way, Suite 618<br />
-                    Golden Springs, CA 91234
+                    123 Financial Street, Suite 618<br />
+                    Recovery City, RC 91234
                   </Text>
                   <Text size="sm" mb={`${PHI * 8}px`}>
                     Email: legal@recoveryoffice.com

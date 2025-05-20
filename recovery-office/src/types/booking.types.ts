@@ -73,6 +73,110 @@ export interface ClientInformation {
   preferredContactMethod: 'email' | 'phone' | 'text';
   isNewClient: boolean;
   additionalNotes?: string;
+  notes?: string;
+  contactPreference?: string;
+}
+
+// ======================================================================
+// Booking Component Props Interfaces
+// ======================================================================
+
+/**
+ * Common interface for all booking step components
+ * Follows sacred geometry principles for consistent component structures
+ */
+export interface BookingStepComponentProps {
+  /**
+   * Called when the step is completed and ready to move to the next step
+   * @param data The step-specific data collected
+   */
+  onComplete?: <T>(data: T) => void;
+  
+  /**
+   * Alternative to onComplete for simpler implementation
+   */
+  onNext?: () => void;
+  
+  /**
+   * Called when the user wants to navigate back to the previous step
+   */
+  onBack?: () => void;
+  
+  /**
+   * If the step is currently in a loading state (e.g., API operations)
+   */
+  isLoading?: boolean;
+  
+  /**
+   * Optional className for styling
+   */
+  className?: string;
+  
+  /**
+   * Optional initial data for the step
+   */
+  initialData?: unknown;
+}
+
+/**
+ * Service Selection Step Props
+ * Props specific to service selection step
+ */
+export interface ServiceSelectionStepProps extends BookingStepComponentProps {
+  /**
+   * Initial service selection (if coming back to edit)
+   */
+  initialData?: {
+    selectedService?: ServiceOption;
+  };
+}
+
+/**
+ * Date Selection Step Props
+ * Props specific to date and time selection step
+ */
+export interface DateSelectionStepProps extends BookingStepComponentProps {
+  /**
+   * Initial date selection (if coming back to edit)
+   */
+  initialData?: {
+    selectedDate?: string;
+    selectedTimeSlot?: BookingTimeSlot;
+  };
+  
+  /**
+   * Selected service (required to fetch available dates)
+   */
+  selectedService: ServiceOption;
+}
+
+/**
+ * Client Information Step Props
+ * Props specific to client information collection step
+ */
+export interface ClientInformationStepProps extends BookingStepComponentProps {
+  /**
+   * Initial client information (if coming back to edit)
+   */
+  initialData?: {
+    clientInfo?: ClientInformation;
+  };
+}
+
+/**
+ * Confirmation Step Props
+ * Props specific to booking confirmation step
+ */
+export interface ConfirmationStepProps extends BookingStepComponentProps {
+  /**
+   * Complete booking data to confirm
+   */
+  bookingData: {
+    service: ServiceOption;
+    date: string;
+    timeSlot: BookingTimeSlot;
+    clientInfo: ClientInformation;
+  };
 }
 
 // ======================================================================

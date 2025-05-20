@@ -4,6 +4,7 @@ import { DefaultTheme } from 'styled-components';
 import { PHI, PHI_INVERSE, SACRED_SPACING, FIBONACCI, SACRED_RADIUS } from '../../../constants/sacred-geometry';
 import { FlowerOfLife } from '../../../design-system/botanical';
 import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
+import { Button as DesignButton } from '../../../design-system/components/button/Button';
 
 /**
  * Booking summary data
@@ -166,7 +167,7 @@ const SummaryValue = styled.div`
  * Uses Fibonacci and sacred spacing
  */
 const InfoBox = styled.div`
-  background-color: ${(props: { theme: DefaultTheme }) => `${props.theme.colors.accent.light}33`}; // 20% opacity
+  background-color: ${(props: { theme: DefaultTheme }) => `${props.theme.colors.background.light}33`}; // 20% opacity
   border-radius: ${SACRED_RADIUS.sm}px;
   padding: ${SACRED_SPACING.md}px;
   margin-bottom: ${SACRED_SPACING.lg}px;
@@ -192,6 +193,22 @@ const InfoBoxText = styled.p`
   font-size: 0.875rem;
   line-height: ${PHI};
   color: ${(props: { theme: DefaultTheme }) => props.theme.colors.text.main};
+`;
+
+/**
+ * Styled button with light variant support
+ */
+const Button = styled(DesignButton)`
+  /* Add any custom styles for the light variant */
+  ${(props) => props.variant === 'light' && `
+    background-color: rgba(255, 255, 255, 0.8);
+    color: ${props.theme.colors.text.primary};
+    border: 1px solid ${props.theme.colors.border.light};
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  `}
 `;
 
 /**

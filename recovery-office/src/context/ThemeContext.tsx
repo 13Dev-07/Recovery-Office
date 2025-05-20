@@ -66,10 +66,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, initialT
     if (mediaQuery.addEventListener) {
       if (mediaQuery.addEventListener) {
         mediaQuery.addEventListener('change', handleChange);
-    } else {
+      } else {
         // Fallback for older browsers
-        mediaQuery.addListener(mediaQuery.match);
-    }
+        mediaQuery.addListener(handleChange);
+      }
       
       // Cleanup listener
       return () => mediaQuery.removeEventListener('change', handleChange);

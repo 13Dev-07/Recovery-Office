@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Flex, Box } from '@design-system/components/layout/Box';
-import { Button } from '@design-system/components/button/Button';
-import { useBooking } from '@context/BookingContext';
-import { BookingStepId } from '@types/booking.types';
+import Flex from '../../design-system/components/layout/Flex';
+import { Box } from '../../design-system/components/layout/Box';
+import { Button } from '../../design-system/components/button/Button';
+import { useBooking } from '../../context/BookingContext';
+import { BookingStepId } from '../../types/booking.types';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
-import { SACRED_SPACING } from '@constants/sacred-geometry';
-import { useBookingStepValidation } from '@hooks/useBookingStepValidation';
+import { SACRED_SPACING } from '../../constants/sacred-geometry';
+import { useBookingStepValidation } from '../../hooks/useBookingStepValidation';
 
 interface BookingNavigationProps {
   currentStepId: BookingStepId;
@@ -72,7 +73,7 @@ export const BookingNavigation: React.FC<BookingNavigationProps> = ({ currentSte
   return (
     <Flex 
       width="100%" 
-      justify="space-between" 
+      justifyContent="space-between"
       style={{
         marginTop: `${SACRED_SPACING.xl}px`,
         paddingLeft: `${SACRED_SPACING.md}px`,
@@ -95,17 +96,8 @@ export const BookingNavigation: React.FC<BookingNavigationProps> = ({ currentSte
       <Button
         rightIcon={<FiArrowRight />}
         onClick={handleNextClick}
-        loading={isNextButtonLoading}
+        isLoading={isNextButtonLoading}
         disabled={isNextButtonDisabled || isNextButtonLoading}
-        loadingText={
-          currentStepId === BookingStepId.SERVICE_SELECTION
-            ? 'Checking availability...'
-            : currentStepId === BookingStepId.DATE_SELECTION
-            ? 'Loading time slots...'
-            : currentStepId === BookingStepId.CONFIRMATION
-            ? isLoading('booking') ? 'Submitting booking...' : 'Processing payment...'
-            : 'Loading...'
-        }
       >
         {getNextButtonText()}
       </Button>

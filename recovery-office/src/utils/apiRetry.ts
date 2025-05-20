@@ -5,7 +5,7 @@
  * a natural progression of wait times that follows sacred proportions.
  */
 
-import { FIBONACCI, PHI_INVERSE } from '../constants/sacred-geometry';
+import { FIBONACCI, PHI_INVERSE, FibonacciIndex } from '../constants/sacred-geometry';
 
 /**
  * Interface for retry options
@@ -53,7 +53,7 @@ export const getFibonacciByIndex = (index: number): number => {
   // Ensure the index is valid
   const safeIndex = Math.max(0, Math.min(index, fibKeys.length - 1));
   // Return the Fibonacci value
-  return FIBONACCI[fibKeys[safeIndex] ?? 1];
+  return FIBONACCI[fibKeys[safeIndex] as unknown as FibonacciIndex] ?? 1;
 };
 
 /**

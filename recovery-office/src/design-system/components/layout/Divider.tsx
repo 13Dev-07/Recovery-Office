@@ -51,9 +51,17 @@ export interface DividerProps {
 
 const StyledDivider = styled.hr<DividerProps & { theme: DefaultTheme }>`
   border: none;
-  background-color: ${({ theme, color }) => 
-    color ? (color.includes('.') ? theme.colors[color.split('.')[0]][color.split('.')[1]] : color) 
-    : theme.colors.border.light};
+  background-color: ${({ theme, color }) => {
+    if (!color) return theme.colors?.border?.light ?? '#e2e8f0';
+    
+    if (color.includes('.')) {
+      const [group, shade] = color.split('.');
+      return theme.colors[group as keyof typeof theme.colors]?.[shade] ?? 
+             theme.colors?.border?.light ?? '#e2e8f0';
+    }
+    
+    return color;
+  }};
   
   /* Orientation specific styles */
   ${({ orientation = 'horizontal' }) => 
@@ -62,14 +70,14 @@ const StyledDivider = styled.hr<DividerProps & { theme: DefaultTheme }>`
         width: ${({ fullSize = true }) => fullSize ? '100%' : `${PHI * 100}%`};
         height: ${({ thickness = 1 }) => `${thickness}px`};
         margin: ${({ margin = 'md' }) => typeof margin === 'string' 
-          ? `${typeof SACRED_SPACING[margin] ?? 1 === 'number' ? SACRED_SPACING[margin] ?? 1 : SACRED_SPACING.md}px 0` 
+          ? `${SACRED_SPACING[margin as keyof typeof SACRED_SPACING] ?? SACRED_SPACING.md}px 0` 
           : `${margin}px 0`};
       ` 
       : `
         width: ${({ thickness = 1 }) => `${thickness}px`};
         height: ${({ fullSize = true }) => fullSize ? '100%' : `${PHI * 100}%`};
         margin: ${({ margin = 'md' }) => typeof margin === 'string' 
-          ? `0 ${typeof SACRED_SPACING[margin] ?? 1 === 'number' ? SACRED_SPACING[margin] ?? 1 : SACRED_SPACING.md}px` 
+          ? `0 ${SACRED_SPACING[margin as keyof typeof SACRED_SPACING] ?? SACRED_SPACING.md}px` 
           : `0 ${margin}px`};
         display: inline-block;
       `

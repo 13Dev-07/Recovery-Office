@@ -5,7 +5,7 @@
  * with sacred geometry principles for timing.
  */
 
-import { SACRED_TIMING, PHI } from '../constants/sacred-geometry';
+import { ANIMATION_TIMING, PHI } from '../constants/sacred-geometry';
 
 /**
  * Debounce function with sacred geometry timing
@@ -20,7 +20,7 @@ import { SACRED_TIMING, PHI } from '../constants/sacred-geometry';
  */
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
-  wait = SACRED_TIMING.standard * 1000, // Default to standard sacred timing
+  wait = ANIMATION_TIMING.standard * 1000, // Default to standard sacred timing
   immediate = false
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null;
@@ -58,7 +58,7 @@ export function debounce<T extends (...args: any[]) => any>(
  */
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
-  wait = SACRED_TIMING.standard * 1000 // Default to standard sacred timing
+  wait = ANIMATION_TIMING.standard * 1000 // Default to standard sacred timing
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null;
   let previous = 0;
@@ -82,11 +82,13 @@ export function throttle<T extends (...args: any[]) => any>(
       // Apply fibonacci timing for smoother throttling
       const adjustedRemaining = remaining * PHI;
       
-      timeout = setTimeout(() => {
+      const timeoutFn = () => {
         previous = Date.now();
         timeout = null;
         func.apply(context, args);
-      }, adjustedRemaining);
+      };
+      
+      timeout = setTimeout(timeoutFn, adjustedRemaining);
     }
   };
 }

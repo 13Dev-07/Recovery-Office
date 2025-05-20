@@ -1,14 +1,16 @@
 /**
  * Stack Component
  * 
- * A layout component that arranges its children in a stack (vertical or horizontal)
- * with spacing based on Fibonacci sequence values for harmonious visual rhythm.
+ * A component for stacking child elements with consistent spacing.
+ * Uses sacred geometry principles to determine spacing and alignment.
  */
 
 import * as React from 'react';
+import { forwardRef } from 'react';
 import Flex from './Flex';
+import { StackProps, AsProps } from '../../types/styled.types';
+import Box from './Box';
 import { spacing } from '../../tokens';
-import { AsProps, StackProps } from '../../types';
 
 /**
  * Stack Component with ref forwarding

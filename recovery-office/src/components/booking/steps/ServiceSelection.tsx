@@ -1,24 +1,12 @@
 import * as React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
-import { PHI, PHI_INVERSE, SACRED_SPACING, FIBONACCI, SACRED_RADIUS } from '@constants/sacred-geometry';
-import { getFibonacciByIndex } from '@utils/getFibonacciByIndex';
-import { useBooking } from '@context/BookingContext';
-import { ServiceOption } from '@types/booking.types';
-
-/**
- * Props for the ServiceSelection component
- * 
- * @interface ServiceSelectionProps
- * @property {ServiceOption[]} services - Array of available services
- * @property {string | null} selectedServiceId - Currently selected service ID
- * @property {(serviceId: string) => void} onSelectService - Handler for service selection
- */
-interface ServiceSelectionProps {
-  services: ServiceOption[];
-  selectedServiceId: string | null;
-  onSelectService: (serviceId: string) => void;
-}
+import { PHI, PHI_INVERSE, SACRED_SPACING, FIBONACCI, SACRED_RADIUS } from '../../../constants/sacred-geometry';
+import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
+import { useBooking } from '../../../context/BookingContext';
+import { ServiceOption, ServiceSelectionStepProps } from '../../../types/booking.types';
+import { validateServiceSelection } from '../validation/serviceSelection.schema';
 
 /**
  * Container for the service selection component
@@ -37,7 +25,7 @@ const SectionTitle = styled.h2`
   font-size: 1.5rem;
   margin-bottom: ${SACRED_SPACING.lg}px;
   line-height: ${PHI};
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.text.dark};
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors?.text?.dark || '#1a202c'};
 `;
 
 /**
@@ -47,7 +35,7 @@ const SectionTitle = styled.h2`
 const SectionDescription = styled.p`
   margin-bottom: ${SACRED_SPACING.xl}px;
   line-height: ${PHI};
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.text.main};
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors?.text?.main || '#4a5568'};
 `;
 
 /**
@@ -59,21 +47,18 @@ const ServicesGrid = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: ${SACRED_SPACING.md}px;
   width: 100%;
+  margin-bottom: ${SACRED_SPACING.lg}px;
 `;
 
 /**
  * Service card component
  * Uses golden rectangle proportions and Fibonacci spacing
  */
-const ServiceCard = styled.div<{ isSelected: boolean }>`
+const ServiceCard = styled.div`
   padding: ${SACRED_SPACING.md}px;
   border-radius: ${SACRED_RADIUS.sm}px;
-  background-color: ${({ theme, isSelected }: { theme: DefaultTheme; isSelected: boolean }) => 
-    isSelected ? theme.colors.accent.light : theme.colors.background.light
-  };
-  border: 1px solid ${({ theme, isSelected }: { theme: DefaultTheme; isSelected: boolean }) => 
-    isSelected ? theme.colors.accent.main : theme.colors.border.light
-  };
+  background-color: var(--card-bg-color);
+  border: 1px solid var(--card-border-color);
   cursor: pointer;
   transition: all ${getFibonacciByIndex(6) * 10}ms ease-in-out;
   /* Golden rectangle proportion */
@@ -84,9 +69,7 @@ const ServiceCard = styled.div<{ isSelected: boolean }>`
   &:hover {
     transform: translateY(-${getFibonacciByIndex(4)}px);
     box-shadow: 0 ${getFibonacciByIndex(5)}px ${getFibonacciByIndex(7)}px rgba(0, 0, 0, 0.05);
-    border-color: ${({ theme, isSelected }: { theme: DefaultTheme; isSelected: boolean }) => 
-      isSelected ? theme.colors.accent.main : theme.colors.border.main
-    };
+    border-color: var(--card-hover-border-color);
   }
   
   &:after {
@@ -96,9 +79,7 @@ const ServiceCard = styled.div<{ isSelected: boolean }>`
     right: 0;
     width: ${getFibonacciByIndex(8)}px;
     height: ${getFibonacciByIndex(8)}px;
-    background-color: ${({ theme, isSelected }: { theme: DefaultTheme; isSelected: boolean }) => 
-      isSelected ? theme.colors.accent.main : 'transparent'
-    };
+    background-color: var(--card-corner-color);
     clip-path: polygon(0 0, 100% 0, 100% 100%);
     transition: all ${getFibonacciByIndex(6) * 10}ms ease-in-out;
   }
@@ -108,13 +89,11 @@ const ServiceCard = styled.div<{ isSelected: boolean }>`
  * Service title component
  * Uses PHI-based spacing and line height
  */
-const ServiceTitle = styled.h3<{ isSelected: boolean }>`
+const ServiceTitle = styled.h3`
   font-size: 1.25rem;
   margin-bottom: ${SACRED_SPACING.xs}px;
   line-height: ${PHI};
-  color: ${({ theme, isSelected }: { theme: DefaultTheme; isSelected: boolean }) => 
-    isSelected ? theme.colors.accent.dark : theme.colors.text.dark
-  };
+  color: var(--title-color);
 `;
 
 /**
@@ -125,7 +104,7 @@ const ServiceDescription = styled.p`
   font-size: 0.875rem;
   margin-bottom: ${SACRED_SPACING.sm}px;
   line-height: ${PHI};
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.text.main};
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors?.text?.main || '#4a5568'};
   /* Keep at golden ratio of total height */
   height: ${100 * PHI_INVERSE}%;
 `;
@@ -137,10 +116,49 @@ const ServiceDescription = styled.p`
 const ServiceDuration = styled.span`
   display: inline-block;
   padding: ${getFibonacciByIndex(4)}px ${getFibonacciByIndex(5)}px;
-  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.background.medium};
+  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors?.background?.[200] || '#edf2f7'};
   border-radius: ${SACRED_RADIUS.xs}px;
   font-size: 0.75rem;
   font-weight: 500;
+`;
+
+/**
+ * Error message component
+ * Uses sacred spacing and colors for consistent appearance
+ */
+const ErrorMessage = styled.div`
+  color: #e53e3e;
+  font-size: 0.875rem;
+  margin-bottom: ${SACRED_SPACING.md}px;
+  padding: ${SACRED_SPACING.xs}px ${SACRED_SPACING.sm}px;
+  background-color: #fed7d7;
+  border-radius: ${SACRED_RADIUS.xs}px;
+  border-left: 3px solid #e53e3e;
+`;
+
+/**
+ * Continue button component
+ * Uses sacred spacing for dimensions
+ */
+const ContinueButton = styled.button`
+  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors?.primary?.[600] || '#38a169'};
+  color: white;
+  border: none;
+  border-radius: ${SACRED_RADIUS.sm}px;
+  padding: ${SACRED_SPACING.sm}px ${SACRED_SPACING.lg}px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all ${getFibonacciByIndex(5) * 10}ms ease-in-out;
+  
+  &:hover {
+    background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors?.primary?.[700] || '#2f855a'};
+  }
+  
+  &:disabled {
+    background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors?.text?.disabled || '#a0aec0'};
+    cursor: not-allowed;
+  }
 `;
 
 /**
@@ -148,21 +166,68 @@ const ServiceDuration = styled.span`
  * Allows users to select a service from available options
  * Uses sacred geometry principles throughout for harmonious design
  */
-const ServiceSelection: React.FC = () => {
+const ServiceSelection: React.FC<ServiceSelectionStepProps> = ({ 
+  onComplete, 
+  onBack, 
+  isLoading = false,
+  className,
+  initialData
+}) => {
   const { 
-    availableServices, 
+    state,
     selectedService, 
     selectService, 
     isResourceLoading 
   } = useBooking();
   
-  const isLoading = isResourceLoading('services');
+  const availableServices = state.availableServices;
+  const loadingServices = isResourceLoading ? isResourceLoading('services') : false;
+  
+  // Use local state for selected service (initialized from props or context)
+  const [localSelectedService, setLocalSelectedService] = useState<ServiceOption | undefined>(
+    initialData?.selectedService || selectedService
+  );
+  const [validationError, setValidationError] = useState<string>('');
   
   const handleSelectService = (service: ServiceOption) => {
+    setLocalSelectedService(service);
     selectService(service);
+    setValidationError('');
+  };
+
+  const handleContinue = () => {
+    try {
+      if (!localSelectedService) {
+        setValidationError('Please select a service to continue.');
+        return;
+      }
+      
+      // Validate the service selection
+      const validation = validateServiceSelection({
+        serviceId: localSelectedService.id,
+        isRecurring: false
+      });
+      
+      if (!validation.success) {
+        // Safely access potential error messages
+        const errorMessage = validation.errors 
+          ? (validation.errors.form || (validation.errors as any).serviceId || 'Please select a valid service.')
+          : 'Please select a valid service.';
+        
+        setValidationError(errorMessage);
+        return;
+      }
+      
+      // Proceed to next step with the selected service data
+      if (onComplete) {
+        onComplete({ selectedService: localSelectedService });
+      }
+    } catch (error: any) {
+      setValidationError(error.message || 'Please select a service to continue.');
+    }
   };
   
-  if (isLoading) {
+  if (loadingServices || isLoading) {
     return <div>Loading available services...</div>;
   }
   
@@ -171,31 +236,78 @@ const ServiceSelection: React.FC = () => {
   }
   
   return (
-    <Container>
+    <Container className={className}>
       <SectionTitle>Select a Service</SectionTitle>
       <SectionDescription>
         Choose the financial recovery service that best fits your needs. Each service includes an initial consultation to assess your specific situation.
       </SectionDescription>
       
+      {validationError && (
+        <ErrorMessage role="alert">{validationError}</ErrorMessage>
+      )}
+      
       <ServicesGrid>
         {availableServices.map((service) => {
-          const isSelected = selectedService?.id === service.id;
+          const isSelected = localSelectedService?.id === service.id;
+          const theme = {
+            cardBgColor: isSelected ? 'var(--color-primary-100, #e6f3e6)' : 'var(--color-background-50, #f9f9f9)',
+            cardBorderColor: isSelected ? 'var(--color-accent-main, #38a169)' : 'var(--color-border-light, #e2e8f0)',
+            cardHoverBorderColor: isSelected ? 'var(--color-accent-main, #38a169)' : 'var(--color-border-main, #cbd5e0)',
+            cardCornerColor: isSelected ? 'var(--color-accent-main, #38a169)' : 'transparent',
+            titleColor: isSelected ? 'var(--color-accent-dark, #276749)' : 'var(--color-text-dark, #1a202c)'
+          };
           
           return (
             <ServiceCard 
               key={service.id}
-              isSelected={isSelected}
               onClick={() => handleSelectService(service)}
               role="button"
               aria-pressed={isSelected}
+              style={{
+                '--card-bg-color': theme.cardBgColor,
+                '--card-border-color': theme.cardBorderColor,
+                '--card-hover-border-color': theme.cardHoverBorderColor,
+                '--card-corner-color': theme.cardCornerColor,
+                '--title-color': theme.titleColor
+              } as React.CSSProperties}
+              data-testid={`service-card-${service.id}`}
+              onKeyDown={(e: React.KeyboardEvent) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleSelectService(service);
+                }
+              }}
+              tabIndex={0}
             >
-              <ServiceTitle isSelected={isSelected}>{service.name}</ServiceTitle>
+              <ServiceTitle>{service.name}</ServiceTitle>
               <ServiceDescription>{service.description}</ServiceDescription>
               <ServiceDuration>{service.duration} minutes</ServiceDuration>
+              {isSelected && (
+                <div style={{ 
+                  position: 'absolute', 
+                  top: '8px', 
+                  right: '8px',
+                  color: 'var(--color-accent-dark, #276749)',
+                  fontWeight: 'bold'
+                }}>
+                  ✓ Selected
+                </div>
+              )}
             </ServiceCard>
           );
         })}
       </ServicesGrid>
+      
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <ContinueButton 
+          onClick={handleContinue}
+          disabled={!localSelectedService || isLoading}
+          data-testid="continue-button"
+          aria-label="Continue to next step"
+        >
+          Continue
+        </ContinueButton>
+      </div>
     </Container>
   );
 };

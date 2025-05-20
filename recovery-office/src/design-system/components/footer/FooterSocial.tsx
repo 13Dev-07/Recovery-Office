@@ -8,10 +8,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
+import { PHI, PHI_INVERSE } from '../../../constants/sacred-geometry';
+import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
 
 
-
-interface SocialLinkProps {
+export interface SocialLinkProps {
   /** Platform name */
   platform: 'facebook' | 'twitter' | 'instagram' | 'linkedin' | 'youtube' | 'pinterest';
   

@@ -432,7 +432,9 @@ export function recommendOptimalBookingTimes(availableSlots: TimeSlot[], count: 
   for (let i = 0; i < count; i++) {
     // Calculate position using golden ratio to spread throughout the day
     const position = Math.floor((i * PHI) % 1 * totalSlots);
-    if (availableOnly[position] ?? 1) { recommendations.push(availableOnly[position] ?? 1) };
+    if (position >= 0 && position < availableOnly.length) {
+      recommendations.push(availableOnly[position]);
+    }
   }
   
   return recommendations;

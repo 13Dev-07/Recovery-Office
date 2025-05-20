@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import styled from 'styled-components';
 import { ScrollReveal } from '../../../animation';
-import { FlowerOfLife } from '../../../design-system/botanical';
-import { PHI, SACRED_SPACING } from '../../../constants/sacred-geometry';
+import { SecurityShield, ComplianceBadge } from '../../../design-system/components/utility/FinancialIcons';
+import { PHI, SACRED_SPACING, getFibonacciByIndex } from '../../../constants/sacred-geometry';
 import { Section, SectionTitle, SectionContent } from '../../../design-system/components/layout/Section';
 import { Container } from '../../../design-system/components/layout';
 import { Grid } from '../../../design-system/components/layout';
@@ -37,6 +37,7 @@ export interface Service {
     followUp?: number;
     workshop?: number;
     privateSession?: number;
+    initialReview?: number;
   };
   /** Duration information */
   duration: string;
@@ -135,23 +136,23 @@ const ServiceGridWrapper: React.FC<{
 /**
  * ServicesOverview Component
  * 
- * Displays a grid of all services with decorative FlowerOfLife elements.
- * Layout and spacing follow sacred geometry principles for visual harmony.
+ * Displays a grid of all services with decorative SecurityShield elements.
+ * Layout and spacing follow organized principles for visual harmony.
  */
 const ServicesOverview: React.FC<ServicesOverviewProps> = ({
   services,
-  title = "Our Therapeutic Approach",
-  subtitle = "Discover our holistic services",
+  title = "Our Recovery Approach",
+  subtitle = "Discover our financial recovery services",
   backgroundColor = "#f8f9fa"
 }) => {
   return (
     <StyledSection backgroundColor={backgroundColor}>
       <TopLeftDecoration>
-        <FlowerOfLife size={350} opacity={0.3} />
+        <SecurityShield size="lg" opacity={0.3} />
       </TopLeftDecoration>
       
       <BottomRightDecoration>
-        <FlowerOfLife size={350} opacity={0.3} />
+        <ComplianceBadge size="lg" opacity={0.3} />
       </BottomRightDecoration>
       
       <Container>
@@ -159,8 +160,8 @@ const ServicesOverview: React.FC<ServicesOverviewProps> = ({
           <SectionTitle 
             title={title} 
             subtitle={subtitle}
-            decoratorBefore={<FlowerOfLife size="sm" opacity={0.15} />}
-            decoratorAfter={<FlowerOfLife size="sm" opacity={0.15} />}
+            decoratorBefore={<SecurityShield size="sm" opacity={0.15} />}
+            decoratorAfter={<ComplianceBadge size="sm" opacity={0.15} />}
           />
         </ScrollReveal>
         

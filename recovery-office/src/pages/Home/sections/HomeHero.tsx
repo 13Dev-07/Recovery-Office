@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { FadeIn, ScrollReveal } from '../../../animation';
 import { FlowerOfLife, OliveBranch } from '../../../design-system/botanical';
-import { PHI, GOLDEN_SECTIONS, SACRED_SPACING } from '../../../constants/sacred-geometry';
+import { PHI, PHI_INVERSE, SACRED_SPACING } from '../../../constants/sacred-geometry';
 import { Button } from '../../../design-system/components/button';
 
 interface HomeHeroProps {
@@ -12,7 +12,13 @@ interface HomeHeroProps {
   ctaText?: string;
   ctaUrl?: string;
 }
-  
+
+// The golden section ratio for positioning elements
+const GOLDEN_SECTIONS = {
+  major: 0.618,
+  minor: 0.382
+};
+
 const HeroContainer = styled.section`
   position: relative;
   width: 100%;

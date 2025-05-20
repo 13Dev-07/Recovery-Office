@@ -33,10 +33,10 @@ const useMediaQuery = (query: string): boolean => {
     if (mediaQueryList.addEventListener) {
       if (mediaQueryList.addEventListener) {
         mediaQueryList.addEventListener('change', handleChange);
-    } else {
+      } else {
         // Fallback for older browsers
-        mediaQueryList.addListener(mediaQueryList.match);
-    }
+        mediaQueryList.addListener(() => setMatches(mediaQueryList.matches));
+      }
     } else {
       // For older browsers
       mediaQueryList.addListener(handleChange);

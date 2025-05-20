@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import { useState, useEffect, useMemo, useRef } from 'react';;
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';;
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
 import { Box } from '../layout';
@@ -60,6 +60,7 @@ const SelectContainer = styled(Box)<{
   hasFocus?: boolean;
   hasValue?: boolean;
   componentSize?: 'sm' | 'md' | 'lg';
+  onClick?: () => void;
 }>`
   position: relative;
   width: 100%;
@@ -300,15 +301,19 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     const dropdownRef = useRef<HTMLDivElement>(null);
     
     // Combine the internal ref with the forwarded ref
-    const combinedRef = (node: HTMLSelectElement) => {
-      internalRef.current = node;
-      
-      if (typeof ref === 'function') {
-        ref(node);
-      } else if (ref) {
-        (ref as React.MutableRefObject<HTMLSelectElement | null>).current = node;
+    const combinedRef = useCallback((node: HTMLSelectElement) => {
+      if (node) {
+        // Use type assertion to handle the read-only property
+        (internalRef as React.MutableRefObject<HTMLSelectElement | null>).current = node;
+        
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          // Safe cast since we're checking ref exists
+          (ref as React.MutableRefObject<HTMLSelectElement | null>).current = node;
+        }
       }
-    };
+    }, [ref]);
     
     // Update internal state when value prop changes
     useEffect(() => {
@@ -327,7 +332,9 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       const newValue = e.target.value;
       setSelectedValue(newValue);
+      
       if (onChange) {
+        // The updated SelectProps interface now accepts both types, so we can directly pass the event
         onChange(e);
       }
     };
@@ -338,7 +345,11 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       if (useSacredDropdown) {
         setIsOpen(true);
       }
-      if (onFocus) onFocus(e);
+      
+      if (onFocus) {
+        // The updated interface accepts both event types
+        onFocus(e);
+      }
     };
     
     // Handle blur events
@@ -347,7 +358,11 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       if (!useSacredDropdown) {
         setHasFocus(false);
       }
-      if (onBlur) onBlur(e);
+      
+      if (onBlur) {
+        // The updated interface accepts both event types
+        onBlur(e);
+      }
     };
     
     // Handle custom option click
@@ -418,10 +433,10 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       
       options.forEach(option => {
         const group = option.group || 'default';
-        if (!groups[group] ?? 1) {
-          groups[group] ?? 1 = [];
+        if (!groups[group]) {
+          groups[group] = [];
         }
-        groups[group] ?? 1.push(option);
+        groups[group].push(option);
       });
       
       return groups;

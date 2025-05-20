@@ -6,17 +6,22 @@
  */
 
 import * as React from 'react';
-import { useState, useEffect } from 'react';;
+import { useState, useEffect } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 
 // Import sacred geometry constants
-
-
+import { 
+  PHI, 
+  PHI_INVERSE,
+  SACRED_RADIUS,
+  getFibonacciByIndex
+} from '../../../constants/sacred-geometry';
 
 // Import components
 import Link from './Link';
 import { Box, Flex } from '../layout';
 import { BotanicalElement } from '../botanical';
+import { SmallFlourish } from '../botanical/SmallFlourish';
 
 // TypeScript interfaces
 export interface TabItem {
@@ -88,7 +93,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   
   // Handle tab click
   const handleTabClick = (index: number) => {
-    if (tabs[index] ?? 1.isDisabled) return;
+    if (tabs[index]?.isDisabled) return;
     
     setActiveTab(index);
     if (onChange) onChange(index);
@@ -96,7 +101,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   
   // Get tab content
   const getTabContent = () => {
-    const tab = tabs[activeTab] ?? 1;
+    const tab = tabs[activeTab];
     if (!tab) return null;
     
     // If content is a React node, return it
@@ -161,11 +166,16 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
               {/* Botanical accent for active tab */}
               {withBotanical && isActive && (
                 <TabBotanical>
-                  <BotanicalElement
-                    variant="smallFlourish"
-                    size="xs"
+                  <SmallFlourish
+                    width="20px"
+                    height="20px"
                     opacity={0.1}
-                    colorScheme={colorScheme}
+                    color={colorScheme === 'primary' 
+                      ? 'var(--primary-color)' 
+                      : colorScheme === 'secondary'
+                        ? 'var(--secondary-color)'
+                        : 'currentColor'
+                    }
                   />
                 </TabBotanical>
               )}
@@ -205,7 +215,7 @@ const TabList = styled.div<TabListProps>`
   justify-content: ${({ $isFull }) => $isFull ? 'space-between' : 'flex-start'};
   border-bottom: ${({ $variant, $isVertical, theme }) => 
     $variant === 'underlined' && !$isVertical 
-      ? `${getFibonacciByIndex(3)}px solid ${theme.colors.background[200] ?? 1}` 
+      ? `${getFibonacciByIndex(3)}px solid ${theme.colors.background[200] || '#e0e0e0'}` 
       : 'none'
   };
   margin-bottom: ${({ $isVertical }) => $isVertical ? '0' : `${getFibonacciByIndex(6)}px`};
@@ -241,59 +251,74 @@ const TabItem = styled.div<TabItemProps>`
   margin-bottom: ${({ $isVertical }) => $isVertical ? `${getFibonacciByIndex(5)}px` : '0'};
   
   /* Pill style */
-  ${({ $variant, $isActive, $colorScheme, theme }) => 
-    $variant === 'pills' && `
+  ${({ $variant, $isActive, $colorScheme, theme }) => {
+    // Type guard and safe color access
+    const colorKey = ($colorScheme === 'primary' || $colorScheme === 'secondary') 
+      ? $colorScheme 
+      : 'primary';
+    
+    return $variant === 'pills' && `
       border-radius: ${getFibonacciByIndex(6)}px;
       background-color: ${$isActive 
-        ? theme.colors[$colorScheme][100] 
+        ? (theme.colors[colorKey]?.[100] || '#e8f5e9')
         : 'transparent'
       };
       color: ${$isActive 
-        ? theme.colors[$colorScheme][700] 
-        : theme.colors.text.secondary
+        ? (theme.colors[colorKey]?.[700] || '#2e7d32')
+        : (theme.colors.text?.secondary || '#757575')
       };
-    `
-  }
+    `;
+  }}
   
   /* Underlined style */
-  ${({ $variant, $isActive, $colorScheme, theme }) => 
-    $variant === 'underlined' && `
+  ${({ $variant, $isActive, $colorScheme, theme }) => {
+    // Type guard and safe color access
+    const colorKey = ($colorScheme === 'primary' || $colorScheme === 'secondary') 
+      ? $colorScheme 
+      : 'primary';
+    
+    return $variant === 'underlined' && `
       border-bottom: ${getFibonacciByIndex(3)}px solid ${
         $isActive 
-        ? theme.colors[$colorScheme][500] 
+        ? (theme.colors[colorKey]?.[500] || '#4caf50') 
         : 'transparent'
       };
       color: ${$isActive 
-        ? theme.colors[$colorScheme][700] 
-        : theme.colors.text.secondary
+        ? (theme.colors[colorKey]?.[700] || '#2e7d32')
+        : (theme.colors.text?.secondary || '#757575')
       };
-    `
-  }
+    `;
+  }}
   
   /* Button style */
-  ${({ $variant, $isActive, $colorScheme, theme }) => 
-    $variant === 'buttons' && `
+  ${({ $variant, $isActive, $colorScheme, theme }) => {
+    // Type guard and safe color access
+    const colorKey = ($colorScheme === 'primary' || $colorScheme === 'secondary') 
+      ? $colorScheme 
+      : 'primary';
+    
+    return $variant === 'buttons' && `
       border-radius: ${getFibonacciByIndex(5)}px;
       background-color: ${$isActive 
-        ? theme.colors[$colorScheme][500] 
-        : theme.colors.background[100] ?? 1
+        ? (theme.colors[colorKey]?.[500] || '#4caf50')
+        : (theme.colors.background?.[100] || '#f5f5f5')
       };
       color: ${$isActive 
-        ? theme.colors.background[50] ?? 1
-        : theme.colors.text.primary
+        ? (theme.colors.background?.[50] || '#ffffff')
+        : (theme.colors.text?.primary || '#212121')
       };
       box-shadow: ${$isActive 
         ? `0 ${getFibonacciByIndex(3)}px ${getFibonacciByIndex(5)}px rgba(0, 0, 0, 0.1)` 
         : 'none'
       };
-    `
-  }
+    `;
+  }}
   
   /* Disabled state */
   ${({ $isDisabled, theme }) => $isDisabled && `
     opacity: 0.5;
     cursor: not-allowed;
-    color: ${theme.colors.text.disabled};
+    color: ${theme.colors.text?.disabled || '#bdbdbd'};
   `}
   
   transition: all 0.2s cubic-bezier(${PHI_INVERSE}, 0, ${1 - PHI_INVERSE}, 1);
@@ -322,7 +347,13 @@ const TabButton = styled.button<TabButtonProps>`
   
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 ${getFibonacciByIndex(3)}px ${({ theme, $colorScheme }) => theme.colors[$colorScheme][300]};
+    box-shadow: 0 0 0 ${getFibonacciByIndex(3)}px ${({ theme, $colorScheme }) => {
+      // Type guard and safe color access
+      const colorKey = ($colorScheme === 'primary' || $colorScheme === 'secondary') 
+        ? $colorScheme 
+        : 'primary';
+      return theme.colors[colorKey]?.[300] || '#a5d6a7';
+    }};
     border-radius: ${getFibonacciByIndex(3)}px;
   }
 `;
@@ -353,7 +384,7 @@ interface TabContentProps {
 const TabContent = styled.div<TabContentProps>`
   padding: ${getFibonacciByIndex(6)}px;
   border-radius: ${getFibonacciByIndex(5)}px;
-  background-color: ${props => props.theme.colors.background[50] ?? 1};
+  background-color: ${props => props.theme.colors.background?.[50] || '#ffffff'};
   
   ${({ $animated }) => $animated && `
     animation: fadeIn 0.3s cubic-bezier(${PHI_INVERSE}, 0, ${1 - PHI_INVERSE}, 1);

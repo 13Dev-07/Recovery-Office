@@ -155,7 +155,7 @@ const FooterNewsletter: React.FC<FooterNewsletterProps> = ({
   
   return (
     <NewsletterContainer className={className}>
-      <Title as="h4" variant="h6">{title}</Title>
+      <Title as="h4">{title}</Title>
       <Description>{description}</Description>
       
       <Form onSubmit={handleSubmit}>
@@ -170,10 +170,9 @@ const FooterNewsletter: React.FC<FooterNewsletterProps> = ({
             placeholder="Your email address"
             disabled={isSubmitting || isSuccess}
             isInvalid={!!error}
-            isFullWidth
           />
           {error && (
-            <Text color="error.500" fontSize="sm" mt={2}>
+            <Text color="error.500" variant="caption" mt={2}>
               {error}
             </Text>
           )}
@@ -195,7 +194,7 @@ const FooterNewsletter: React.FC<FooterNewsletterProps> = ({
       <SuccessMessage $visible={isSuccess}>
         <Text 
           color="success.500" 
-          fontSize="sm"
+          variant="caption"
           style={{ display: 'flex', alignItems: 'center' }}
         >
           <span style={{ marginRight: `${getFibonacciByIndex(3)}px`, color: 'currentColor' }}>

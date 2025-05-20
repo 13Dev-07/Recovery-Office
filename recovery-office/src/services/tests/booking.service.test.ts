@@ -1,5 +1,6 @@
 import { BookingService } from '../booking.service';
 import { ApiError } from '../types/api.types';
+import { BookingRequest } from '../../types/booking.types';
 
 // Mock fetch API
 global.fetch = jest.fn();
@@ -150,15 +151,27 @@ describe('BookingService', () => {
   });
 
   describe('submitBooking', () => {
-    const mockBookingRequest = {
+    const mockBookingRequest: BookingRequest = {
       serviceId: '1',
       date: '2023-06-01',
       timeSlot: '10:00',
-      clientInfo: {
-        name: 'John Doe',
+      client: {
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john@example.com',
-        phone: '123-456-7890'
-      }
+        phone: '123-456-7890',
+        dateOfBirth: '',
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          postalCode: '',
+          country: ''
+        },
+        marketingOptIn: false
+      },
+      paymentIntentId: 'pi_123456',
+      paymentMethod: 'card'
     };
 
     it('should successfully submit a booking', async () => {

@@ -1,14 +1,15 @@
 import * as React from 'react';;
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
-import { BookingStepId } from '@types/booking.types';
-import { SACRED_SPACING, PHI, FIBONACCI, PHI_INVERSE, ANIMATION_TIMING } from '@constants/sacred-geometry';
-import { useBooking } from '@context/BookingContext';
-import { CheckIcon } from '@design-system/icons/CheckIcon';
+import { BookingStepId } from '../../types/booking.types';
+import { SACRED_SPACING, PHI, FIBONACCI, PHI_INVERSE, ANIMATION_TIMING } from '../../constants/sacred-geometry';
+import { useBooking } from '../../context/BookingContext';
+import { FiCheck } from 'react-icons/fi';
 import { motion } from 'framer-motion';
-import { Flex, Box } from '@design-system/components/layout/Box';
-import { Text } from '@design-system/components/typography/Text';
-import { getFibonacciByIndex } from "@utils/getFibonacciByIndex";
+import Flex from '../../design-system/components/layout/Flex';
+import Box from '../../design-system/components/layout/Box';
+import { Text } from '../../design-system/components/typography/Text';
+import { getFibonacciByIndex } from '../../utils/getFibonacciByIndex';
 
 /**
  * Interface for a booking step item
@@ -83,33 +84,42 @@ const StepIndicators = styled(Flex)`
  * Individual step dot component
  * Uses sacred proportions and golden ratio for visual harmony
  */
-const StepDot = styled(Flex)<{ $status: 'completed' | 'active' | 'upcoming' }>`
+const StepDot = styled.button<{ $status: 'completed' | 'active' | 'upcoming' }>`
   border-radius: 50%;
   justify-content: center;
   align-items: center;
   transition: all ${getFibonacciByIndex(6) * 10}ms ease-in-out;
   z-index: 2;
-  
-  background-color: ${(props: { theme: DefaultTheme; $status: 'completed' | 'active' | 'upcoming' }) => 
-    props.$status === 'completed' 
+  display: flex;
+  background-color: ${(props) =>
+    props.$status === 'completed'
       ? props.theme.colors.primary[500]
-      : props.$status === 'active' 
-        ? 'white' 
-        : props.theme.colors.background.light
-  };
-  
-  border: ${(props: { theme: DefaultTheme; $status: 'completed' | 'active' | 'upcoming' }) => props.$status === 'active' ? '2px solid' : 'none'};
-  border-color: ${(props: { theme: DefaultTheme; $status: 'completed' | 'active' | 'upcoming' }) => props.$status === 'active' ? props.theme.colors.primary[500] : 'transparent'};
-  
-  color: ${(props: { theme: DefaultTheme; $status: 'completed' | 'active' | 'upcoming' }) => 
-    props.$status === 'completed' 
+      : props.$status === 'active'
       ? 'white'
-      : props.$status === 'active' 
-        ? props.theme.colors.primary[500]
-        : props.theme.colors.text.secondary
-  };
-  
-  box-shadow: ${(props: { theme: DefaultTheme; $status: 'completed' | 'active' | 'upcoming' }) => props.$status === 'active' ? `0 ${getFibonacciByIndex(3)}px ${getFibonacciByIndex(4)}px rgba(0, 0, 0, 0.1)` : 'none'};
+      : props.theme.colors.background.light};
+  border: ${(props) => (props.$status === 'active' ? '2px solid' : 'none')};
+  border-color: ${(props) => (props.$status === 'active' ? props.theme.colors.primary[500] : 'transparent')};
+  color: ${(props) =>
+    props.$status === 'completed'
+      ? 'white'
+      : props.$status === 'active'
+      ? props.theme.colors.primary[500]
+      : props.theme.colors.text.secondary};
+  box-shadow: ${(props) =>
+    props.$status === 'active'
+      ? `0 ${getFibonacciByIndex(3)}px ${getFibonacciByIndex(4)}px rgba(0, 0, 0, 0.1)`
+      : 'none'};
+  cursor: pointer;
+  outline: none;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 50%;
+  min-width: 32px;
+  min-height: 32px;
+  font-size: 1rem;
+  &:focus {
+    box-shadow: 0 0 0 2px ${(props) => props.theme.colors.primary[300]};
+  }
 `;
 
 /**
@@ -211,36 +221,25 @@ export const BookingStepper: React.FC<BookingStepperProps> = ({
               : FIBONACCI[5];
             
             return (
-              <Box 
+              <StepDot
                 key={step.id}
-                style={{
-                  position: 'relative',
-                  cursor: isClickable ? 'pointer' : 'default'
-                }}
-                onClick={() => handleStepClick(step.id)}
-                data-testid={`booking-step-${step.id}`}
-                role="button"
+                $status={status}
+                onClick={isClickable ? () => handleStepClick(step.id) : undefined}
                 aria-current={isActive ? 'step' : undefined}
                 aria-label={`${step.label} ${status === 'completed' ? '(completed)' : status === 'active' ? '(current)' : '(upcoming)'}`}
                 tabIndex={isClickable ? 0 : -1}
+                disabled={!isClickable}
+                style={{
+                  width: `${indicatorSize}px`,
+                  height: `${indicatorSize}px`,
+                  transform: `translateX(-${indicatorSize / 2}px)`
+                }}
               >
-                {/* Step circle */}
-                <StepDot
-                  $status={status}
-                  style={{
-                    width: `${indicatorSize}px`,
-                    height: `${indicatorSize}px`,
-                    transform: `translateX(-${indicatorSize / 2}px)`
-                  }}
-                >
-                  {status === 'completed' ? (
-                    <CheckIcon width={16} height={16} />
-                  ) : (
-                    <span>{index + 1}</span>
-                  )}
-                </StepDot>
-                
-                {/* Step label */}
+                {status === 'completed' ? (
+                  <FiCheck />
+                ) : (
+                  <span>{index + 1}</span>
+                )}
                 <StepLabel
                   $isActive={isActive}
                   style={{
@@ -252,7 +251,7 @@ export const BookingStepper: React.FC<BookingStepperProps> = ({
                 >
                   {step.label}
                 </StepLabel>
-              </Box>
+              </StepDot>
             );
           })}
         </StepIndicators>

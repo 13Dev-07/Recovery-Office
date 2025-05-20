@@ -1,39 +1,47 @@
-import * as React from 'react';;
-import { useBooking, Service } from '@context/BookingContext';
+import * as React from 'react';
+import { useBooking } from '../../context/BookingContext';
+import { ServiceOption } from '../../types/booking.types';
+import { ServiceType } from '../../types/api.types';
 
 import styled from 'styled-components';
-import { DefaultTheme } from 'styled-components';
+import { RecoveryOfficeTheme } from '../../design-system/types/theme.types';
+import { getFibonacciByIndex } from '../../utils/getFibonacciByIndex';
+import { PHI } from '../../constants/sacred-geometry';
 
 
 // Mock services data (replace with API call in production)
-const mockServices: Service[] = [
+const mockServices: ServiceOption[] = [
   {
     id: '1',
     name: 'Initial Consultation',
     description: 'First-time assessment and treatment planning.',
     duration: 60,
-    price: 120
+    price: 120,
+    type: ServiceType.INITIAL_CONSULTATION
   },
   {
     id: '2',
     name: 'Follow-up Session',
     description: 'Regular treatment session for existing clients.',
     duration: 45, 
-    price: 90
+    price: 90,
+    type: ServiceType.FOLLOW_UP
   },
   {
     id: '3',
     name: 'Deep Tissue Massage',
     description: 'Focused massage therapy for chronic muscle tension.',
     duration: 60,
-    price: 100
+    price: 100,
+    type: ServiceType.SPECIALIZED_TREATMENT
   },
   {
     id: '4',
     name: 'Rehabilitation Package',
     description: '5-session package for comprehensive rehabilitation.',
     duration: 45,
-    price: 400
+    price: 400,
+    type: ServiceType.COMPREHENSIVE_ASSESSMENT
   }
 ];
 
@@ -46,13 +54,13 @@ const ServicesContainer = styled.div`
   margin-bottom: ${getFibonacciByIndex(7)}px;
 `;
 
-const ServiceCard = styled.div<{ selected: boolean }>`
+const ServiceCard = styled.div<{ $selected: boolean }>`
   padding: ${getFibonacciByIndex(5)}px;
   border-radius: ${getFibonacciByIndex(4)}px;
-  border: 1px solid ${({ selected, theme }: { selected: boolean; theme: DefaultTheme }) => 
-    selected ? theme.colors.primary[500] : theme.colors.border.main};
-  background-color: ${({ selected, theme }: { selected: boolean; theme: DefaultTheme }) => 
-    selected ? theme.colors.primary[100] : theme.colors.background[100]};
+  border: 1px solid ${({ $selected, theme }: { $selected: boolean; theme: RecoveryOfficeTheme }) => 
+    $selected ? theme.colors.primary[500] : theme.colors.border.main};
+  background-color: ${({ $selected, theme }: { $selected: boolean; theme: RecoveryOfficeTheme }) => 
+    $selected ? theme.colors.primary[100] : theme.colors.background[100]};
   cursor: pointer;
   transition: all ${getFibonacciByIndex(5) * 10}ms ease-in-out;
   height: ${getFibonacciByIndex(10)}px;
@@ -68,12 +76,12 @@ const ServiceCard = styled.div<{ selected: boolean }>`
 const ServiceName = styled.h3`
   margin: 0 0 ${getFibonacciByIndex(4)}px 0;
   font-size: ${getFibonacciByIndex(5)}px;
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.text.primary};
+  color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.text.primary};
 `;
 
 const ServiceDescription = styled.p`
   margin: 0 0 ${getFibonacciByIndex(4)}px 0;
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.text.secondary};
+  color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.text.secondary};
   flex-grow: 1;
 `;
 
@@ -85,18 +93,18 @@ const ServiceDetails = styled.div`
 
 const ServiceDuration = styled.span`
   font-size: ${getFibonacciByIndex(4)}px;
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.text.secondary};
+  color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.text.secondary};
 `;
 
 const ServicePrice = styled.span`
   font-size: ${getFibonacciByIndex(5)}px;
   font-weight: bold;
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.primary[500]};
+  color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.primary[500]};
 `;
 
 const ContinueButton = styled.button`
   padding: ${getFibonacciByIndex(4)}px ${getFibonacciByIndex(6)}px;
-  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.primary[500]};
+  background-color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.primary[500]};
   color: white;
   border: none;
   border-radius: ${getFibonacciByIndex(3)}px;
@@ -106,20 +114,20 @@ const ContinueButton = styled.button`
   transition: background-color ${getFibonacciByIndex(5) * 10}ms ease;
   
   &:hover {
-    background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.primary[700]};
+    background-color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.primary[700]};
   }
   
   &:disabled {
-    background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.text.disabled};
+    background-color: ${({ theme }: { theme: RecoveryOfficeTheme }) => theme.colors.text.disabled};
     cursor: not-allowed;
   }
 `;
 
 const ServiceSelection: React.FC = () => {
   const { selectedService, setSelectedService, currentStep, setCurrentStep } = useBooking();
-  const [services, setServices] = useState<Service[]>([]);
+  const [services, setServices] = React.useState<ServiceOption[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
   
   React.useEffect(() => {
     // In a real application, this would be an API call
@@ -141,7 +149,7 @@ const ServiceSelection: React.FC = () => {
     fetchServices();
   }, []);
   
-  const handleServiceSelection = (service: Service) => {
+  const handleServiceSelection = (service: ServiceOption) => {
     setSelectedService(service);
   };
   
@@ -164,7 +172,7 @@ const ServiceSelection: React.FC = () => {
         {services.map((service) => (
           <ServiceCard 
             key={service.id}
-            selected={selectedService?.id === service.id}
+            $selected={selectedService?.id === service.id}
             onClick={() => handleServiceSelection(service)}
           >
             <ServiceName>{service.name}</ServiceName>

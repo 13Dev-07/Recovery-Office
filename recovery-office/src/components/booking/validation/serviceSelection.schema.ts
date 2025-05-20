@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { FIBONACCI } from '../../../constants/sacred-geometry';
 
 
 /**
@@ -36,7 +37,7 @@ export const serviceSelectionSchema = z.object({
     .positive("Duration must be positive")
     .refine(val => {
       // Duration must align with the Fibonacci sequence values (in minutes)
-      const allowedDurations = [FIBONACCI[5], FIBONACCI[6], FIBONACCI[7], FIBONACCI[8]]; // 5, 8, 13, 21
+      const allowedDurations = [3, 5, 8, 13]; // Common Fibonacci values for durations
       return allowedDurations.includes(val);
     }, "Selected duration is not available")
     .optional(),

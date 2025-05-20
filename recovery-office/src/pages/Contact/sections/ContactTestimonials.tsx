@@ -6,15 +6,16 @@
  */
 
 import * as React from 'react';
-import { useState, useCallback } from 'react';;
-import { Box, Container } from '../design-system/components/layout';
-import { Section, SectionTitle, SectionContent } from '../design-system/components/layout/Section';
-import { Text } from '../design-system/components/typography';
-import { Card } from '../design-system/components/data-display';
-import { Button } from '../design-system/components/button';
-import { OliveBranch, VesicaPiscis } from '../design-system/botanical';
+import { useState, useCallback } from 'react';
+import { Box, Container } from '../../../design-system/components/layout';
+import { Section, SectionTitle, SectionContent } from '../../../design-system/components/layout/Section';
+import { Text } from '../../../design-system/components/typography';
+import { Card } from '../../../design-system/components/data-display';
+import { Button } from '../../../design-system/components/button';
+import { OliveBranch, VesicaPiscis } from '../../../design-system/botanical';
 
-import { ScrollReveal, FadeIn } from '../../animation';
+import { ScrollReveal, FadeIn } from '../../../animation';
+import { PHI } from '../../../constants/sacred-geometry';
 
 // Testimonial data interface
 interface Testimonial {
@@ -80,19 +81,19 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testimonial }
     }}
   >
     {/* Quote symbol */}
-    <Box
-      position="absolute"
-      top={`${PHI * 8}px`}
-      left={`${PHI * 8}px`}
-      fontSize={`${PHI * PHI * 20}px`}
-      lineHeight="1"
+    <div
       style={{
+        position: 'absolute',
+        top: `${PHI * 8}px`,
+        left: `${PHI * 8}px`,
+        fontSize: `${PHI * PHI * 20}px`,
+        lineHeight: '1',
         fontFamily: 'serif',
         color: 'rgba(74, 110, 179, 0.1)'
       }}
     >
       "
-    </Box>
+    </div>
     
     {/* Rating stars */}
     <Box
@@ -106,18 +107,18 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testimonial }
     </Box>
     
     {/* Testimonial text */}
-    <Text
-      variant="body2"
-      fontSize="md"
-      fontStyle="italic"
-      mb={`${PHI * 16}px`}
-      pl={`${PHI * 8}px`}
+    <div
       style={{
+        fontVariant: 'body2',
+        fontSize: 'md',
+        fontStyle: 'italic',
+        marginBottom: `${PHI * 16}px`,
+        paddingLeft: `${PHI * 8}px`,
         flex: 1
       }}
     >
       {testimonial.text}
-    </Text>
+    </div>
     
     {/* Author information */}
     <Box
@@ -128,15 +129,19 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testimonial }
     >
       <Text
         variant="subtitle2"
-        fontWeight="600"
-        color="#4a6eb3"
+        style={{
+          fontWeight: 600,
+          color: '#4a6eb3'
+        }}
       >
         {testimonial.author}
       </Text>
       <Text
         variant="body2"
-        fontSize="sm"
-        color="gray.600"
+        style={{
+          fontSize: 'sm',
+          color: 'gray.600'
+        }}
       >
         {testimonial.location} • {testimonial.experience}
       </Text>
@@ -187,12 +192,15 @@ const ContactTestimonials: React.FC<ContactTestimonialsProps> = ({
             
             <SectionContent>
               {/* Mobile view - single testimonial with navigation */}
-              <Box 
-                display={['block', null, 'none']} 
-                position="relative"
+              <div
+                style={{ 
+                  display: 'block',
+                  position: 'relative'
+                }}
+                className="mobile-testimonial"
               >
-                <FadeIn key={testimonials[activeIndex] ?? 1.id}>
-                  <TestimonialCard testimonial={testimonials[activeIndex] ?? 1} />
+                <FadeIn key={testimonials[activeIndex]?.id || `testimonial-${activeIndex}`}>
+                  <TestimonialCard testimonial={testimonials[activeIndex]} />
                 </FadeIn>
                 
                 {/* Navigation controls */}
@@ -220,20 +228,23 @@ const ContactTestimonials: React.FC<ContactTestimonialsProps> = ({
                     Next
                   </Button>
                 </Box>
-              </Box>
+              </div>
               
               {/* Tablet/Desktop view - all testimonials in grid */}
-              <Box 
-                display={['none', null, 'grid']}
-                gridTemplateColumns={`repeat(${testimonials.length}, 1fr)`}
-                gap={`${PHI * 24}px`}
+              <div
+                style={{ 
+                  display: 'none',
+                  gridTemplateColumns: `repeat(${testimonials.length}, 1fr)`,
+                  gap: `${PHI * 24}px`
+                }}
+                className="desktop-testimonial"
               >
                 {testimonials.map((testimonial) => (
                   <FadeIn key={testimonial.id}>
                     <TestimonialCard testimonial={testimonial} />
                   </FadeIn>
                 ))}
-              </Box>
+              </div>
               
               {/* Call to action */}
               <Box

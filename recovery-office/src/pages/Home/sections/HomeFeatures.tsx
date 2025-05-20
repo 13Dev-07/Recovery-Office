@@ -139,9 +139,9 @@ const HomeFeatures: React.FC = () => {
 
   return (
     <Section
-      backgroundStyle="light"
-      paddingTop={SACRED_SPACING.xxl}
-      paddingBottom={SACRED_SPACING.xxl}
+      variant="light"
+      pt={SACRED_SPACING.xxl}
+      pb={SACRED_SPACING.xxl}
       id="features"
     >
       <Container>
@@ -160,9 +160,8 @@ const HomeFeatures: React.FC = () => {
             <SectionHeading
               title="Why Choose Recovery Office"
               subtitle="Our unique approach combines expertise with sacred principles"
-              alignment="center"
+              align="center"
               size="large"
-              decoration="botanical"
               marginBottom={SACRED_SPACING.xl}
             />
           </ScrollReveal>

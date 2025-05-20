@@ -6,14 +6,36 @@
  */
 
 import * as React from 'react';
-import { Box } from '../design-system/components/layout';
-import { Card } from '../design-system/components/data-display';
-import { SectionTitle } from '../../../design-system/components/typography/SectionTitle';
-import { Text, Heading } from '../design-system/components/typography';
-import { Button } from '../design-system/components/button';
-import { VesicaPiscis } from '../design-system/botanical';
+import { Box } from '../../../design-system/components/layout';
+import { Card } from '../../../design-system/components/data-display';
+import SectionTitle from '../../../design-system/components/typography/SectionTitle';
+import { Text, Heading } from '../../../design-system/components/typography';
+import { Button } from '../../../design-system/components/button';
+import { VesicaPiscis } from '../../../design-system/botanical';
 import { PHI } from '../../../constants/sacred-geometry';
-import { FadeIn } from '../../animation';
+import { FadeIn } from '../../../animation';
+import styled from 'styled-components';
+
+// Create a styled anchor that looks like a button
+const ButtonLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: transparent;
+  color: ${props => props.theme.colors.primary[500]};
+  border: 1px solid ${props => props.theme.colors.primary[500]};
+  
+  &:hover {
+    background-color: ${props => props.theme.colors.primary[50]};
+  }
+`;
 
 // Office location data
 export interface OfficeLocation {
@@ -163,18 +185,15 @@ const ContactInfo: React.FC<ContactInfoProps> = ({
                   flexWrap="wrap"
                 >
                   {socialLinks.map(link => (
-                    <Button 
+                    <ButtonLink
                       key={link.platform}
-                      variant="outline" 
-                      size="small"
-                      as="a" 
                       href={link.url}
                       target="_blank" 
                       rel="noopener noreferrer"
                       aria-label={`Follow us on ${link.platform}`}
                     >
                       {link.platform}
-                    </Button>
+                    </ButtonLink>
                   ))}
                 </Box>
               </Box>

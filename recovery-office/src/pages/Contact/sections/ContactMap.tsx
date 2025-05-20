@@ -6,14 +6,16 @@
  */
 
 import * as React from 'react';
-import { Box, Container } from '../design-system/components/layout';
-import { Section, SectionTitle, SectionContent } from '../design-system/components/layout/Section';
-import { Text, Heading } from '../design-system/components/typography';
-import { Card } from '../design-system/components/data-display';
-import { FlowerOfLife } from '../design-system/botanical';
+import { useState } from 'react';
+import { Box, Container } from '../../../design-system/components/layout';
+import { Section, SectionTitle, SectionContent } from '../../../design-system/components/layout/Section';
+import { Text, Heading } from '../../../design-system/components/typography';
+import { Card } from '../../../design-system/components/data-display';
+import { FlowerOfLife } from '../../../design-system/botanical';
 
-import { ScrollReveal, FadeIn } from '../../animation';
+import { ScrollReveal, FadeIn } from '../../../animation';
 import { OfficeLocation } from './ContactInfo';
+import { PHI } from '../../../constants/sacred-geometry';
 
 // Map marker component with botanical styling
 interface MapMarkerProps {
@@ -22,22 +24,36 @@ interface MapMarkerProps {
 }
 
 const MapMarker: React.FC<MapMarkerProps> = ({ selected, onClick }) => (
-  <Box
-    position="relative"
-    width={`${PHI * 24}px`}
-    height={`${PHI * 24}px`}
-    onClick={onClick}
-    style={{ cursor: 'pointer' }}
-    role="button"
-    aria-pressed={selected}
-    tabIndex={0}
-    onKeyDown={(e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        onClick?.();
-      }
+  <div
+    style={{
+      position: 'relative',
+      width: `${PHI * 24}px`,
+      height: `${PHI * 24}px`,
+      cursor: 'pointer'
     }}
   >
+    <button
+      onClick={onClick}
+      aria-pressed={selected}
+      tabIndex={0}
+      onKeyDown={(e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
+      style={{
+        background: 'none',
+        border: 'none',
+        padding: 0,
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        zIndex: 2,
+        cursor: 'pointer'
+      }}
+      aria-label="Select office location"
+    />
     <Box
       position="absolute"
       top="0"
@@ -70,7 +86,7 @@ const MapMarker: React.FC<MapMarkerProps> = ({ selected, onClick }) => (
         secondaryColor="rgba(255,255,255,0.8)" 
       />
     </Box>
-  </Box>
+  </div>
 );
 
 // Info window component
@@ -132,12 +148,12 @@ const ContactMap: React.FC<ContactMapProps> = ({
   backgroundColor = "#f0f4f8"
 }) => {
   const [selectedLocation, setSelectedLocation] = useState<string | null>(
-    locations.length > 0 ? locations[0] ?? 1.id : null
+    locations.length > 0 ? locations[0]?.id || null : null
   );
 
   // Get the selected office data
   const selectedOffice = locations.find(office => office.id === selectedLocation) || 
-    (locations.length > 0 ? locations[0] ?? 1 : null);
+    (locations.length > 0 ? locations[0] : null);
 
   return (
     <Section backgroundColor={backgroundColor}>
@@ -151,15 +167,14 @@ const ContactMap: React.FC<ContactMapProps> = ({
           />
           <SectionContent>
             <FadeIn>
-              <Box 
-                height={`${height}px`} 
-                borderRadius="8px" 
-                overflow="hidden" 
-                position="relative"
+              <div 
                 style={{
+                  height: `${height}px`, 
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  position: 'relative',
                   boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
                 }}
-                role="region"
                 aria-label="Map showing office locations"
               >
                 {/* This would be a real map integration in production */}
@@ -208,8 +223,8 @@ const ContactMap: React.FC<ContactMapProps> = ({
                         zIndex={2}
                       >
                         <MapMarker 
-                          selected={selectedLocation === (locations[0] ?? 1?.id || '')}
-                          onClick={() => setSelectedLocation(locations[0] ?? 1?.id || null)}
+                          selected={selectedLocation === (locations[0]?.id || '')}
+                          onClick={() => setSelectedLocation(locations[0]?.id || null)}
                         />
                       </Box>
                       
@@ -220,7 +235,7 @@ const ContactMap: React.FC<ContactMapProps> = ({
                     </>
                   )}
                 </Box>
-              </Box>
+              </div>
             </FadeIn>
             
             {/* Additional instructions */}

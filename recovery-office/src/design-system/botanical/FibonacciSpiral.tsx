@@ -123,8 +123,8 @@ const generateFibonacciSpiral = (
   let spiralPath = '';
   
   for (let i = 0; i < iterations - 1; i++) {
-    const square = squares[i] ?? 1;
-    const nextSquare = squares[i + 1] ?? 1;
+    const square = squares[i] || { x: 0, y: 0, size: 0 };
+    const nextSquare = squares[i + 1] || { x: 0, y: 0, size: 0 };
     const size = square.size;
     
     let startX, startY, endX, endY, radiusX, radiusY;

@@ -1,16 +1,16 @@
 // TODO: This file contains direct window access without SSR checks
 import * as React from 'react';
-import { useState, useEffect } from 'react';;
+import { useState, useEffect } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 
 // Import sacred geometry constants
-import { PHI, PHI_INVERSE, FIBONACCI } from '../../../constants/sacred-geometry';
+import { PHI, PHI_INVERSE } from '../../../constants/sacred-geometry';
 import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
 
 // Import components
 import NavigationItem from './NavigationItem';
 import { OliveBranch, BotanicalDecorator } from '../botanical';
-import { ScrollReveal } from '../animation';
+import { ScrollReveal } from '../../components/animation';
 
 // Types
 export interface SideNavigationItem {
@@ -116,159 +116,138 @@ const SideNavigation: React.FC<SideNavigationProps> = ({
     setIsCollapsed(!isCollapsed);
   };
   
+  // Helper function to get background color
+  const getContainerBackgroundColor = () => {
+    switch (variant) {
+      case 'primary':
+        return '#1a365d'; // Dark blue
+      case 'secondary':
+        return '#2c5282'; // Medium blue
+      case 'dark':
+        return '#1a202c'; // Dark gray
+      case 'transparent':
+        return 'transparent';
+      case 'light':
+      default:
+        return '#f9f9f9'; // Light gray
+    }
+  };
+
+  // Helper function to get text color
+  const getContainerTextColor = () => {
+    switch (variant) {
+      case 'primary':
+      case 'secondary':
+      case 'dark':
+        return '#ffffff'; // White
+      case 'transparent':
+      case 'light':
+      default:
+        return '#1a202c'; // Dark gray
+    }
+  };
+
+  // Create style object for the container
+  const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    width: typeof width === 'number' ? `${width}px` : width,
+    maxHeight: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight,
+    overflowY: 'auto',
+    backgroundColor: getContainerBackgroundColor(),
+    color: getContainerTextColor(),
+    borderRadius: `${getFibonacciByIndex(5)}px`, // 5px
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    padding: compact ? `${getFibonacciByIndex(5)}px` : `${getFibonacciByIndex(6)}px`, // 5px or 8px
+    position: 'relative'
+  };
+  
   return (
-    <Container
-      className={className}
-      style={style}
-      data-testid={testId}
-      $variant={variant}
-      $width={width}
-      $maxHeight={maxHeight}
-      $compact={compact}
-    >
-      {/* Title with toggle button for collapsible nav */}
-      {(title || collapsible) && (
-        <TitleContainer>
-          {title && <Title>{title}</Title>}
-          
-          {collapsible && (
-            <CollapseButton onClick={toggleCollapsed} aria-expanded={!isCollapsed}>
-              <CollapseIcon $isCollapsed={isCollapsed}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d={isCollapsed ? "M12 5v14M5 12h14" : "M5 12h14"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </CollapseIcon>
-            </CollapseButton>
-          )}
-        </TitleContainer>
-      )}
-      
-      {/* Navigation items */}
-      <NavItemsContainer $isCollapsed={isCollapsed}>
-        {items.map((item, index) => {
-          const delay = animated ? index * (PHI_INVERSE * 0.1) : 0;
-          
-          return (
-            <React.Fragment key={`${item.label}-${index}`}>
-              {/* Add dividers between items when enabled */}
-              {withDividers && index > 0 && <Divider />}
-              
-              {/* Navigation item with animation */}
-              <NavItemWrapper $compact={compact}>
-                {animated ? (
-                  <ScrollReveal
-                    delay={delay}
-                    distance={`${getFibonacciByIndex(5)}px`} // 5px
-                    direction="right"
-                  >
+    <div className={className} style={style} data-testid={testId}>
+      <nav style={containerStyle}>
+        {/* Title with toggle button for collapsible nav */}
+        {(title || collapsible) && (
+          <TitleContainer>
+            {title && <Title>{title}</Title>}
+            
+            {collapsible && (
+              <CollapseButton onClick={toggleCollapsed} aria-expanded={!isCollapsed}>
+                <StyledCollapseIcon isCollapsed={isCollapsed}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d={isCollapsed ? "M12 5v14M5 12h14" : "M5 12h14"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </StyledCollapseIcon>
+              </CollapseButton>
+            )}
+          </TitleContainer>
+        )}
+        
+        {/* Navigation items */}
+        <StyledNavItemsContainer isCollapsed={isCollapsed}>
+          {items.map((item, index) => {
+            const delay = animated ? index * (PHI_INVERSE * 0.1) : 0;
+            
+            return (
+              <React.Fragment key={`${item.label}-${index}`}>
+                {/* Add dividers between items when enabled */}
+                {withDividers && index > 0 && <Divider />}
+                
+                {/* Navigation item with animation */}
+                <StyledNavItemWrapper compact={compact}>
+                  {animated ? (
+                    <ScrollReveal
+                      delay={delay}
+                      distance={getFibonacciByIndex(5)}
+                      variant="slide-right"
+                    >
+                      <NavigationItem
+                        label={item.label}
+                        href={item.path}
+                        isActive={item.isActive}
+                        icon={item.icon}
+                        subItems={item.subItems?.map(subItem => ({
+                          label: subItem.label,
+                          href: subItem.path,
+                          isActive: subItem.isActive
+                        }))}
+                      />
+                    </ScrollReveal>
+                  ) : (
                     <NavigationItem
                       label={item.label}
-                      path={item.path}
+                      href={item.path}
                       isActive={item.isActive}
                       icon={item.icon}
-                      subItems={item.subItems}
+                      subItems={item.subItems?.map(subItem => ({
+                        label: subItem.label,
+                        href: subItem.path,
+                        isActive: subItem.isActive
+                      }))}
                     />
-                  </ScrollReveal>
-                ) : (
-                  <NavigationItem
-                    label={item.label}
-                    path={item.path}
-                    isActive={item.isActive}
-                    icon={item.icon}
-                    subItems={item.subItems}
-                  />
-                )}
-              </NavItemWrapper>
-            </React.Fragment>
-          );
-        })}
-      </NavItemsContainer>
-      
-      {/* Botanical decorator */}
-      {withBotanical && (
-        <BotanicalDecorator
-          botanicalType={botanicalType}
-          position="bottomRight"
-          size="md"
-          opacity={0.15}
-          colorScheme="primary"
-          decorative
-        >
-          {null}
-        </BotanicalDecorator>
-      )}
-    </Container>
+                  )}
+                </StyledNavItemWrapper>
+              </React.Fragment>
+            );
+          })}
+        </StyledNavItemsContainer>
+        
+        {/* Botanical decorator */}
+        {withBotanical && (
+          <BotanicalDecorator
+            botanicalType={botanicalType}
+            position="bottomRight"
+            size="md"
+            opacity={0.15}
+            colorScheme="primary"
+            decorative
+          >
+            {null}
+          </BotanicalDecorator>
+        )}
+      </nav>
+    </div>
   );
 };
-
-// Helper function to get background color based on variant
-const getBackgroundColor = (variant: string, theme: DefaultTheme) => {
-  switch (variant) {
-    case 'primary':
-      return theme.colors.primary;
-    case 'secondary':
-      return theme.colors.secondary;
-    case 'dark':
-      return theme.colors.background.dark;
-    case 'transparent':
-      return 'transparent';
-    case 'light':
-    default:
-      return theme.colors.background.light;
-  }
-};
-
-// Helper function to get text color based on variant
-const getTextColor = (variant: string, theme: DefaultTheme) => {
-  switch (variant) {
-    case 'primary':
-    case 'secondary':
-    case 'dark':
-      return theme.colors.text.light;
-    case 'transparent':
-    case 'light':
-    default:
-      return theme.colors.text.primary;
-  }
-};
-
-// Styled components
-interface ContainerProps {
-  $variant: string;
-  $width: string | number;
-  $maxHeight: string | number;
-  $compact: boolean;
-}
-
-const Container = styled.nav<ContainerProps>`
-  display: flex;
-  flex-direction: column;
-  width: ${({ $width }) => typeof $width === 'number' ? `${$width}px` : $width};
-  max-height: ${({ $maxHeight }) => typeof $maxHeight === 'number' ? `${$maxHeight}px` : $maxHeight};
-  overflow-y: auto;
-  background-color: ${({ theme, $variant }) => getBackgroundColor($variant, theme)};
-  color: ${({ theme, $variant }) => getTextColor($variant, theme)};
-  border-radius: ${getFibonacciByIndex(5)}px; // 5px
-  box-shadow: ${props => props.theme.shadows.sm};
-  padding: ${({ $compact }) => $compact ? `${getFibonacciByIndex(5)}px` : `${getFibonacciByIndex(6)}px`}; // 5px or 8px
-  position: relative;
-  
-  /* Custom scrollbar with sacred geometry proportions */
-  &::-webkit-scrollbar {
-    width: ${getFibonacciByIndex(4)}px; // 3px
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: ${getFibonacciByIndex(3)}px; // 2px
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme.colors.primary};
-    border-radius: ${getFibonacciByIndex(3)}px; // 2px
-    opacity: 0.7;
-  }
-`;
 
 const TitleContainer = styled.div`
   display: flex;
@@ -287,14 +266,14 @@ const Title = styled.h3`
 `;
 
 interface CollapseIconProps {
-  $isCollapsed: boolean;
+  isCollapsed: boolean;
 }
 
-const CollapseIcon = styled.span<CollapseIconProps>`
+const StyledCollapseIcon = styled.span<CollapseIconProps>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transform: rotate(${({ $isCollapsed }) => $isCollapsed ? '0' : '45'}deg);
+  transform: rotate(${({ isCollapsed }) => isCollapsed ? '0' : '45'}deg);
   transition: transform 0.2s cubic-bezier(${PHI_INVERSE}, 0, ${1 - PHI_INVERSE}, 1);
 `;
 
@@ -315,26 +294,26 @@ const CollapseButton = styled.button`
   
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 ${getFibonacciByIndex(3)}px ${props => props.theme.colors.focus}; // 2px
+    box-shadow: 0 0 0 ${getFibonacciByIndex(3)}px rgba(66, 153, 225, 0.5); // 2px
   }
 `;
 
 interface NavItemsContainerProps {
-  $isCollapsed: boolean;
+  isCollapsed: boolean;
 }
 
-const NavItemsContainer = styled.div<NavItemsContainerProps>`
-  display: ${({ $isCollapsed }) => $isCollapsed ? 'none' : 'flex'};
+const StyledNavItemsContainer = styled.div<NavItemsContainerProps>`
+  display: ${({ isCollapsed }) => isCollapsed ? 'none' : 'flex'};
   flex-direction: column;
   overflow-y: auto;
 `;
 
 interface NavItemWrapperProps {
-  $compact: boolean;
+  compact: boolean;
 }
 
-const NavItemWrapper = styled.div<NavItemWrapperProps>`
-  margin-bottom: ${({ $compact }) => $compact ? `${getFibonacciByIndex(4)}px` : `${getFibonacciByIndex(5)}px`}; // 3px or 5px
+const StyledNavItemWrapper = styled.div<NavItemWrapperProps>`
+  margin-bottom: ${({ compact }) => compact ? `${getFibonacciByIndex(4)}px` : `${getFibonacciByIndex(5)}px`}; // 3px or 5px
   
   &:last-child {
     margin-bottom: 0;

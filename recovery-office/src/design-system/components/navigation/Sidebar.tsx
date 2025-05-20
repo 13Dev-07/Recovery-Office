@@ -6,12 +6,12 @@
  */
 
 import * as React from 'react';
-import { useState } from 'react';;
+import { useState } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 
 // Import sacred geometry constants
-
-
+import { PHI, PHI_INVERSE } from '../../../constants/sacred-geometry';
+import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
 
 // Import components
 import Link from './Link';
@@ -47,7 +47,7 @@ export interface SidebarProps {
   /** Whether to show botanical decorations */
   withBotanical?: boolean;
   /** The type of botanical decoration to show */
-  botanicalVariant?: 'oliveBranch' | 'flowerOfLife' | 'leafPattern' | 'smallFlourish';
+  botanicalVariant?: 'oliveBranch' | 'flowerOfLife' | 'vesicaPiscis' | 'fibonacciSpiral' | 'oliveLeaf' | 'smallFlourish';
   /** Background color variant */
   variant?: 'light' | 'dark' | 'primary' | 'secondary' | 'transparent';
   /** Whether the sidebar is collapsible */
@@ -117,16 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             decorative
           />
         );
-      case 'leafPattern':
-        return (
-          <BotanicalElement
-            variant="leafPattern"
-            size="md"
-            opacity={0.1}
-            colorScheme="primary"
-            decorative
-          />
-        );
+      case 'vesicaPiscis':
       case 'smallFlourish':
       default:
         return (
@@ -248,7 +239,7 @@ const Container = styled.aside<ContainerProps>`
   color: ${({ theme, $variant }) => {
     switch ($variant) {
       case 'dark':
-        return theme.colors.text.inverse;
+        return theme.colors.text.light;
       case 'primary':
       case 'secondary':
       case 'transparent':

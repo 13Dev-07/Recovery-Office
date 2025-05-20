@@ -10,10 +10,15 @@
 
 import * as React from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
+import styled from 'styled-components';
 
-import type { BoxProps } from '../../types';
-import { ScaleFadeProps } from './animation.d';
+import Box from '../layout/Box';
+import { ScaleFadeProps, CustomEasingFunction, EasingValue } from '../../types/animation.types';
 import { resolveDuration, applyGoldenRatioDuration } from '../../../utils/animation';
+import { PHI, PHI_INVERSE, SACRED_EASINGS } from '../../../constants/sacred-geometry';
+
+// Create styled motion.div that inherits Box styling system
+const StyledMotionDiv = styled(motion.div)``;
 
 /**
  * ScaleFade Component with ref forwarding
@@ -33,6 +38,7 @@ export const ScaleFade = React.forwardRef<HTMLDivElement, ScaleFadeProps>(
     stayMounted = false,
     transformOrigin = 'center',
     reverse = false,
+    style,
     ...rest
   }, ref) => {
     // Convert duration string to numerical value if needed
@@ -46,6 +52,11 @@ export const ScaleFade = React.forwardRef<HTMLDivElement, ScaleFadeProps>(
       ? { initial: finalScale, final: initialScale }
       : { initial: initialScale, final: finalScale };
     
+    // Handle custom easing function or use predefined sacred easing
+    const easingValue = typeof easing === 'function' 
+      ? easing 
+      : (SACRED_EASINGS[easing as keyof typeof SACRED_EASINGS] || SACRED_EASINGS.standard);
+    
     // Create animation variants with sacred timing
     const variants: Variants = {
       visible: { 
@@ -55,12 +66,12 @@ export const ScaleFade = React.forwardRef<HTMLDivElement, ScaleFadeProps>(
           opacity: {
             duration: effectiveDuration,
             delay,
-            ease: SACRED_EASINGS[easing as keyof typeof SACRED_EASINGS] || SACRED_EASINGS.standard,
+            ease: easingValue,
           },
           scale: {
             duration: effectiveDuration * PHI, // Slightly longer for scale (golden ratio)
             delay,
-            ease: SACRED_EASINGS[easing as keyof typeof SACRED_EASINGS] || SACRED_EASINGS.standard,
+            ease: easingValue,
           }
         }
       },
@@ -70,11 +81,11 @@ export const ScaleFade = React.forwardRef<HTMLDivElement, ScaleFadeProps>(
         transition: {
           opacity: {
             duration: effectiveDuration * PHI_INVERSE, // Slightly shorter for fade out
-            ease: SACRED_EASINGS[easing as keyof typeof SACRED_EASINGS] || SACRED_EASINGS.standard,
+            ease: easingValue,
           },
           scale: {
             duration: effectiveDuration,
-            ease: SACRED_EASINGS[easing as keyof typeof SACRED_EASINGS] || SACRED_EASINGS.standard,
+            ease: easingValue,
           }
         }
       }
@@ -83,13 +94,14 @@ export const ScaleFade = React.forwardRef<HTMLDivElement, ScaleFadeProps>(
     return (
       <AnimatePresence mode="wait">
         {(isVisible || stayMounted) && (
-          <motion.div
+          <StyledMotionDiv
             ref={ref}
             initial="hidden"
             animate={isVisible ? "visible" : "hidden"}
             exit="hidden"
             variants={variants}
             style={{
+              ...style,
               transformOrigin,
               display: (!isVisible && stayMounted) ? 'none' : undefined,
               willChange: 'transform, opacity' // Performance optimization
@@ -97,7 +109,7 @@ export const ScaleFade = React.forwardRef<HTMLDivElement, ScaleFadeProps>(
             {...rest}
           >
             {children}
-          </motion.div>
+          </StyledMotionDiv>
         )}
       </AnimatePresence>
     );

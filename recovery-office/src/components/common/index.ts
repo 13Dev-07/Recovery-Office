@@ -1,23 +1,8 @@
 /**
- * Common Components Index
+ * Common Components
  * 
- * Exports common utility components used throughout the application.
- * Follows sacred geometry principles in its organization.
+ * This file exports reusable components that are used across the application
  */
 
-export { default as Divider } from './Divider';
-export { default as Container } from './Container';
-export { default as SacredGrid } from './SacredGrid';
-export { default as AspectRatio } from './AspectRatio';
-export { default as ErrorBoundary, withErrorBoundary } from './ErrorBoundary'; 
-
-
-
-
-
-
-
-
-
-
-
+export { default as ErrorBoundary } from './ErrorBoundary';
+export { default as SEO } from './SEO'; 

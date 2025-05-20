@@ -4,75 +4,33 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#81976F" />
+    <meta name="theme-color" content="#4a6eb3" />
     <meta
       name="description"
-      content="Recovery Office - Holistic wellness services using sacred geometry principles for optimal healing"
+      content="Recovery Office - Financial recovery services with regulatory compliance for optimal asset reclamation"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:; worker-src 'self' blob:;"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.svg" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     
-    <!-- Preload critical fonts -->
-    <link
-      rel="preload"
-      href="%PUBLIC_URL%/assets/fonts/playfair-display/PlayfairDisplay-Regular.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="preload"
-      href="%PUBLIC_URL%/assets/fonts/open-sans/OpenSans-Regular.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin="anonymous"
-    />
+    <!-- Google Fonts preconnect - for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Font stylesheets -->
+    <!-- Google Fonts imports - load directly instead of hosting locally -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Inline critical CSS -->
     <style>
-      /* Define fonts with FOUT prevention */
-      @font-face {
-        font-family: 'Playfair Display';
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url('%PUBLIC_URL%/assets/fonts/playfair-display/PlayfairDisplay-Regular.woff2') format('woff2'),
-             url('%PUBLIC_URL%/assets/fonts/playfair-display/PlayfairDisplay-Regular.woff') format('woff');
-      }
-      
-      @font-face {
-        font-family: 'Playfair Display';
-        font-style: normal;
-        font-weight: 700;
-        font-display: swap;
-        src: url('%PUBLIC_URL%/assets/fonts/playfair-display/PlayfairDisplay-Bold.woff2') format('woff2'),
-             url('%PUBLIC_URL%/assets/fonts/playfair-display/PlayfairDisplay-Bold.woff') format('woff');
-      }
-      
-      @font-face {
-        font-family: 'Open Sans';
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url('%PUBLIC_URL%/assets/fonts/open-sans/OpenSans-Regular.woff2') format('woff2'),
-             url('%PUBLIC_URL%/assets/fonts/open-sans/OpenSans-Regular.woff') format('woff');
-      }
-      
-      @font-face {
-        font-family: 'Open Sans';
-        font-style: normal;
-        font-weight: 600;
-        font-display: swap;
-        src: url('%PUBLIC_URL%/assets/fonts/open-sans/OpenSans-SemiBold.woff2') format('woff2'),
-             url('%PUBLIC_URL%/assets/fonts/open-sans/OpenSans-SemiBold.woff') format('woff');
-      }
-      
-      /* Critical CSS with sacred geometry proportions */
+      /* Define base variables and styles */
       :root {
         --phi: 1.618033988749895;
         --phi-inverse: 0.618033988749895;
         --spacing-base: 8px;
-        --primary-color: #81976F;
+        --primary-color: #4a6eb3;
         --secondary-color: #7A9EA7;
         --background-color: #FCFBF8;
         --text-color: #353632;
@@ -83,8 +41,7 @@
         padding: 0;
         background-color: var(--background-color);
         color: var(--text-color);
-        font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         overflow-x: hidden;
@@ -99,7 +56,7 @@
         flex-direction: column;
       }
       
-      /* Splash screen with sacred geometry */
+      /* Splash screen with logo animation */
       .splash-screen {
         position: fixed;
         top: 0;
@@ -132,11 +89,7 @@
       }
     </style>
 
-    <title>Recovery Office | Holistic Wellness & Therapies</title>
-    
-    <!-- Accessible preconnect for performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>Recovery Office | Financial Asset Recovery Services</title>
     
     <!-- Prevent FOUC -->
     <script>
@@ -144,7 +97,7 @@
       window.addEventListener('load', function() {
         document.documentElement.classList.remove('js-loading');
         
-        // Hide splash screen after sacred-timing delay
+        // Hide splash screen after delay
         setTimeout(function() {
           const splash = document.getElementById('splash-screen');
           if (splash) {
@@ -166,47 +119,18 @@
     <noscript>
       <div style="padding: 2rem; text-align: center; max-width: 61.8vw; margin: 0 auto;">
         <h1>JavaScript Required</h1>
-        <p>Recovery Office requires JavaScript to provide you with the best healing experience. Please enable JavaScript to continue.</p>
-        <p>Our holistic wellness center offers a variety of services including massage therapy, acupuncture, and nutritional counseling.</p>
+        <p>Recovery Office requires JavaScript to provide you with the best financial recovery experience. Please enable JavaScript to continue.</p>
+        <p>Our financial recovery center offers a variety of services including asset recovery, investment fraud recovery, and regulatory assistance.</p>
         <p>Contact us at: <a href="tel:+1234567890">123-456-7890</a> or <a href="mailto:info@recoveryoffice.com">info@recoveryoffice.com</a></p>
       </div>
     </noscript>
     
-    <!-- Splash screen with sacred geometry animation -->
+    <!-- Splash screen with logo animation -->
     <div id="splash-screen" class="splash-screen">
       <svg class="splash-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <!-- Golden spiral based on Fibonacci sequence -->
-        <path d="M50,50 m0,-45 a45,45 0 1,1 0,90 a45,45 0 1,1 0,-90" 
-              fill="none" 
-              stroke="#81976F" 
-              stroke-width="2"
-              stroke-dasharray="282.7"
-              stroke-dashoffset="282.7">
-          <animate attributeName="stroke-dashoffset" 
-                  from="282.7" 
-                  to="0" 
-                  dur="2.1s" 
-                  fill="freeze" 
-                  calcMode="spline"
-                  keySplines="0.618 0 0.382 1" />
-        </path>
-        <!-- Olive branch symbol -->
-        <path d="M35,65 C42,58 48,52 55,48 C62,44 68,41 75,45 C70,38 65,36 58,39 C51,42 45,48 40,55 C35,62 33,68 35,75 C42,70 48,65 55,62 C62,59 68,58 75,60"
-              fill="none" 
-              stroke="#81976F" 
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-dasharray="180"
-              stroke-dashoffset="180">
-          <animate attributeName="stroke-dashoffset" 
-                   from="180" 
-                   to="0" 
-                   dur="2.1s" 
-                   begin="0.5s"
-                   fill="freeze" 
-                   calcMode="spline"
-                   keySplines="0.618 0 0.382 1" />
-        </path>
+        <!-- Circle with RO text -->
+        <circle cx="50" cy="50" r="45" fill="#4a6eb3" />
+        <text x="50" y="62" font-family="Arial, sans-serif" font-size="30" font-weight="bold" text-anchor="middle" fill="#FFFFFF">RO</text>
       </svg>
     </div>
     
@@ -224,7 +148,7 @@
       document.getElementById('root').innerHTML = 
         '<div style="padding: 2rem; text-align: center; max-width: 61.8vw; margin: 0 auto;">' +
         '<h1>Browser Not Supported</h1>' +
-        '<p>Recovery Office requires a modern browser to provide you with the best healing experience. ' +
+        '<p>Recovery Office requires a modern browser to provide you with the best financial recovery experience. ' +
         'Please upgrade your browser to continue.</p>' +
         '<p>Contact us at: <a href="tel:+1234567890">123-456-7890</a> or ' +
         '<a href="mailto:info@recoveryoffice.com">info@recoveryoffice.com</a></p>' +

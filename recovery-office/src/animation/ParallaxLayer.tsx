@@ -13,7 +13,7 @@ import * as React from 'react';;
 import { forwardRef, useRef, useMemo } from 'react';
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
 import type { ParallaxLayerProps } from './animation.d';
-import { prefersReducedMotion, getFibonacciByIndex } from '@utils/animation';
+import { prefersReducedMotion, getFibonacciByIndex } from '../utils/animation';
 import { mergeRefs } from '../utils/refs';
 
 /**

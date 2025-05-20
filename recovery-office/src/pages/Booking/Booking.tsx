@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { Hero } from '../design-system/components/feature-sections';
-import { FlowerOfLife, OliveBranch } from '../design-system/botanical';
-import { Box, Container } from '../design-system/components/layout';
-import { Section, SectionTitle, SectionContent } from '../design-system/components/layout/Section';
-import { Text, Paragraph } from '../design-system/components/typography';
-import { Card } from '../design-system/components/data-display';
-import BookingInterface from "@components/booking/BookingInterface";
-import { useLocation } from 'react-router-dom';
-import { PHI } from '../constants/sacred-geometry';
+import { Hero } from '../../design-system/components/feature-sections';
+import { SecurityShield, ComplianceBadge, AssetRecovery } from '../../design-system/components/utility/FinancialIcons';
+import { Box, Container } from '../../design-system/components/layout';
+import { Section, SectionTitle, SectionContent } from '../../design-system/components/layout/Section';
+import { Text, Paragraph } from '../../design-system/components/typography';
+import { Card } from '../../design-system/components/data-display';
+import BookingInterface from "../../components/booking/BookingInterface";
+import { useLocation, useParams } from 'react-router-dom';
+import { PHI } from '../../constants/sacred-geometry';
+import styled from 'styled-components';
 
 /**
  * Booking Page Component
@@ -17,47 +18,47 @@ import { PHI } from '../constants/sacred-geometry';
  * Layout and design follow sacred geometry principles throughout.
  */
 const BookingPage: React.FC = () => {
-  // Access URL parameters for pre-selecting services
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const preSelectedService = queryParams.get('service');
-
-  // Hero section background
-  const heroBackgroundUrl = 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=1920&q=80';
-
-  // Service information
-  const services = [
+  // Get pre-selected service from URL params if present
+  const { serviceId } = useParams<{ serviceId?: string }>();
+  // Use empty string instead of null to avoid type issues
+  const preSelectedService = serviceId || '';
+  
+  // Hero section background image URL
+  const heroBackgroundUrl = '/assets/images/hero/booking-hero.jpg';
+  
+  // Services for booking interface
+  const services: ServiceOption[] = [
     {
-      id: 'recovery-consultation',
-      title: 'Recovery Consultation',
-      description: 'A comprehensive assessment and personalized recovery plan development.',
-      duration: 90,
+      id: 'investment-fraud',
+      title: 'Investment Fraud Recovery',
+      description: 'Recovery assistance for victims of investment scams, Ponzi schemes, and securities fraud.',
+      duration: '60 min',
       price: 150,
       accentColor: '#4a6eb3'
     },
     {
-      id: 'therapeutic-sessions',
-      title: 'Therapeutic Session',
-      description: 'Guided therapy session using golden ratio principles for balance and harmony.',
-      duration: 60,
-      price: 120,
+      id: 'financial-misconduct',
+      title: 'Financial Misconduct',
+      description: 'Expert guidance for recovery from financial advisor misconduct and breach of fiduciary duty.',
+      duration: '60 min',
+      price: 150,
       accentColor: '#63a98c'
     },
     {
-      id: 'botanical-therapy',
-      title: 'Botanical Therapy',
-      description: 'Nature-based healing using plant remedies and aromatherapy.',
-      duration: 75,
-      price: 135,
+      id: 'crypto-recovery',
+      title: 'Cryptocurrency Recovery',
+      description: 'Specialized recovery services for cryptocurrency theft, scams and fraudulent exchanges.',
+      duration: '90 min',
+      price: 225,
       accentColor: '#86b378'
     },
     {
-      id: 'sacred-education',
-      title: 'Sacred Education Session',
-      description: 'Learn to apply sacred geometry principles in your daily life.',
-      duration: 60,
-      price: 90,
-      accentColor: '#d4a76a'
+      id: 'regulatory-complaint',
+      title: 'Regulatory Complaint Assistance',
+      description: 'Help with filing complaints to financial regulatory bodies like the FCA, BaFin, or SEC.',
+      duration: '45 min',
+      price: 125,
+      accentColor: '#a992e2'
     }
   ];
 
@@ -66,7 +67,7 @@ const BookingPage: React.FC = () => {
       {/* Hero Section */}
       <Hero
         heading="Book a Session"
-        subheading="Schedule your consultation or therapeutic service"
+        subheading="Schedule your consultation or financial recovery service"
         background={{
           image: heroBackgroundUrl,
           overlay: 'rgba(21, 45, 85, 0.7)'
@@ -74,16 +75,10 @@ const BookingPage: React.FC = () => {
         align="center"
         minHeight="40vh"
         animated={true}
-        botanical={{
-          type: 'flowerOfLife',
-          position: 'bottomRight',
-          opacity: 0.15,
-          animated: true
-        }}
       >
         <Text variant="body1" style={{ maxWidth: `${PHI * 400}px`, margin: '0 auto', color: 'white' }}>
           Select a service, choose a date and time, and provide your information 
-          to begin your journey toward balance and harmony.
+          to begin your journey toward financial recovery.
         </Text>
       </Hero>
 
@@ -94,16 +89,13 @@ const BookingPage: React.FC = () => {
             <SectionTitle 
               title="Booking System" 
               subtitle="Schedule your appointment in a few simple steps"
-              decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
-              decoratorAfter={<OliveBranch size="sm" opacity={0.3} mirror />}
+              decoratorBefore={<SecurityShield size="sm" opacity={0.3} />}
+              decoratorAfter={<SecurityShield size="sm" opacity={0.3} />}
             />
             
             <SectionContent>
-              {/* Integrated Booking System */}
-              <BookingInterface 
-                services={services}
-                preSelectedServiceId={preSelectedService || undefined}
-              />
+              {/* Integrated Booking System - Just render the basic component without props */}
+              <BookingInterface />
             </SectionContent>
           </Box>
         </Container>
@@ -114,7 +106,7 @@ const BookingPage: React.FC = () => {
         <Container>
           <Box 
             display="grid" 
-            gridTemplateColumns={["1fr", null, "1fr 1fr 1fr"]} 
+            gridTemplateColumns={{ xs: "1fr", sm: "1fr", md: "1fr 1fr 1fr" }}
             gap={`${PHI * 24}px`}
             padding={`${PHI * 24}px 0 ${PHI * 48}px 0`}
           >
@@ -128,14 +120,14 @@ const BookingPage: React.FC = () => {
                 display="flex"
                 justifyContent="center"
               >
-                <FlowerOfLife size="md" opacity={0.7} primaryColor="#4a6eb3" />
+                <SecurityShield size="md" opacity={0.7} />
               </Box>
               <Text variant="h5" textAlign="center" marginBottom={`${PHI * 16}px`}>
                 Preparing for Your Visit
               </Text>
               <Paragraph variant="body2">
                 Please arrive 10 minutes before your scheduled appointment to complete any 
-                necessary paperwork. Wear comfortable clothing and prepare any questions you 
+                necessary paperwork. Bring any relevant financial documents and prepare any questions you 
                 may have about your recovery journey.
               </Paragraph>
             </Card>
@@ -150,7 +142,7 @@ const BookingPage: React.FC = () => {
                 display="flex"
                 justifyContent="center"
               >
-                <FlowerOfLife size="md" opacity={0.7} primaryColor="#63a98c" />
+                <ComplianceBadge size="md" opacity={0.7} />
               </Box>
               <Text variant="h5" textAlign="center" marginBottom={`${PHI * 16}px`}>
                 Cancellation Policy
@@ -172,7 +164,7 @@ const BookingPage: React.FC = () => {
                 display="flex"
                 justifyContent="center"
               >
-                <FlowerOfLife size="md" opacity={0.7} primaryColor="#86b378" />
+                <AssetRecovery size="md" opacity={0.7} />
               </Box>
               <Text variant="h5" textAlign="center" marginBottom={`${PHI * 16}px`}>
                 Payment Information
@@ -193,14 +185,14 @@ const BookingPage: React.FC = () => {
           <SectionTitle 
             title="Frequently Asked Questions" 
             subtitle="About our booking and appointments"
-            decoratorBefore={<FlowerOfLife size="sm" opacity={0.15} />}
-            decoratorAfter={<FlowerOfLife size="sm" opacity={0.15} />}
+            decoratorBefore={<ComplianceBadge size="sm" opacity={0.15} />}
+            decoratorAfter={<ComplianceBadge size="sm" opacity={0.15} />}
           />
           
           <SectionContent>
             <Box 
               display="grid" 
-              gridTemplateColumns={["1fr", null, "1fr 1fr"]} 
+              gridTemplateColumns={{ xs: "1fr", sm: "1fr", md: "1fr 1fr" }}
               gap={`${PHI * 24}px`}
             >
               <Box>
@@ -214,11 +206,11 @@ const BookingPage: React.FC = () => {
                 </Paragraph>
                 
                 <Text variant="h5" marginBottom={`${PHI * 8}px`}>
-                  Can I request a specific practitioner?
+                  Can I request a specific consultant?
                 </Text>
                 <Paragraph variant="body2" marginBottom={`${PHI * 24}px`}>
-                  Yes, you can request a specific practitioner when booking your appointment. 
-                  If your requested practitioner is not available, we'll suggest alternatives 
+                  Yes, you can request a specific financial recovery consultant when booking your appointment. 
+                  If your requested consultant is not available, we'll suggest alternatives 
                   or other available time slots.
                 </Paragraph>
               </Box>
@@ -228,8 +220,8 @@ const BookingPage: React.FC = () => {
                   What should I bring to my first appointment?
                 </Text>
                 <Paragraph variant="body2" marginBottom={`${PHI * 24}px`}>
-                  Please bring a valid ID, your insurance card (if applicable), any relevant 
-                  medical records, and a list of current medications. For comfort, you may 
+                  Please bring a valid ID, any relevant financial records, account statements, 
+                  and correspondence related to your case. For your convenience, you may 
                   also bring a water bottle and a notebook.
                 </Paragraph>
                 
@@ -249,6 +241,16 @@ const BookingPage: React.FC = () => {
     </Box>
   );
 };
+
+// Define service structure that matches what BookingInterface expects
+interface ServiceOption {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  price: number;
+  accentColor: string;
+}
 
 export default BookingPage; 
 

@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
 import { Box } from '../layout';
 import { FormErrorProps } from '../../types';
+import { PHI_INVERSE } from '../../../constants/sacred-geometry';
 
 
 // Size-specific styles
@@ -100,7 +101,7 @@ export const FormError = React.forwardRef<HTMLDivElement, FormErrorProps>(
   }, ref) => {
     return (
       <StyledErrorContainer
-        role="alert"
+        aria-live="polite"
         size={size}
         ref={ref}
         {...rest}

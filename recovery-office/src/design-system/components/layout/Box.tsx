@@ -16,8 +16,8 @@ import {
   BoxStyleProps,
   ResponsiveProps,
   AsProps
-} from '../../types';
-import { lightTheme } from '../../theme';
+} from '../../../design-system/types';
+import { lightTheme } from '../../../design-system/theme';
 
 /**
  * Helper function to generate CSS for responsive styling
@@ -67,6 +67,11 @@ const generateStyles = (props: BoxStyleProps): string => {
   if (props.ml !== undefined) styles += `margin-left: ${handleValue(props.ml)};`;
   if (props.mx !== undefined) styles += `margin-left: ${handleValue(props.mx)}; margin-right: ${handleValue(props.mx)};`;
   if (props.my !== undefined) styles += `margin-top: ${handleValue(props.my)}; margin-bottom: ${handleValue(props.my)};`;
+  if (props.margin !== undefined) styles += `margin: ${handleValue(props.margin)};`;
+  if (props.marginTop !== undefined) styles += `margin-top: ${handleValue(props.marginTop)};`;
+  if (props.marginRight !== undefined) styles += `margin-right: ${handleValue(props.marginRight)};`;
+  if (props.marginBottom !== undefined) styles += `margin-bottom: ${handleValue(props.marginBottom)};`;
+  if (props.marginLeft !== undefined) styles += `margin-left: ${handleValue(props.marginLeft)};`;
   
   if (props.p !== undefined) styles += `padding: ${handleValue(props.p)};`;
   if (props.pt !== undefined) styles += `padding-top: ${handleValue(props.pt)};`;
@@ -75,6 +80,11 @@ const generateStyles = (props: BoxStyleProps): string => {
   if (props.pl !== undefined) styles += `padding-left: ${handleValue(props.pl)};`;
   if (props.px !== undefined) styles += `padding-left: ${handleValue(props.px)}; padding-right: ${handleValue(props.px)};`;
   if (props.py !== undefined) styles += `padding-top: ${handleValue(props.py)}; padding-bottom: ${handleValue(props.py)};`;
+  if (props.padding !== undefined) styles += `padding: ${handleValue(props.padding)};`;
+  if (props.paddingTop !== undefined) styles += `padding-top: ${handleValue(props.paddingTop)};`;
+  if (props.paddingRight !== undefined) styles += `padding-right: ${handleValue(props.paddingRight)};`;
+  if (props.paddingBottom !== undefined) styles += `padding-bottom: ${handleValue(props.paddingBottom)};`;
+  if (props.paddingLeft !== undefined) styles += `padding-left: ${handleValue(props.paddingLeft)};`;
   
   // Display properties
   if (props.display !== undefined) styles += `display: ${props.display};`;
@@ -137,6 +147,8 @@ const generateStyles = (props: BoxStyleProps): string => {
   if (props.bottom !== undefined) styles += `bottom: ${handleValue(props.bottom)};`;
   if (props.left !== undefined) styles += `left: ${handleValue(props.left)};`;
   if (props.zIndex !== undefined) styles += `z-index: ${props.zIndex};`;
+  if (props.transform !== undefined) styles += `transform: ${props.transform};`;
+  if (props.cursor !== undefined) styles += `cursor: ${props.cursor};`;
   
   return styles;
 };
@@ -169,7 +181,7 @@ const getBoxStyleProps = (props: BoxProps): BoxStyleProps => {
   const nonStyleProps = [
     'className', 'children', 
     '_xs', '_sm', '_md', '_lg', '_xl', '_xxl',
-    'as', 'forwardedAs'
+    'as', 'forwardedAs', 'style',
   ];
   
   nonStyleProps.forEach(prop => {
@@ -200,14 +212,10 @@ const StyledBox = styled.div<BoxProps>`
 export const Box = forwardRef<HTMLDivElement, AsProps<HTMLDivElement>>(
   (props, ref) => {
     // Destructure props safely to avoid type errors
-    const { as, ...rest } = props;
+    const { as, style, ...rest } = props;
     
-    // Use React.createElement instead of JSX to avoid TypeScript complexities
-    return React.createElement(StyledBox, { 
-      ref, 
-      as: as as React.ElementType, // More specific type instead of 'any'
-      ...rest 
-    });
+    // More flexible approach that properly handles any component for 'as'
+    return <StyledBox ref={ref} as={as} style={style} {...rest} />;
   }
 );
 

@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Hero, Contact as ContactSection } from '../design-system/components/feature-sections';
-import { FlowerOfLife, OliveBranch, VesicaPiscis } from '../design-system/botanical';
-import { Box, Container, Grid } from '../design-system/components/layout';
-import { Section, SectionTitle, SectionContent } from '../design-system/components/layout/Section';
-import { Text, Paragraph, Heading } from '../design-system/components/typography';
-import { Card } from '../design-system/components/data-display';
+import { Hero, Contact as ContactSection } from '../../design-system/components/feature-sections';
+import { FlowerOfLife, OliveBranch, VesicaPiscis } from '../../design-system/botanical';
+import { Box, Container, Grid } from '../../design-system/components/layout';
+import { Section, SectionTitle, SectionContent } from '../../design-system/components/layout/Section';
+import { Text, Paragraph, Heading } from '../../design-system/components/typography';
+import { Card } from '../../design-system/components/data-display';
 import { 
   FormControl, 
   FormLabel, 
@@ -12,10 +12,10 @@ import {
   Input, 
   TextArea,
   Select
-} from '../design-system/components/form';
-import { Button } from '../design-system/components/button';
+} from '../../design-system/components/form';
+import { Button } from '../../design-system/components/button';
 import { ScrollReveal } from '../../animation';
-import { PHI, PHI_INVERSE } from '../constants/sacred-geometry';
+import { PHI, PHI_INVERSE } from '../../constants/sacred-geometry';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -93,7 +93,7 @@ const ContactPage: React.FC = () => {
         <Section backgroundColor="#ffffff">
           <Container>
             <Grid 
-              gridTemplateColumns={["1fr", null, `${PHI}fr ${PHI_INVERSE}fr`]} 
+              gridTemplateColumns={{ xs: "1fr", md: `${PHI}fr ${PHI_INVERSE}fr` }}
               gap={`${PHI * 32}px`}
               padding={`${PHI * 24}px 0`}
             >
@@ -107,8 +107,11 @@ const ContactPage: React.FC = () => {
                   decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
                 />
                 
-                <Box as="form" onSubmit={handleSubmit(onSubmit)} mt={4}>
-                  <Grid gridTemplateColumns={["1fr", null, "1fr 1fr"]} gap={`${PHI * 16}px`}>
+                <form 
+                  onSubmit={handleSubmit(onSubmit)}
+                  style={{ marginTop: `${PHI * 16}px` }}
+                >
+                  <Grid gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }} gap={`${PHI * 16}px`}>
                     <FormControl isInvalid={!!errors.name}>
                       <FormLabel htmlFor="name">Name</FormLabel>
                       <Input 
@@ -131,7 +134,7 @@ const ContactPage: React.FC = () => {
                     </FormControl>
                   </Grid>
 
-                  <Grid gridTemplateColumns={["1fr", null, "1fr 1fr"]} gap={`${PHI * 16}px`} mt={4}>
+                  <Grid gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }} gap={`${PHI * 16}px`} mt={4}>
                     <FormControl isInvalid={!!errors.phone}>
                       <FormLabel htmlFor="phone">Phone (Optional)</FormLabel>
                       <Input 
@@ -181,7 +184,7 @@ const ContactPage: React.FC = () => {
                       {isSubmitting ? 'Sending...' : 'Send Message'}
                     </Button>
                   </Box>
-                </Box>
+                </form>
               </Box>
 
               {/* Contact Information */}
@@ -336,7 +339,7 @@ const ContactPage: React.FC = () => {
             />
             <SectionContent>
               <Grid 
-                gridTemplateColumns={["1fr", null, "1fr 1fr"]} 
+                gridTemplateColumns={{ xs: "1fr", sm: "1fr", md: "1fr 1fr" }}
                 gap={`${PHI * 24}px`}
               >
                 <Card padding={`${PHI * 16}px`} borderRadius="8px">

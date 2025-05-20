@@ -173,14 +173,18 @@ export const Text = React.forwardRef<HTMLElement, TextProps>(
     // Apply variant-based styling if a variant is provided
     const variantProps = resolveVariantProps(variant);
     
+    // Ensure size and weight are properly typed
+    const resolvedSize = (variantProps.size || size) as 'xs' | 'sm' | 'base' | 'md' | 'lg' | 'xl';
+    const resolvedWeight = (variantProps.weight || weight) as 'light' | 'regular' | 'medium' | 'semiBold' | 'bold' | 'black';
+    
     return (
       <StyledText
         as={as}
-        size={variantProps.size || size}
+        size={resolvedSize}
         truncate={truncate}
         noOfLines={noOfLines}
         italic={variantProps.italic || italic}
-        weight={variantProps.weight || weight}
+        weight={resolvedWeight}
         color={color}
         marginBottom={marginBottom}
         ref={ref as React.Ref<HTMLDivElement>}

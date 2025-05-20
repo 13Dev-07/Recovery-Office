@@ -17,10 +17,11 @@ import {
   useShouldAnimate,
   AnimationDuration,
   AnimationEasing
-} from '@context/AnimationContext';
+} from '../context/AnimationContext';
+import { useRef } from 'react';
 
 // Direction options for the slide animation
-export type SlideDirection = 'up' | 'down' | 'left' | 'right';
+export type SlideDirection = 'up' | 'down' | 'left' | 'right' | 'top';
 
 export interface SlideInProps {
   children: React.ReactNode;
@@ -71,7 +72,8 @@ export const SlideIn: React.FC<SlideInProps> = ({
   // Determine initial position based on direction
   const getInitialOffset = () => {
     switch (direction) {
-      case 'up': return { y: distance };
+      case 'up':
+      case 'top': return { y: distance }; // Map 'top' to 'up' behavior
       case 'down': return { y: -distance };
       case 'left': return { x: distance };
       case 'right': return { x: -distance };

@@ -11,11 +11,13 @@ export * from './tokens';
 // Export theme
 export * from './theme';
 
-// Export types
-export * from './types';
+// Export types - use explicit re-exports to resolve ambiguity
+import * as Types from './types';
+export { Types };
 
-// Export layout components
-export * from './components/layout';
+// Export layout components - use explicit re-exports to resolve ambiguity
+import * as LayoutComponents from './components/layout';
+export { LayoutComponents };
 
 // Export typography components
 export * from './components/typography';
@@ -44,8 +46,9 @@ export * from './components/data-display';
 // Export feature section components
 export * from './components/feature-sections';
 
-// Export booking system components
-export * from './components/booking'; 
+// The booking components module hasn't been implemented yet
+// Once implemented, uncomment the line below:
+// export * from './components/booking';
 
 
 

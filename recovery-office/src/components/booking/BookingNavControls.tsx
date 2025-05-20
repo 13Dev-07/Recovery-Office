@@ -1,29 +1,96 @@
-import * as React from 'react';
-import { Box, Flex } from '@design-system/components/layout/Box';
-import { Button } from '@design-system/components/button/Button';
-import { BookingStepId } from '@types/booking.types';
-
-import { BotanicalIcon } from '@design-system/botanical/BotanicalIcon';
-import { useBreakpointValue } from '@hooks/useBreakpointValue';
-
-interface BookingNavControlsProps {
-  currentStep: BookingStepId;
-  canGoBack: boolean;
-  canGoNext: boolean;
-  onPrevious: () => void;
-  onNext: () => void;
-  onSubmit: () => void;
-  isSubmitting: boolean;
-}
-
 /**
  * BookingNavControls Component
  * 
- * Provides navigation controls for moving between booking steps
- * Adapts buttons and layout based on device size and current step
- * Implements responsive design with optimal UX for each breakpoint
- * Ensures proper accessibility with ARIA attributes and keyboard navigation
+ * Navigation controls for the booking flow that adapt to each step of the process.
+ * 
+ * Features:
+ * - Context-aware button labels based on current step
+ * - Responsive layout that works on mobile and desktop
+ * - Accessibility support with ARIA labels
+ * - Visual alignment with sacred geometry principles
+ * 
+ * @example
+ * ```tsx
+ * <BookingNavControls
+ *   currentStep={BookingStepId.DATE_SELECTION}
+ *   canGoBack={true}
+ *   canGoNext={!!selectedDate}
+ *   onPrevious={handlePrevious}
+ *   onNext={handleNext}
+ *   onSubmit={handleSubmit}
+ *   isSubmitting={false}
+ * />
+ * ```
  */
+
+import * as React from 'react';
+import { Box } from '../../design-system/components/layout/Box';
+import { Flex } from '../../design-system/components/layout/Flex';
+import { Button } from '../../design-system/components/button/Button';
+import { BookingStepId } from '../../types/booking.types';
+import { SACRED_SPACING } from '../../constants/sacred-geometry';
+import { useBreakpointValue } from '../../hooks/useBreakpointValue';
+import styled from 'styled-components';
+
+// Create a styled navigation container
+const NavigationContainer = styled.nav`
+  padding-top: ${SACRED_SPACING.lg}px;
+  border-top: 1px solid ${props => props.theme.colors.border.light};
+`;
+
+// Create a styled container for the button that will be first on mobile
+const MobileFirstButton = styled.div<{ isMobile: boolean }>`
+  ${props => props.isMobile && `
+    width: 100%;
+    order: 1;
+  `}
+`;
+
+// Create a styled container for the button that will be second on mobile
+const MobileSecondButton = styled.div<{ isMobile: boolean }>`
+  ${props => props.isMobile && `
+    width: 100%;
+    order: 2;
+  `}
+`;
+
+interface BookingNavControlsProps {
+  /**
+   * Current step in the booking process 
+   */
+  currentStep: BookingStepId;
+  
+  /**
+   * Whether the back button should be enabled
+   */
+  canGoBack: boolean;
+  
+  /**
+   * Whether the next button should be enabled
+   */
+  canGoNext: boolean;
+  
+  /**
+   * Callback when the user goes to the previous step
+   */
+  onPrevious: () => void;
+  
+  /**
+   * Callback when the user proceeds to the next step
+   */
+  onNext: () => void;
+  
+  /**
+   * Callback when the user completes the booking
+   */
+  onSubmit: () => void;
+  
+  /**
+   * Whether the form is currently being submitted
+   */
+  isSubmitting: boolean;
+}
+
 export const BookingNavControls: React.FC<BookingNavControlsProps> = ({
   currentStep,
   canGoBack,
@@ -33,9 +100,12 @@ export const BookingNavControls: React.FC<BookingNavControlsProps> = ({
   onSubmit,
   isSubmitting
 }) => {
-  // Get responsive values
+  // Get responsive values based on viewport
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const buttonSize = useBreakpointValue({ base: 'md', md: 'lg' });
+  const buttonSize = useBreakpointValue<"sm" | "md" | "lg">({ 
+    base: "md", 
+    md: "lg" 
+  }) || "md"; // Provide fallback
   const spacing = useBreakpointValue({ 
     base: SACRED_SPACING.md, 
     md: SACRED_SPACING.lg 
@@ -117,13 +187,7 @@ export const BookingNavControls: React.FC<BookingNavControlsProps> = ({
   };
   
   return (
-    <Box 
-      pt={SACRED_SPACING.lg} 
-      borderTop={`${1}px solid`} 
-      borderTopColor="divider"
-      role="navigation"
-      aria-label="Booking navigation controls"
-    >
+    <NavigationContainer aria-label="Booking navigation controls">
       <Flex 
         justifyContent="space-between" 
         alignItems="center"
@@ -132,38 +196,37 @@ export const BookingNavControls: React.FC<BookingNavControlsProps> = ({
       >
         {/* Back button */}
         {canGoBack ? (
-          <Button
-            variant="outline"
-            size={buttonSize}
-            onClick={onPrevious}
-            leftIcon={<BotanicalIcon name="arrowLeft" size="sm" />}
-            width={isMobile ? '100%' : 'auto'}
-            order={isMobile ? 2 : 1}
-            aria-label={getBackButtonAriaLabel()}
-          >
-            {getBackButtonText()}
-          </Button>
+          <MobileSecondButton isMobile={!!isMobile}>
+            <Button
+              variant="outline"
+              size={buttonSize}
+              onClick={onPrevious}
+              width={isMobile ? '100%' : 'auto'}
+              aria-label={getBackButtonAriaLabel()}
+            >
+              {getBackButtonText()}
+            </Button>
+          </MobileSecondButton>
         ) : (
           <Box aria-hidden="true" /> // Empty spacer for layout when back button is hidden
         )}
         
         {/* Next/Submit button */}
-        <Button
-          variant="primary"
-          size={buttonSize}
-          onClick={handleNextClick}
-          isDisabled={!canGoNext}
-          isLoading={isFinalStep && isSubmitting}
-          loadingText="Processing..."
-          rightIcon={!isFinalStep && <BotanicalIcon name="arrowRight" size="sm" />}
-          width={isMobile ? '100%' : 'auto'}
-          order={isMobile ? 1 : 2}
-          aria-label={getNextButtonAriaLabel()}
-        >
-          {getNextButtonText()}
-        </Button>
+        <MobileFirstButton isMobile={!!isMobile}>
+          <Button
+            variant="primary"
+            size={buttonSize}
+            onClick={handleNextClick}
+            isDisabled={!canGoNext}
+            isLoading={isFinalStep && isSubmitting}
+            width={isMobile ? '100%' : 'auto'}
+            aria-label={getNextButtonAriaLabel()}
+          >
+            {getNextButtonText()}
+          </Button>
+        </MobileFirstButton>
       </Flex>
-    </Box>
+    </NavigationContainer>
   );
 }; 
 

@@ -7,21 +7,48 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import { Box } from '../design-system/components/layout/Box';
-import { Flex } from '../design-system/components/layout/Flex';
-import { Heading } from '../design-system/components/typography/Heading';
-import { Text } from '../design-system/components/typography/Text';
-import { Button } from '../design-system/components/button/Button';
+import { Box } from '@design-system/components/layout/Box';
+import { Flex } from '@design-system/components/layout/Flex';
+import { Heading } from '@design-system/components/typography/Heading';
+import { Text } from '@design-system/components/typography/Text';
+import { Button } from '@design-system/components/button/Button';
+import { PHI } from '@constants/sacred-geometry';
+import { FadeIn } from "@design-system/components/animation/FadeIn";
+import { SlideIn } from "@design-system/components/animation/SlideIn";
 
-import { FadeIn } from "@animation/FadeIn";
-import { SlideIn } from "@animation/SlideIn";
+// Define missing constants
+const SACRED_SPACING = {
+  none: 0,
+  xxxs: 1,
+  xxs: 2,
+  xs: 5,
+  sm: 8,
+  md: 13,
+  lg: 21,
+  xl: 34,
+  xxl: 55,
+  xxxl: 89
+};
+
+const SACRED_TIMING = {
+  fast: 300,
+  medium: 500,
+  slow: 800,
+  slower: 1200
+};
+
+// Helper function to get Fibonacci number by index
+function getFibonacciByIndex(index: number): number {
+  const fibonacciNumbers = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377];
+  return fibonacciNumbers[index] || index;
+}
 
 const ContentWrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: 100%;
-  color: ${props => props.theme.colors.text.inverse};
+  color: ${props => props.theme.colors.text.light};
   padding: ${SACRED_SPACING.xl}px 0;
   max-width: ${props => props.theme.breakpoints.lg / PHI}px;
   

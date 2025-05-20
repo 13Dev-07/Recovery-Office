@@ -150,48 +150,46 @@ const generateFlowerOfLife = (
       // Find new intersection points from existing circles
       for (let i = 0; i < allCircles.length; i++) {
         for (let j = i + 1; j < allCircles.length; j++) {
-          const circle1 = allCircles[i] ?? 1;
-          const circle2 = allCircles[j] ?? 1;
+          const circle1 = allCircles[i];
+          const circle2 = allCircles[j];
+          // Type guards for circle1 and circle2
+          if (!circle1 || !circle2) continue;
           
-          // Both circles must exist at this point since we're iterating through a defined array
-          // But we'll add a type guard to satisfy TypeScript
-          if (circle1 && circle2) {
-            // Calculate distance between circle centers
-            const d = distance(circle1.cx, circle1.cy, circle2.cx, circle2.cy);
+          // Calculate distance between circle centers
+          const d = distance(circle1.cx, circle1.cy, circle2.cx, circle2.cy);
+          
+          // If circles intersect (d < 2r but d > 0)
+          if (d < 2 * radius * 1.01 && d > 0.1) { // Small buffer for floating point
+            // Calculate intersection points using circle intersection formula
+            const a = (radius * radius - radius * radius + d * d) / (2 * d);
+            const h = Math.sqrt(radius * radius - a * a);
             
-            // If circles intersect (d < 2r but d > 0)
-            if (d < 2 * radius * 1.01 && d > 0.1) { // Small buffer for floating point
-              // Calculate intersection points using circle intersection formula
-              const a = (radius * radius - radius * radius + d * d) / (2 * d);
-              const h = Math.sqrt(radius * radius - a * a);
-              
-              const x2 = circle1.cx + a * (circle2.cx - circle1.cx) / d;
-              const y2 = circle1.cy + a * (circle2.cy - circle1.cy) / d;
-              
-              // Get the two intersection points
-              const intersect1 = {
-                cx: x2 + h * (circle2.cy - circle1.cy) / d,
-                cy: y2 - h * (circle2.cx - circle1.cx) / d
-              };
-              
-              const intersect2 = {
-                cx: x2 - h * (circle2.cy - circle1.cy) / d,
-                cy: y2 + h * (circle2.cx - circle1.cx) / d
-              };
-              
-              // Add these points if they're within our viewBox boundaries (with some margin)
-              const margin = radius * 2;
-              if (intersect1.cx >= 0 - margin && intersect1.cx <= 100 + margin &&
-                  intersect1.cy >= 0 - margin && intersect1.cy <= 100 + margin) {
-                createCircleAtPoint(intersect1.cx, intersect1.cy, ringIndex);
-                currentPoints.push(intersect1);
-              }
-              
-              if (intersect2.cx >= 0 - margin && intersect2.cx <= 100 + margin &&
-                  intersect2.cy >= 0 - margin && intersect2.cy <= 100 + margin) {
-                createCircleAtPoint(intersect2.cx, intersect2.cy, ringIndex);
-                currentPoints.push(intersect2);
-              }
+            const x2 = circle1.cx + a * (circle2.cx - circle1.cx) / d;
+            const y2 = circle1.cy + a * (circle2.cy - circle1.cy) / d;
+            
+            // Get the two intersection points
+            const intersect1 = {
+              cx: x2 + h * (circle2.cy - circle1.cy) / d,
+              cy: y2 - h * (circle2.cx - circle1.cx) / d
+            };
+            
+            const intersect2 = {
+              cx: x2 - h * (circle2.cy - circle1.cy) / d,
+              cy: y2 + h * (circle2.cx - circle1.cx) / d
+            };
+            
+            // Add these points if they're within our viewBox boundaries (with some margin)
+            const margin = radius * 2;
+            if (intersect1.cx >= 0 - margin && intersect1.cx <= 100 + margin &&
+                intersect1.cy >= 0 - margin && intersect1.cy <= 100 + margin) {
+              createCircleAtPoint(intersect1.cx, intersect1.cy, ringIndex);
+              currentPoints.push(intersect1);
+            }
+            
+            if (intersect2.cx >= 0 - margin && intersect2.cx <= 100 + margin &&
+                intersect2.cy >= 0 - margin && intersect2.cy <= 100 + margin) {
+              createCircleAtPoint(intersect2.cx, intersect2.cy, ringIndex);
+              currentPoints.push(intersect2);
             }
           }
         }

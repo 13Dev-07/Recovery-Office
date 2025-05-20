@@ -13,11 +13,14 @@ import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
 import { OliveLeaf } from './OliveLeaf';
 import BotanicalElement, { BotanicalElementProps } from './BotanicalElement';
 import { PHI, PHI_INVERSE, FIBONACCI } from '../../../constants/sacred-geometry';
+import { LeafPatternSize } from '../../types/botanical.types';
 
 /**
  * LeafPattern component props
+ *
+ * TypeScript fix: Redefine 'size' by omitting it from BotanicalElementProps to allow LeafPatternSize
  */
-export interface LeafPatternProps extends Omit<BotanicalElementProps, 'children'> {
+export interface LeafPatternProps extends Omit<BotanicalElementProps, 'children' | 'size'> {
   /**
    * The density of leaves in the pattern (higher = more leaves)
    * @default 'medium'
@@ -28,7 +31,7 @@ export interface LeafPatternProps extends Omit<BotanicalElementProps, 'children'
    * The overall size of the pattern
    * @default 'medium'
    */
-  size?: 'small' | 'medium' | 'large';
+  size?: LeafPatternSize;
   
   /**
    * Whether to animate the pattern subtly
@@ -67,16 +70,11 @@ const getLeafCount = (density: 'low' | 'medium' | 'high'): number => {
 /**
  * Get size multiplier based on size prop
  */
-const getSizeMultiplier = (size: 'small' | 'medium' | 'large'): number => {
-  switch (size) {
-    case 'small':
-      return 0.7;
-    case 'large':
-      return 1.3;
-    case 'medium':
-    default:
-      return 1;
-  }
+const getSizeMultiplier = (size: LeafPatternSize = 'medium'): number => {
+  if (size === 'small') return 0.7;
+  if (size === 'large') return 1.3;
+  // Default to 1 for 'medium' or any invalid value
+  return 1;
 };
 
 /**

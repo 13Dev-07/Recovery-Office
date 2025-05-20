@@ -8,14 +8,14 @@
  */
 
 // Main Pages
-export { default as Home } from './Home';
-export { default as Services } from './Services';
-export { default as About } from './About';
-export { default as Contact } from './Contact';
-export { default as Blog } from './Blog';
-export { default as FAQ } from './FAQ';
+export { default as Home } from './Home/Home';
+export { default as Services } from './Services/Services';
+export { default as About } from './About/About';
+export { default as Contact } from './Contact/Contact';
+export { default as Blog } from './Blog/Blog';
+export { default as FAQ } from './FAQ/FAQ';
 export { default as Booking } from './Booking';
-export { default as NotFound } from './NotFound';
+export { default as NotFound } from './NotFound/NotFound';
 
 // Legal Pages
 export * from './legal';

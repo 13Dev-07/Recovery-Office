@@ -8,93 +8,21 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import { DefaultTheme } from 'styled-components';
-import { getFibonacciByIndex } from '../utils';
-import { PHI, PHI_INVERSE, FIBONACCI } from '../../../constants/sacred-geometry';
+import { PHI, PHI_INVERSE, FIBONACCI, getFibonacciByIndex } from '../../../constants/sacred-geometry';
 import { Box } from '../layout/Box';
 import { Section, SectionTitle } from '../layout/Section';
-import { Card } from '../data-display/Card';
 import { Text } from '../typography/Text';
-import { BotanicalElement, BotanicalPosition } from '../botanical';
+import { BotanicalElement } from '../botanical';
+import { BotanicalPosition } from '../botanical/botanicalUtils';
 import { Heading } from '../typography/Heading';
 import { FadeIn, SlideIn } from '../animation';
 import { Button } from '../button/Button';
+import Card from '../data-display/Card';
+import { TestimonialItem, TestimonialsProps } from '../../types/feature-sections.types';
+import { BotanicalDecoration } from '../../types/botanical.types';
 
-export interface TestimonialItem {
-  /** Unique identifier for the testimonial */
-  id: string;
-  
-  /** Testimonial content/quote */
-  content: string;
-  
-  /** Author/client name */
-  author: string;
-  
-  /** Optional author role or description */
-  authorRole?: string;
-  
-  /** Optional rating (1-5) */
-  rating?: number;
-  
-  /** Optional author image URL */
-  authorImage?: string;
-  
-  /** Optional accent color for the testimonial card */
-  accentColor?: string;
-}
-
-export interface TestimonialsProps {
-  /** Section title */
-  title: string;
-  
-  /** Optional section subtitle */
-  subtitle?: string;
-  
-  /** Array of testimonial items to display */
-  testimonials: TestimonialItem[];
-  
-  /** Style of testimonial display */
-  displayStyle?: 'grid' | 'carousel' | 'featured';
-  
-  /** Background color or gradient */
-  backgroundColor?: string;
-  
-  /** Whether to add animation to testimonial items */
-  animated?: boolean;
-  
-  /** Botanical decoration configuration */
-  botanical?: {
-    /** Type of botanical element */
-    type: 'oliveBranch' | 'flowerOfLife' | 'vesicaPiscis' | 'fibonacciSpiral' | 'oliveLeaf';
-    
-    /** Position of the botanical element */
-    position: BotanicalPosition;
-    
-    /** Size of the botanical element */
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-    
-    /** Opacity of the botanical element */
-    opacity?: number;
-  };
-  
-  /** Call-to-action button */
-  cta?: {
-    /** Button text */
-    label: string;
-    
-    /** Button URL */
-    url: string;
-    
-    /** Button variant */
-    variant?: 'primary' | 'secondary' | 'accent' | 'outline';
-  };
-  
-  /** Optional additional class name */
-  className?: string;
-  
-  /** Optional inline styles */
-  style?: React.CSSProperties;
-}
+// Re-export types
+export type { TestimonialsProps, TestimonialItem } from '../../types/feature-sections.types';
 
 // Section container with background styling
 const TestimonialsSection = styled(Section)<{ $backgroundColor?: string }>`
@@ -111,7 +39,7 @@ const TestimonialsGrid = styled.div`
   gap: ${getFibonacciByIndex(6)}px;
   margin-top: ${getFibonacciByIndex(7)}px;
   
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
+  @media (max-width: ${props => props.theme.breakpoints.md}px) {
     grid-template-columns: repeat(auto-fill, minmax(${getFibonacciByIndex(8)}px, 1fr));
     gap: ${getFibonacciByIndex(5)}px;
   }
@@ -473,16 +401,27 @@ const Testimonials: React.FC<TestimonialsProps> = ({
       className={className}
       style={style}
     >
-      {botanical && (
+      {botanical && typeof botanical !== 'boolean' && (
         <BotanicalElement
-          type={botanical.type}
-          position={botanical.position}
-          size={botanical.size}
-          opacity={botanical.opacity}
+          variant={botanical.type}
+          size={botanical.size || 'lg'}
+          opacity={botanical.opacity || 0.1}
         />
       )}
       
-      <SectionTitle title={title} subtitle={subtitle} centered animated={animated} />
+      {botanical && typeof botanical === 'boolean' && (
+        <BotanicalElement
+          variant="oliveBranch"
+          size="lg"
+          opacity={0.1}
+        />
+      )}
+      
+      <SectionTitle 
+        title={title} 
+        subtitle={subtitle} 
+        align="center"
+      />
       
       {renderTestimonials()}
       

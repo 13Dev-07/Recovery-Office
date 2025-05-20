@@ -13,11 +13,22 @@ import styled from 'styled-components';
 import { Box } from '../layout';
 import { BoxProps } from '../../types';
 import { PHI, PHI_INVERSE } from '../../../constants/sacred-geometry';
+import { BotanicalSize } from './botanicalUtils';
 
 /**
  * BotanicalElement component props
  */
 export interface BotanicalElementProps extends Omit<BoxProps, 'as'> {
+  /**
+   * Variant of the botanical element to display
+   */
+  variant?: 'oliveBranch' | 'flowerOfLife' | 'vesicaPiscis' | 'fibonacciSpiral' | 'oliveLeaf' | 'smallFlourish';
+
+  /**
+   * Size of the botanical element
+   */
+  size?: BotanicalSize;
+
   /**
    * The width of the botanical element
    * @default '100%'
@@ -85,9 +96,21 @@ export interface BotanicalElementProps extends Omit<BoxProps, 'as'> {
   useGoldenRatio?: boolean;
   
   /**
+   * Color scheme for the botanical element
+   * @default 'primary'
+   */
+  colorScheme?: 'primary' | 'secondary' | 'accent' | 'light';
+
+  /**
+   * Whether to enable animations
+   * @default false
+   */
+  withAnimation?: boolean;
+  
+  /**
    * The content of the botanical element (SVG paths, circles, etc.)
    */
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 /**
@@ -135,6 +158,10 @@ export const BotanicalElement = React.forwardRef<SVGSVGElement, BotanicalElement
     decorative = true,
     description,
     useGoldenRatio = true,
+    variant,
+    colorScheme,
+    withAnimation = false,
+    size,
     children,
     ...rest 
   }, ref) => {
@@ -145,6 +172,10 @@ export const BotanicalElement = React.forwardRef<SVGSVGElement, BotanicalElement
     const a11yProps = decorative 
       ? { 'aria-hidden': 'true' as 'true' } 
       : { role: 'img' as 'img' };
+    
+    // Implementation note: in a complete solution, we would use the variant
+    // to render the appropriate SVG content instead of children.
+    // For now, we'll just pass through the children.
     
     return (
       <Box display="inline-block" width={width} height={height} {...rest}>

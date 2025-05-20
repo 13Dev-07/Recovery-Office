@@ -1,7 +1,7 @@
 {
   "short_name": "Recovery Office",
-  "name": "Recovery Office | Holistic Wellness & Therapies",
-  "description": "A holistic wellness center offering therapeutic services based on sacred geometry principles",
+  "name": "Recovery Office - Financial Recovery Services",
+  "description": "Financial recovery services with regulatory compliance for optimal asset reclamation",
   "icons": [
     {
       "src": "favicon.ico",
@@ -9,34 +9,15 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "any maskable"
+      "src": "logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#81976F",
-  "background_color": "#FCFBF8",
+  "theme_color": "#4a6eb3",
+  "background_color": "#ffffff",
   "orientation": "portrait",
-  "categories": ["health", "wellness", "therapy"],
-  "screenshots": [
-    {
-      "src": "screenshot1.png",
-      "type": "image/png",
-      "sizes": "1280x720"
-    },
-    {
-      "src": "screenshot2.png",
-      "type": "image/png",
-      "sizes": "1280x720"
-    }
-  ]
+  "categories": ["finance", "recovery", "services"]
 } 

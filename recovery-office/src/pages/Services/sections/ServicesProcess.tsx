@@ -2,11 +2,12 @@ import * as React from 'react';
 
 import styled from 'styled-components';
 import { ScrollReveal } from '../../../animation';
-import { FlowerOfLife, VesicaPiscis } from '../../../design-system/botanical';
+import { SecurityShield, ComplianceBadge } from '../../../design-system/components/utility/FinancialIcons';
 import { PHI, PHI_INVERSE, SACRED_SPACING } from '../../../constants/sacred-geometry';
 import { Container } from '../../../design-system/components/layout';
 import { Section, SectionTitle, SectionContent } from '../../../design-system/components/layout/Section';
 import { Button } from '../../../design-system/components/button';
+import { getFibonacciNumber } from '../../../utils/fibonacci';
 
 /**
  * Process step data interface
@@ -18,8 +19,8 @@ interface ProcessStep {
   title: string;
   /** Step description */
   description: string;
-  /** Optional botanical element identifier */
-  botanical?: 'flowerOfLife' | 'vesicaPiscis';
+  /** Optional financial icon identifier */
+  icon?: 'shield' | 'compliance';
 }
 
 /**
@@ -42,25 +43,25 @@ const DEFAULT_STEPS: ProcessStep[] = [
     number: 1,
     title: "Initial Consultation",
     description: "We begin with a comprehensive assessment of your situation, understanding the details of your case and identifying potential recovery paths.",
-    botanical: "flowerOfLife"
+    icon: "shield"
   },
   {
     number: 2,
     title: "Recovery Strategy",
-    description: "Our experts develop a tailored recovery strategy using sacred geometry principles to create balance in your financial reclamation journey.",
-    botanical: "vesicaPiscis"
+    description: "Our experts develop a tailored recovery strategy based on regulatory compliance and industry best practices to maximize your recovery potential.",
+    icon: "compliance"
   },
   {
     number: 3,
     title: "Implementation",
     description: "We guide you through the implementation process, handling necessary documentation, communications, and regulatory requirements.",
-    botanical: "flowerOfLife"
+    icon: "shield"
   },
   {
     number: 4,
     title: "Monitoring & Adjustment",
     description: "Throughout the recovery process, we continuously monitor progress and make adjustments to optimize your chances of success.",
-    botanical: "vesicaPiscis"
+    icon: "compliance"
   }
 ];
 
@@ -97,8 +98,8 @@ const StepNumber = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${getFibonacciByIndex(8)}px;
-  height: ${getFibonacciByIndex(8)}px;
+  width: ${getFibonacciNumber(8)}px;
+  height: ${getFibonacciNumber(8)}px;
   border-radius: 50%;
   background-color: #4a6eb3;
   color: white;
@@ -153,8 +154,7 @@ const CtaText = styled.p`
  * ServicesProcess Component
  * 
  * Displays the step-by-step process for service delivery
- * with botanical decorations and a call to action section.
- * Layout follows sacred geometry principles.
+ * with financial icons and a call to action section.
  */
 const ServicesProcess: React.FC<ServicesProcessProps> = ({
   backgroundColor = "#f8f9fa",
@@ -171,8 +171,8 @@ const ServicesProcess: React.FC<ServicesProcessProps> = ({
           <SectionTitle 
             title="Our Recovery Process" 
             subtitle="How we help you reclaim your financial assets"
-            decoratorBefore={<VesicaPiscis size="sm" opacity={0.15} />}
-            decoratorAfter={<VesicaPiscis size="sm" opacity={0.15} />}
+            decoratorBefore={<SecurityShield size="sm" opacity={0.15} />}
+            decoratorAfter={<ComplianceBadge size="sm" opacity={0.15} />}
           />
         </ScrollReveal>
         
@@ -186,10 +186,10 @@ const ServicesProcess: React.FC<ServicesProcessProps> = ({
                   <StepDescription>{step.description}</StepDescription>
                   
                   <BotanicalWrapper>
-                    {step.botanical === 'flowerOfLife' ? (
-                      <FlowerOfLife size={getFibonacciByIndex(9)} opacity={0.8} />
+                    {step.icon === 'shield' ? (
+                      <SecurityShield size="lg" opacity={0.8} />
                     ) : (
-                      <VesicaPiscis size={getFibonacciByIndex(9)} opacity={0.8} />
+                      <ComplianceBadge size="lg" opacity={0.8} />
                     )}
                   </BotanicalWrapper>
                 </StepCard>
@@ -201,8 +201,8 @@ const ServicesProcess: React.FC<ServicesProcessProps> = ({
             <CtaContainer>
               <CtaHeading>Ready to Begin Your Recovery Journey?</CtaHeading>
               <CtaText>
-                Schedule a consultation today and discover how our sacred geometry-based 
-                approaches can help you achieve balance and harmony in your financial recovery.
+                Schedule a consultation today and discover how our regulatory-compliant 
+                approaches can help you recover your financial assets.
               </CtaText>
               <Button 
                 variant="accent" 

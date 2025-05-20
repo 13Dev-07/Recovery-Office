@@ -10,8 +10,13 @@
  */
 
 import * as React from 'react';
-import { PHI, PHI_INVERSE, FIBONACCI } from '../constants/sacred-geometry';
+import { forwardRef } from 'react';
 import BotanicalElement, { BotanicalElementProps } from './BotanicalElement';
+
+// Define constants locally until we fix the constants directory
+const PHI = 1.618033988749895;
+const PHI_INVERSE = 0.618033988749895;
+const FIBONACCI = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
 
 /**
  * SmallFlourish component props
@@ -182,9 +187,9 @@ const generateSmallFlourish = (
       ];
       
       // Create the angular path
-      let angularPath = `M ${points[0] ?? 1.x},${points[0] ?? 1.y}`;
+      let angularPath = `M ${points[0]?.x ?? 0},${points[0]?.y ?? 0}`;
       for (let i = 1; i < points.length; i++) {
-        angularPath += ` L ${points[i] ?? 1.x},${points[i] ?? 1.y}`;
+        angularPath += ` L ${points[i]?.x ?? 0},${points[i]?.y ?? 0}`;
       }
       
       elements.push(
@@ -208,8 +213,8 @@ const generateSmallFlourish = (
           elements.push(
             <circle
               key={`joint-${i}`}
-              cx={points[i] ?? 1.x}
-              cy={points[i] ?? 1.y}
+              cx={points[i]?.x ?? 0}
+              cy={points[i]?.y ?? 0}
               r={decorSize}
               fill="currentColor"
               className="flourish-joint"

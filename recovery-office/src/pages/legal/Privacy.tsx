@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { Hero } from '../design-system/components/feature-sections';
-import { FlowerOfLife, OliveBranch } from '../design-system/botanical';
-import { Box, Container } from '../design-system/components/layout';
-import { Section, SectionTitle } from '../design-system/components/layout/Section';
-import { Text, Paragraph, Heading } from '../design-system/components/typography';
-import { Button } from '../design-system/components/button';
-import { Card } from '../design-system/components/data-display';
-import { ScrollReveal } from '../design-system/components/animation';
-import { PHI } from '../constants/sacred-geometry';
+import { Hero } from '../../design-system/components/feature-sections';
+import { SecurityShield, ComplianceBadge, AssetRecovery } from '../../design-system/components/utility/FinancialIcons';
+import { Box, Container } from '../../design-system/components/layout';
+import { Section, SectionTitle } from '../../design-system/components/layout/Section';
+import { Text, Paragraph, Heading } from '../../design-system/components/typography';
+import { Button } from '../../design-system/components/button';
+import { Card } from '../../design-system/components/data-display';
+import { ScrollReveal } from '../../animation';
+import { PHI } from '../../constants/sacred-geometry';
 
 /**
  * Privacy Policy Page Component
@@ -34,12 +34,6 @@ const PrivacyPage: React.FC = () => {
         align="center"
         minHeight="40vh"
         animated={true}
-        botanical={{
-          type: 'flowerOfLife',
-          position: 'bottomRight',
-          opacity: 0.15,
-          animated: true
-        }}
       >
         <Text 
           variant="body1" 
@@ -68,7 +62,7 @@ const PrivacyPage: React.FC = () => {
                 alignItems="center" 
                 mb={`${PHI * 16}px`}
               >
-                <FlowerOfLife size="sm" opacity={0.6} mr={`${PHI * 12}px`} />
+                <SecurityShield size="sm" opacity={0.6} style={{ marginRight: `${PHI * 12}px` }} />
                 <Text variant="caption" fontStyle="italic">
                   Last Updated: {lastUpdated}
                 </Text>
@@ -109,7 +103,7 @@ const PrivacyPage: React.FC = () => {
                 title="Information We Collect" 
                 size="medium"
                 align="left"
-                decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
+                decoratorBefore={<ComplianceBadge size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -134,7 +128,7 @@ const PrivacyPage: React.FC = () => {
                     <Text variant="body2">Communicate with us via email, phone, or other means</Text>
                   </Box>
                   <Box as="li" mb={`${PHI * 8}px`}>
-                    <Text variant="body2">Submit health information for therapeutic purposes</Text>
+                    <Text variant="body2">Submit financial information for recovery purposes</Text>
                   </Box>
                   <Box as="li">
                     <Text variant="body2">Provide payment information</Text>
@@ -142,7 +136,7 @@ const PrivacyPage: React.FC = () => {
                 </Box>
                 <Paragraph variant="body2">
                   This information may include your name, email address, phone number, postal 
-                  address, health information, payment information, and any other information 
+                  address, financial information, payment information, and any other information 
                   you choose to provide.
                 </Paragraph>
                 
@@ -174,7 +168,7 @@ const PrivacyPage: React.FC = () => {
                 title="How We Use Information" 
                 size="medium"
                 align="left"
-                decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
+                decoratorBefore={<AssetRecovery size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -192,7 +186,7 @@ const PrivacyPage: React.FC = () => {
                     <Text variant="body2">Schedule and manage appointments</Text>
                   </Box>
                   <Box as="li" mb={`${PHI * 8}px`}>
-                    <Text variant="body2">Develop personalized treatment plans</Text>
+                    <Text variant="body2">Develop personalized recovery plans</Text>
                   </Box>
                   <Box as="li" mb={`${PHI * 8}px`}>
                     <Text variant="body2">Send technical notices, updates, security alerts, and administrative messages</Text>
@@ -214,7 +208,7 @@ const PrivacyPage: React.FC = () => {
                 title="Sharing of Information" 
                 size="medium"
                 align="left"
-                decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
+                decoratorBefore={<SecurityShield size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -232,7 +226,7 @@ const PrivacyPage: React.FC = () => {
                   </Box>
                   <Box as="li" mb={`${PHI * 8}px`}>
                     <Text variant="body2" fontWeight="bold" as="span">With Your Consent:</Text>
-                    <Text variant="body2" as="span"> We may share information with third parties when you give us consent to do so, such as when you choose to share your information with other healthcare providers.</Text>
+                    <Text variant="body2" as="span"> We may share information with third parties when you give us consent to do so, such as when you choose to share your information with other financial recovery providers.</Text>
                   </Box>
                   <Box as="li">
                     <Text variant="body2" fontWeight="bold" as="span">Business Transfers:</Text>
@@ -249,7 +243,7 @@ const PrivacyPage: React.FC = () => {
                 title="Data Security" 
                 size="medium"
                 align="left"
-                decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
+                decoratorBefore={<ComplianceBadge size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -260,7 +254,7 @@ const PrivacyPage: React.FC = () => {
                 </Paragraph>
                 <Paragraph variant="body2">
                   We implement appropriate physical, technical, and administrative safeguards designed to protect 
-                  your personal health information in accordance with HIPAA regulations and other applicable privacy laws.
+                  your personal financial information in accordance with HIPAA regulations and other applicable privacy laws.
                 </Paragraph>
               </Box>
               
@@ -269,7 +263,7 @@ const PrivacyPage: React.FC = () => {
                 title="Your Rights and Choices" 
                 size="medium"
                 align="left"
-                decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
+                decoratorBefore={<AssetRecovery size="sm" opacity={0.3} />}
               />
               
               <Box mb={`${PHI * 32}px`}>
@@ -308,7 +302,7 @@ const PrivacyPage: React.FC = () => {
                 title="Contact Us" 
                 size="medium"
                 align="left"
-                decoratorBefore={<OliveBranch size="sm" opacity={0.3} />}
+                decoratorBefore={<SecurityShield size="sm" opacity={0.3} />}
               />
               
               <Box>
@@ -325,8 +319,8 @@ const PrivacyPage: React.FC = () => {
                     Recovery Office
                   </Text>
                   <Text variant="body2" mb={`${PHI * 8}px`}>
-                    123 Harmony Way, Suite 618<br />
-                    Golden Springs, CA 91234
+                    123 Financial Street, Suite 618<br />
+                    Recovery City, RC 91234
                   </Text>
                   <Text variant="body2" mb={`${PHI * 8}px`}>
                     Email: privacy@recoveryoffice.com

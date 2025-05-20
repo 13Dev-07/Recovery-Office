@@ -9,8 +9,11 @@
  */
 
 import * as React from 'react';
-import { PHI, PHI_INVERSE, FIBONACCI } from '../../../constants/sacred-geometry';
+import { PHI, PHI_INVERSE } from '../../../constants/sacred-geometry';
 import BotanicalElement, { BotanicalElementProps } from './BotanicalElement';
+
+// Define FIBONACCI as an array for indexOf compatibility
+const FIBONACCI = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
 
 /**
  * OliveBranch component props
@@ -58,6 +61,51 @@ export interface OliveBranchProps extends Omit<BotanicalElementProps, 'children'
    */
   mirror?: boolean;
 }
+
+/**
+ * Calculate a point on a cubic bezier curve at position t (0-1)
+ */
+const calculateCubicBezierPoint = (
+  p0: number,
+  p1: number,
+  p2: number,
+  p3: number,
+  t: number
+): number => {
+  const t2 = t * t;
+  const t3 = t2 * t;
+  const mt = 1 - t;
+  const mt2 = mt * mt;
+  const mt3 = mt2 * mt;
+  
+  return (
+    p0 * mt3 +
+    3 * p1 * mt2 * t +
+    3 * p2 * mt * t2 +
+    p3 * t3
+  );
+};
+
+/**
+ * Calculate the tangent of a cubic bezier curve at position t (0-1)
+ */
+const calculateCubicBezierTangent = (
+  p0: number,
+  p1: number,
+  p2: number,
+  p3: number,
+  t: number
+): number => {
+  const t2 = t * t;
+  const mt = 1 - t;
+  const mt2 = mt * mt;
+  
+  return (
+    3 * mt2 * (p1 - p0) +
+    6 * mt * t * (p2 - p1) +
+    3 * t2 * (p3 - p2)
+  );
+};
 
 /**
  * Generates the SVG paths for an olive branch using sacred geometry
@@ -173,51 +221,6 @@ const generateOliveBranch = (
 };
 
 /**
- * Calculate a point on a cubic bezier curve at position t (0-1)
- */
-const calculateCubicBezierPoint = (
-  p0: number,
-  p1: number,
-  p2: number,
-  p3: number,
-  t: number
-): number => {
-  const t2 = t * t;
-  const t3 = t2 * t;
-  const mt = 1 - t;
-  const mt2 = mt * mt;
-  const mt3 = mt2 * mt;
-  
-  return (
-    p0 * mt3 +
-    3 * p1 * mt2 * t +
-    3 * p2 * mt * t2 +
-    p3 * t3
-  );
-};
-
-/**
- * Calculate the tangent of a cubic bezier curve at position t (0-1)
- */
-const calculateCubicBezierTangent = (
-  p0: number,
-  p1: number,
-  p2: number,
-  p3: number,
-  t: number
-): number => {
-  const t2 = t * t;
-  const mt = 1 - t;
-  const mt2 = mt * mt;
-  
-  return (
-    3 * mt2 * (p1 - p0) +
-    6 * mt * t * (p2 - p1) +
-    3 * t2 * (p3 - p2)
-  );
-};
-
-/**
  * OliveBranch Component with ref forwarding
  * 
  * Creates a mathematically harmonious olive branch design based on sacred geometry
@@ -260,10 +263,4 @@ export const OliveBranch = React.forwardRef<SVGSVGElement, OliveBranchProps>(
 
 OliveBranch.displayName = 'OliveBranch';
 
-export default OliveBranch; 
-
-
-
-
-
-
+export default OliveBranch;

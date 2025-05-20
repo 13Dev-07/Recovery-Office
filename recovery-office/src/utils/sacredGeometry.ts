@@ -11,8 +11,7 @@ import {
   PHI_INVERSE, 
   FIBONACCI, 
   SACRED_SPACING,
-  SACRED_TYPOGRAPHY,
-  getFibonacciByIndex as getFibonacciByIndexOriginal
+  SACRED_TYPOGRAPHY
 } from '../constants/sacred-geometry';
 
 /**
@@ -36,11 +35,49 @@ export const getFibonacciValues = (): number[] => {
 };
 
 /**
+ * Helper function to safely get a Fibonacci value with a fallback
+ */
+const safeGetFib = (index: number, fallback: number): number => {
+  const fibValues = getFibonacciValues();
+  if (index < 0 || index >= fibValues.length) {
+    return fallback;
+  }
+  return fibValues[index] || fallback;
+};
+
+/**
+ * Gets a Fibonacci number by index
+ * 
+ * @param index - Index in the Fibonacci sequence
+ * @returns The Fibonacci number
+ */
+export const getFibonacci = (index: number): number => {
+  const fibKeys = getFibonacciKeys();
+  
+  // Handle edge cases
+  if (index <= 0) return safeGetFib(0, 1);
+  if (index >= fibKeys.length) return safeGetFib(fibKeys.length - 1, 1);
+  
+  return safeGetFib(index, 1);
+};
+
+/**
  * Gets a Fibonacci value by its sequence index
+ * Independent implementation to avoid circular dependencies
+ * 
  * @param index The index in the Fibonacci sequence
  * @returns The Fibonacci number at that index
  */
-export const getFibonacciByIndex = getFibonacciByIndexOriginal;
+export const getFibonacciByIndex = (index: number): number => {
+  // Convert index to the corresponding key in the FIBONACCI object
+  // The FIBONACCI object uses the actual Fibonacci numbers as keys
+  const fibKeys = getFibonacciKeys();
+  // Ensure the index is valid
+  const safeIndex = Math.max(0, Math.min(index, fibKeys.length - 1));
+  // Return the Fibonacci value
+  const key = fibKeys[safeIndex];
+  return key ? FIBONACCI[key as keyof FibonacciObj] : 1;
+};
 
 /**
  * Calculates a Golden Ratio segment of a given value
@@ -81,18 +118,12 @@ export const closestFibonacci = (value: number): number => {
   if (maxValue !== undefined && value >= maxValue) return maxValue;
   
   // Find the closest Fibonacci number
-  let closest: number | undefined = fibValues[0] ?? 1;
-  
-  // Safety check to ensure closest is defined
-  if (closest === undefined) return getFibonacciByIndex(1);
+  let closest: number = fibValues[0] || 1;
   
   let closestDiff = Math.abs(value - closest);
   
   for (let i = 1; i < fibValues.length; i++) {
-    const fibValue = fibValues[i] ?? 1;
-    
-    // Skip undefined values (shouldn't happen, but being safe)
-    if (fibValue === undefined) continue;
+    const fibValue = fibValues[i] || 1;
     
     const diff = Math.abs(value - fibValue);
     if (diff < closestDiff) {
@@ -102,7 +133,7 @@ export const closestFibonacci = (value: number): number => {
   }
   
   // Final safety check
-  return closest !== undefined ? closest : getFibonacciByIndex(1);
+  return closest || getFibonacciByIndex(1);
 };
 
 /**
@@ -132,11 +163,13 @@ export const createSpacing = (
     baseValue = value;
   } else {
     // Get the value safely from SACRED_SPACING
-    const spacingValue = SACRED_SPACING[value] ?? 1;
+    const spacingValue = SACRED_SPACING[value] || 0;
     
     // If the value is an object (like buttonPadding), use default md value
     if (typeof spacingValue === 'object' && spacingValue !== null) {
-      baseValue = spacingValue.md;
+      // Need to handle spacingValue as Record<string, any> since we don't know its exact structure
+      const spacingObj = spacingValue as Record<string, any>;
+      baseValue = spacingObj.md ?? 13; // Default to the md value (13) if not found
     } else {
       baseValue = spacingValue as number;
     }
@@ -199,10 +232,12 @@ export const createSacredBezier = (
     standard: [PHI_INVERSE, 0, 1 - PHI_INVERSE, 1],
     easeIn: [PHI_INVERSE, 0, 1, 1],
     easeOut: [0, 0, 1 - PHI_INVERSE, 1],
-    botanical: [PHI_INVERSE, -PHI_INVERSE, 1 - PHI_INVERSE, PHI],
+    botanical: [0.175, 0.885, 0.32, 1.275]
   };
   
-  const [x1, y1, x2, y2] = beziers[type] ?? 1;
+  const bezierPoints = beziers[type] || beziers.standard;
+  const [x1, y1, x2, y2] = bezierPoints;
+  
   return `cubic-bezier(${x1}, ${y1}, ${x2}, ${y2})`;
 };
 
@@ -241,104 +276,34 @@ export const isSacredPoint = (
 };
 
 /**
- * Calculates Fibonacci-based grid column span values
+ * Calculate Fibonacci grid columns based on total columns available
  * 
- * @param totalColumns - Total number of columns in the grid
- * @returns An object with optimal column span values
+ * This creates a layout grid where column sizes follow the Fibonacci sequence.
+ * 
+ * @param totalColumns - Total number of grid columns available
+ * @returns Object of column spans with keys corresponding to index position
  */
 export const fibonacciGridColumns = (totalColumns: number): Record<string, number> => {
+  const result: Record<string, number> = {};
+  const fibKeys = getFibonacciKeys();
   const fibValues = getFibonacciValues();
   
-  // Find the largest Fibonacci number less than or equal to totalColumns
-  let maxFibIndex = 0;
+  // Calculate sum of Fibonacci values we'll use to normalize
+  let fibSum = 0;
   for (let i = 0; i < fibValues.length; i++) {
-    const fibValue = fibValues[i] ?? 1;
-    // Skip undefined values (shouldn't happen, but being safe)
-    if (fibValue === undefined) continue;
-    
-    if (fibValue <= totalColumns) {
-      maxFibIndex = i;
-    } else {
-      break;
-    }
+    const fibValue = fibValues[i] || 1; 
+    fibSum += fibValue;
   }
   
-  // Helper function to safely get Fibonacci values
-  const safeGetFib = (index: number, fallback: number): number => {
-    const value = fibValues[index] ?? 1;
-    return value !== undefined ? value : fallback;
-  };
-  
-  // Return optimal column spans based on Fibonacci sequence
-  return {
-    xs: safeGetFib(Math.max(0, maxFibIndex - 5), 1),
-    sm: safeGetFib(Math.max(0, maxFibIndex - 4), 1),
-    md: safeGetFib(Math.max(0, maxFibIndex - 3), 2),
-    lg: safeGetFib(Math.max(0, maxFibIndex - 2), 3),
-    xl: safeGetFib(Math.max(0, maxFibIndex - 1), 5),
-    full: totalColumns,
-  };
-};
-
-/**
- * Safely retrieve a Fibonacci number by index
- * 
- * This function handles cases where the requested Fibonacci index
- * is not explicitly defined in the FIBONACCI object.
- * 
- * @param index - The Fibonacci index to retrieve
- * @returns The corresponding Fibonacci number
- */
-export const getFibonacci = (index: number): number => {
-  const fibKeys = getFibonacciKeys();
-  
-  // If index exists in FIBONACCI object, return it directly
-  if (fibKeys.includes(index)) {
-    return FIBONACCI[index as keyof FibonacciObj];
+  // Normalize Fibonacci values to fit the total columns
+  // and round to nearest integer
+  for (let i = 0; i < fibValues.length; i++) {
+    const key = `col${i + 1}`;
+    const value = fibValues[i] || 1;
+    result[key] = Math.max(1, Math.round((value / fibSum) * totalColumns));
   }
   
-  // For indices smaller than our smallest defined Fibonacci index
-  const smallestKey = fibKeys[0] ?? 1;
-  if (smallestKey !== undefined && index < smallestKey) {
-    return Math.max(1, Math.round(Math.pow(PHI, index) / Math.sqrt(5)));
-  }
-  
-  // For indices larger than our largest defined Fibonacci index
-  const largestKey = fibKeys.length > 0 ? fibKeys[fibKeys.length - 1] : undefined;
-  if (largestKey !== undefined && index > largestKey) {
-    return Math.round(Math.pow(PHI, index) / Math.sqrt(5));
-  }
-  
-  // For indices in between our defined values
-  // Find closest lower key
-  let closestLowerIndex: number | undefined = undefined;
-  for (const key of fibKeys) {
-    if (key <= index) {
-      closestLowerIndex = key;
-    } else {
-      break;
-    }
-  }
-  
-  if (closestLowerIndex === undefined) {
-    return 1; // Default to 1 if no lower index found
-  }
-
-  // Find closest upper key
-  const upperIndexPosition = fibKeys.indexOf(closestLowerIndex) + 1;
-  const closestUpperIndex = fibKeys[upperIndexPosition] ?? 1;
-  
-  // If the index is exactly between two Fibonacci indices, return the average
-  if (closestUpperIndex !== undefined && 
-      (index - closestLowerIndex === closestUpperIndex - index)) {
-    // Return a value proportional to the golden ratio
-    const lowerValue = FIBONACCI[closestLowerIndex as keyof FibonacciObj];
-    const upperValue = FIBONACCI[closestUpperIndex as keyof FibonacciObj];
-    return Math.round((lowerValue + upperValue) / 2);
-  }
-  
-  // Otherwise return the closer value
-  return FIBONACCI[closestLowerIndex as keyof FibonacciObj];
+  return result;
 };
 
 /**
@@ -424,15 +389,17 @@ export const getSacredSpacing = (
   defaultValue?: number
 ): number => {
   // Type guard to check if key exists in SACRED_SPACING
-  const isValidKey = (k: string): k is keyof typeof SACRED_SPACING => 
+  const isValidKey = (k: string): k is string & keyof typeof SACRED_SPACING => 
     Object.prototype.hasOwnProperty.call(SACRED_SPACING, k);
     
   if (isValidKey(key)) {
-    const spacingValue = SACRED_SPACING[key] ?? 1;
+    const spacingValue = SACRED_SPACING[key] || 0;
     
     // If the value is an object (like buttonPadding), use default md value
     if (typeof spacingValue === 'object' && spacingValue !== null) {
-      return spacingValue.md;
+      // Need to handle spacingValue as Record<string, any> since we don't know its exact structure
+      const spacingObj = spacingValue as Record<string, any>; 
+      return spacingObj.md ?? 13; // Default to the md value (13) if not found
     } 
     
     // Otherwise return the number value

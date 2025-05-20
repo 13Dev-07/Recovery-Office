@@ -12,7 +12,8 @@ import {
   PHI_INVERSE, 
   FIBONACCI, 
   SACRED_EASINGS, 
-  ANIMATION_TIMING 
+  ANIMATION_TIMING,
+  FibonacciIndex
 } from '../constants/sacred-geometry';
 
 // Export animation hooks for easier access
@@ -68,7 +69,7 @@ export const getSacredEasingCss = (
   
   // Ensure easingValues is an array with 4 elements
   if (Array.isArray(easingValues) && easingValues.length === 4) {
-    return `cubic-bezier(${easingValues[0] ?? 1}, ${easingValues[1] ?? 1}, ${easingValues[2] ?? 1}, ${easingValues[3] ?? 1})`;
+    return `cubic-bezier(${easingValues[0] || 0}, ${easingValues[1] || 0}, ${easingValues[2] || 0}, ${easingValues[3] || 0})`;
   }
   
   // Fallback to default cubic-bezier based on golden ratio
@@ -91,7 +92,7 @@ export const getFibonacciKeys = (): number[] => {
  */
 export const getFibonacciValues = (): number[] => {
   const keys = getFibonacciKeys();
-  return keys.map(key => FIBONACCI[key] ?? 1);
+  return keys.map(key => FIBONACCI[key as unknown as FibonacciIndex] ?? 1);
 };
 
 /**
@@ -193,9 +194,9 @@ export const getFibonacciByIndex = (index: number): number => {
   const values = getFibonacciValues();
   // Safety checks for out-of-bounds access
   if (values.length === 0) return 1; // Default fallback
-  if (index < 0) return values[0] ?? 1;
-  if (index >= values.length) return values[values.length - 1] ?? 1;
-  return values[index] ?? 1;
+  if (index < 0) return values[0] || 1;
+  if (index >= values.length) return values[values.length - 1] || 1;
+  return values[index] || 1;
 };
 
 /**

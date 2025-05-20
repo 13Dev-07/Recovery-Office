@@ -231,7 +231,7 @@ export const useAnimationSequence = ({
       const stepIndex = direction === 'forward' ? i : totalSteps - 1 - i;
       
       // Add the delay for this step (ensure we have a valid delay value)
-      const stepDelay = delays[i] ?? 1 || baseDelay;
+      const stepDelay = (delays[i] ?? 1) || baseDelay;
       cumulativeDelay += (stepDelay * 1000); // Convert to milliseconds
       
       // Create timeout

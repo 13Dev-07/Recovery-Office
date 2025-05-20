@@ -18,9 +18,10 @@ import { VesicaPiscis, OliveBranch } from '../../../design-system/botanical';
 import { 
   SACRED_SPACING, 
   PHI, 
-  PHI_INVERSE
+  PHI_INVERSE,
+  getFibonacciByIndex,
+  ANIMATION_TIMING
 } from '../../../constants/sacred-geometry';
-import { ANIMATION_TIMING } from '../../../constants/sacred-geometry';
 
 
 // Styled components
@@ -99,9 +100,9 @@ const HomeCallToAction: React.FC = () => {
 
   return (
     <Section
-      backgroundStyle="none"
-      paddingTop={SACRED_SPACING.xxl}
-      paddingBottom={SACRED_SPACING.xxl}
+      variant="transparent"
+      pt={SACRED_SPACING.xxl}
+      pb={SACRED_SPACING.xxl}
       id="cta"
     >
       <Container>

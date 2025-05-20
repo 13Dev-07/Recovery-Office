@@ -157,7 +157,7 @@ const StyledInput = styled.input<{
 
 // Icon container
 const IconContainer = styled(Box)<{
-  position: 'start' | 'end';
+  $position: 'start' | 'end';
   size?: 'sm' | 'md' | 'lg';
 }>`
   position: absolute;
@@ -170,11 +170,11 @@ const IconContainer = styled(Box)<{
   z-index: 2;
   
   /* Position */
-  ${props => props.position === 'start' && `
+  ${props => props.$position === 'start' && `
     left: ${props.theme.spacing.xs}px;
   `}
   
-  ${props => props.position === 'end' && `
+  ${props => props.$position === 'end' && `
     right: ${props.theme.spacing.xs}px;
   `}
   
@@ -241,7 +241,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       >
         {/* Start icon */}
         {startIcon && (
-          <IconContainer position="start" size={size}>
+          <IconContainer $position="start" size={size}>
             {startIcon}
           </IconContainer>
         )}
@@ -268,7 +268,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         
         {/* End icon */}
         {endIcon && (
-          <IconContainer position="end" size={size}>
+          <IconContainer $position="end" size={size}>
             {endIcon}
           </IconContainer>
         )}

@@ -51,35 +51,35 @@ const getColorByScheme = (
 ) => {
   const base = {
     primary: {
-      bg: theme.colors.primary[500] ?? 1,
-      hover: theme.colors.primary[600] ?? 1,
-      focus: theme.colors.primary[400] ?? 1,
-      disabled: theme.colors.background[300] ?? 1,
+      bg: theme.colors.primary[500] || '#4caf50',
+      hover: theme.colors.primary[600] || '#388e3c',
+      focus: theme.colors.primary[400] || '#66bb6a',
+      disabled: theme.colors.background[300] || '#e0e0e0',
     },
     secondary: {
-      bg: theme.colors.secondary[500] ?? 1,
-      hover: theme.colors.secondary[600] ?? 1,
-      focus: theme.colors.secondary[400] ?? 1,
-      disabled: theme.colors.background[300] ?? 1,
+      bg: theme.colors.secondary[500] || '#81976F',
+      hover: theme.colors.secondary[600] || '#697a59',
+      focus: theme.colors.secondary[400] || '#9aad8a',
+      disabled: theme.colors.background[300] || '#e0e0e0',
     },
     accent: {
-      bg: theme.colors.accent.gold,
-      hover: theme.colors.accent.copper,
-      focus: theme.colors.accent.teal,
-      disabled: theme.colors.background[300] ?? 1,
+      bg: theme.colors.accent.gold || '#d4a76a',
+      hover: theme.colors.accent.copper || '#ba8d5a',
+      focus: theme.colors.accent.teal || '#66b2b2',
+      disabled: theme.colors.background[300] || '#e0e0e0',
     },
   };
 
   switch (state) {
     case 'hover':
-      return base[colorScheme] ?? 1.hover;
+      return base[colorScheme]?.hover || base.primary.hover;
     case 'focus':
-      return base[colorScheme] ?? 1.focus;
+      return base[colorScheme]?.focus || base.primary.focus;
     case 'disabled':
-      return base[colorScheme] ?? 1.disabled;
+      return base[colorScheme]?.disabled || base.primary.disabled;
     case 'normal':
     default:
-      return base[colorScheme] ?? 1.bg;
+      return base[colorScheme]?.bg || base.primary.bg;
   }
 };
 

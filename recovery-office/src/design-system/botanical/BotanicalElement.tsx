@@ -10,9 +10,9 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import { Box } from '../layout';
-import { BoxProps } from '../../types';
-import { PHI, PHI_INVERSE } from '../constants/sacred-geometry';
+import { Box } from '../../design-system/components/layout/Box';
+import { BoxProps } from '../../design-system/types/styled.types';
+import { PHI, PHI_INVERSE } from '../../constants/sacred-geometry';
 
 /**
  * BotanicalElement component props
@@ -29,6 +29,12 @@ export interface BotanicalElementProps extends Omit<BoxProps, 'as'> {
    * @default '100%'
    */
   height?: string | number;
+  
+  /**
+   * The size of the botanical element (affects both width and height)
+   * @default undefined
+   */
+  size?: number | string;
   
   /**
    * The viewBox for the SVG
@@ -85,6 +91,11 @@ export interface BotanicalElementProps extends Omit<BoxProps, 'as'> {
   useGoldenRatio?: boolean;
   
   /**
+   * Custom inline styles
+   */
+  style?: React.CSSProperties;
+  
+  /**
    * The content of the botanical element (SVG paths, circles, etc.)
    */
   children: React.ReactNode;
@@ -122,10 +133,11 @@ const StyledSvg = styled.svg<{ children?: React.ReactNode;
  * 
  * Base component for all botanical SVG elements
  */
-export const BotanicalElement = forwardRef<SVGSVGElement, BotanicalElementProps>(
+export const BotanicalElement = React.forwardRef<SVGSVGElement, BotanicalElementProps>(
   ({ 
     width = '100%',
     height = '100%',
+    size,
     viewBox = '0 0 100 100',
     color = 'currentColor',
     strokeWidth = 1,
@@ -135,9 +147,14 @@ export const BotanicalElement = forwardRef<SVGSVGElement, BotanicalElementProps>
     decorative = true,
     description,
     useGoldenRatio = true,
+    style,
     children,
     ...rest 
   }, ref) => {
+    // If size is provided, use it for both width and height
+    const finalWidth = size !== undefined ? size : width;
+    const finalHeight = size !== undefined ? size : height;
+    
     // Determine the appropriate preserveAspectRatio attribute
     const aspectRatio = preserveAspectRatio ? 'xMidYMid meet' : 'none';
     
@@ -146,8 +163,13 @@ export const BotanicalElement = forwardRef<SVGSVGElement, BotanicalElementProps>
       ? { 'aria-hidden': 'true' as 'true' } 
       : { role: 'img' as 'img' };
     
+    // Merge styles
+    const mergedStyles = {
+      ...style
+    };
+    
     return (
-      <Box display="inline-block" width={width} height={height} {...rest}>
+      <Box display="inline-block" width={finalWidth} height={finalHeight} {...rest}>
         <StyledSvg
           ref={ref}
           xmlns="http://www.w3.org/2000/svg"
@@ -158,6 +180,7 @@ export const BotanicalElement = forwardRef<SVGSVGElement, BotanicalElementProps>
           stroke={color}
           strokeWidth={strokeWidth}
           fill={fill}
+          style={mergedStyles}
           {...a11yProps}
         >
           {/* Add description for accessibility if provided and element is not decorative */}

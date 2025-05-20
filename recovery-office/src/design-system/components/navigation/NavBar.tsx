@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';;
 import styled, { DefaultTheme } from 'styled-components';
 
 // Import sacred geometry constants
-
-
+import { PHI, PHI_INVERSE, getFibonacciByIndex } from '../../../constants/sacred-geometry';
 
 // Import components
 import NavigationItem from './NavigationItem';
@@ -17,7 +16,7 @@ export interface NavBarItem {
   /** The navigation item's label */
   label: string;
   /** The navigation item's URL */
-  path: string;
+  href: string;
   /** Whether the item is active (current page) */
   isActive?: boolean;
   /** Whether it's a primary action */
@@ -27,7 +26,7 @@ export interface NavBarItem {
   /** Optional subItems for dropdown menus */
   subItems?: Array<{
     label: string;
-    path: string;
+    href: string;
     isActive?: boolean;
   }>;
 }
@@ -36,7 +35,7 @@ export interface NavBarCTA {
   /** The CTA label */
   label: string;
   /** The CTA URL */
-  path: string;
+  href: string;
   /** Whether it's a primary CTA */
   isPrimary?: boolean;
   /** Optional icon to display */
@@ -157,7 +156,7 @@ const NavBar: React.FC<NavBarProps> = ({
                 <NavigationItem
                   key={`nav-item-${index}`}
                   label={item.label}
-                  path={item.path}
+                  href={item.href}
                   isActive={item.isActive}
                   isPrimary={item.isPrimary}
                   icon={item.icon}
@@ -173,7 +172,7 @@ const NavBar: React.FC<NavBarProps> = ({
                   <NavigationItem
                     key={`cta-${index}`}
                     label={cta.label}
-                    path={cta.path}
+                    href={cta.href}
                     isPrimary={cta.isPrimary}
                     isButton={true}
                     icon={cta.icon}
@@ -218,7 +217,7 @@ const NavBar: React.FC<NavBarProps> = ({
               <MobileNavItem key={`mobile-nav-item-${index}`}>
                 <NavigationItem
                   label={item.label}
-                  path={item.path}
+                  href={item.href}
                   isActive={item.isActive}
                   isPrimary={false}
                   icon={item.icon}
@@ -235,7 +234,7 @@ const NavBar: React.FC<NavBarProps> = ({
                   <MobileNavItem key={`mobile-cta-${index}`}>
                     <NavigationItem
                       label={cta.label}
-                      path={cta.path}
+                      href={cta.href}
                       isPrimary={cta.isPrimary}
                       isButton={true}
                       icon={cta.icon}

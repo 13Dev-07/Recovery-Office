@@ -1,10 +1,10 @@
-import { ApiResponse, ApiErrorResponse, TimeSlot, ServiceType, BookingStatus } from '../types/api.types';
+import { ApiResponse, ApiErrorResponse, TimeSlot, ServiceType, BookingStatus, ApiError } from '../types/api.types';
 import { FIBONACCI } from '../constants/sacred-geometry';
 import { ClientInformationData } from '../components/booking/validation/clientInformation.schema';
 import { ConfirmationStepData } from '../components/booking/validation/confirmationStep.schema';
 import { ServiceSelectionData } from '../components/booking/validation/serviceSelection.schema';
 import { apiClient } from './api.client';
-import { getFibonacciByIndex } from '../utils/getFibonacciByIndex';
+import { getFibonacciByIndex } from '../constants/sacred-geometry';
 import { 
   Service, 
   AvailableDateResponse, 
@@ -19,7 +19,7 @@ import {
 const API_BASE_PATH = '/api/bookings';
 
 // Request timeout in milliseconds based on Fibonacci sequence
-const REQUEST_TIMEOUT = FIBONACCI[10] ?? 1; // 55 seconds
+const REQUEST_TIMEOUT = getFibonacciByIndex(8) * 1000; // Using Fibonacci number at index 8 for timeout
 
 /**
  * Creates a booking request payload by combining validated data from multiple steps
@@ -34,12 +34,21 @@ const createBookingPayload = (
   client: ClientInformationData,
   confirmation: ConfirmationStepData
 ): BookingRequest => {
-  // Create a partial ClientInfo object with the fields we have
-  const clientInfo: Partial<ClientInfo> = {
+  // Create a client info object that satisfies the ClientInfo interface
+  const clientInfo: ClientInfo = {
     firstName: client.firstName,
     lastName: client.lastName,
     email: client.email.toLowerCase(),
-    phone: client.phone
+    phone: client.phone,
+    dateOfBirth: '', // Default value since this is required
+    address: {
+      street: '',
+      city: '',
+      state: '',
+      postalCode: '',
+      country: ''
+    },
+    marketingOptIn: Boolean(client.privacyPolicyAccepted)
   };
 
   // Create the booking request
@@ -48,7 +57,7 @@ const createBookingPayload = (
     practitionerId: service.practitionerId,
     date: service.date || '', // Ensure date is provided
     timeSlot: service.timeSlot || '', // Ensure timeSlot is provided
-    client: clientInfo as ClientInfo, // Type assertion since we're not providing all fields
+    client: clientInfo,
     paymentMethod: confirmation.paymentMethod,
     paymentIntentId: confirmation.paymentIntentId || '',
   };
@@ -59,7 +68,7 @@ const createBookingPayload = (
  * @param axiosResponse The Axios response object
  * @returns ApiResponse with the correct format
  */
-function transformResponse<T>(axiosResponse: any): ApiResponse<T> {
+function transformResponse<T>(axiosResponse: { data: T }): ApiResponse<T> {
   return {
     success: true,
     data: axiosResponse.data,
@@ -393,13 +402,13 @@ export class BookingService {
   private handleApiError(error: unknown): ApiErrorResponse {
     if (error instanceof Error) {
       // If it's already our ApiError type
-      if ('code' in error && 'statusCode' in error) {
+      if (error instanceof ApiError) {
         return {
           success: false,
           error: {
-            code: (error as any).code || 'UNEXPECTED_ERROR',
+            code: error.code,
             message: error.message,
-            details: (error as any).details
+            details: error.details
           },
           timestamp: new Date().toISOString()
         };

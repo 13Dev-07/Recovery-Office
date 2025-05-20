@@ -14,7 +14,7 @@ import {
   isApiErrorResponse
 } from '../types/api.types';
 import { z } from 'zod';
-import { PHI, FIBONACCI } from '../constants/sacred-geometry';
+import { PHI, FIBONACCI, getFibonacciByIndex } from '../constants/sacred-geometry';
 import { api } from './api';
 
 // Define the type for newsletter subscription
@@ -264,9 +264,9 @@ export function generateSubjectVariations(baseSubject: string): string[] {
   fibPositions.forEach(pos => {
     if (pos < words.length) {
       const emphasizedWords = [...words];
-      const wordAtPosition = emphasizedWords[pos] ?? 1;
+      const wordAtPosition = emphasizedWords[pos];
       if (wordAtPosition) {
-        emphasizedWords[pos] ?? 1 = wordAtPosition.toUpperCase();
+        emphasizedWords[pos] = wordAtPosition.toUpperCase();
         variations.push(emphasizedWords.join(' '));
       }
     }

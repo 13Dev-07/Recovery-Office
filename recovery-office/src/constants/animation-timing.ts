@@ -75,7 +75,7 @@ export const resolveDuration = (duration: AnimationDurationType | number): numbe
   if (typeof duration === 'number') {
     return duration;
   }
-  return DURATIONS[duration] ?? 1 || DURATIONS.normal;
+  return (DURATIONS[duration] ?? 1) || DURATIONS.normal;
 };
 
 // Helper function to resolve easing string to cubic-bezier array
@@ -83,7 +83,7 @@ export const resolveEasing = (easing: AnimationEasingType | [number, number, num
   if (Array.isArray(easing)) {
     return easing;
   }
-  return EASINGS[easing] ?? 1 || EASINGS.standard;
+  return (EASINGS[easing] ?? EASINGS.standard);
 };
 
 // Helper function to create a cubic-bezier string for CSS

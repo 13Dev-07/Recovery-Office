@@ -1,26 +1,33 @@
+/**
+ * ProgressIndicator Component
+ * 
+ * A visual indicator that shows the user's progress through the booking steps,
+ * implementing sacred geometry principles for natural visual progression.
+ * 
+ * Design Features:
+ * - Golden ratio (PHI) used for sizing and scaling of active elements
+ * - Fibonacci sequence for spacing and dimensions
+ * - Responsive markers with completion states
+ * - Accessible labeling for each step
+ * 
+ * @example
+ * ```tsx
+ * <ProgressIndicator
+ *   steps={BOOKING_STEPS}
+ *   currentStep={BookingStepId.DATE_SELECTION}
+ *   completedSteps={new Set([BookingStepId.SERVICE_SELECTION])}
+ * />
+ * ```
+ */
+
 import * as React from 'react';
 import styled from 'styled-components';
-import { DefaultTheme } from 'styled-components';
-import { PHI, PHI_INVERSE, SACRED_SPACING, FIBONACCI } from '@constants/sacred-geometry';
-import { getFibonacciByIndex } from "@utils/getFibonacciByIndex";
-
-/**
- * Props for the ProgressIndicator component
- * 
- * @interface ProgressIndicatorProps
- * @property {number} currentStep - The current active step (0-indexed)
- * @property {number} totalSteps - The total number of steps
- * @property {string[]} stepLabels - Labels for each step
- */
-interface ProgressIndicatorProps {
-  currentStep: number;
-  totalSteps: number;
-  stepLabels: string[];
-}
+import { PHI, PHI_INVERSE, SACRED_SPACING, FIBONACCI } from '../../constants/sacred-geometry';
+import { getFibonacciByIndex } from '../../utils/getFibonacciByIndex';
+import { ProgressIndicatorProps, BookingStepId, BookingStepMeta } from '../../types/booking.types';
 
 /**
  * Container for the progress indicator that spans the full width
- * Uses sacred spacing for margins
  */
 const ProgressContainer = styled.div`
   width: 100%;
@@ -29,12 +36,11 @@ const ProgressContainer = styled.div`
 
 /**
  * Progress track that shows the background line for the progress
- * Height is based on a small Fibonacci number
  */
 const ProgressTrack = styled.div`
   width: 100%;
   height: ${getFibonacciByIndex(4)}px;
-  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.background.light};
+  background-color: ${props => props.theme.colors.background.light};
   border-radius: ${getFibonacciByIndex(4)}px;
   margin-bottom: ${SACRED_SPACING.md}px;
   position: relative;
@@ -42,23 +48,7 @@ const ProgressTrack = styled.div`
 `;
 
 /**
- * Indicator fill that shows the progress visually
- * Uses an animation timing based on Fibonacci sequence
- */
-const ProgressFill = styled.div<{ fillPercentage: number }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: ${(props: { fillPercentage: number }) => props.fillPercentage}%;
-  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.colors.accent.main};
-  border-radius: ${getFibonacciByIndex(4)}px;
-  transition: width ${getFibonacciByIndex(7) * 10}ms ease-in-out;
-`;
-
-/**
  * Container for the step markers
- * Uses flexbox to distribute markers evenly
  */
 const StepMarkersContainer = styled.div`
   display: flex;
@@ -66,104 +56,110 @@ const StepMarkersContainer = styled.div`
   width: 100%;
 `;
 
+interface StepMarkerProps {
+  isFirst?: boolean;
+  isLast?: boolean;
+}
+
 /**
  * Container for individual step marker and label
- * Text alignment calculated to prevent overflow
  */
-const StepMarker = styled.div<{ isActive: boolean; isCompleted: boolean; index: number; totalSteps: number }>`
+const StepMarker = styled.div<StepMarkerProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   
-  /* Apply special alignment for first and last elements */
-  ${(props: { index: number; totalSteps: number }) => {
-    if (props.index === 0) {
-      return 'align-items: flex-start; text-align: left;';
-    } else if (props.index === props.totalSteps - 1) {
-      return 'align-items: flex-end; text-align: right;';
-    }
-    return '';
-  }}
-`;
-
-/**
- * The circle marker for each step
- * Size based on Fibonacci numbers, with golden ratio for active markers
- */
-const Marker = styled.div<{ isActive: boolean; isCompleted: boolean }>`
-  width: ${(props: { isActive: boolean }) => props.isActive ? getFibonacciByIndex(6) : getFibonacciByIndex(5)}px;
-  height: ${(props: { isActive: boolean }) => props.isActive ? getFibonacciByIndex(6) : getFibonacciByIndex(5)}px;
-  border-radius: 50%;
-  background-color: ${(props: { isCompleted: boolean; isActive: boolean; theme: DefaultTheme }) => {
-    if (props.isCompleted || props.isActive) {
-      return props.theme.colors.accent.main;
-    }
-    return props.theme.colors.background.medium;
-  }};
-  margin-bottom: ${SACRED_SPACING.xxs}px;
-  transition: all ${getFibonacciByIndex(6) * 10}ms ease-in-out;
+  /* Special alignment for first and last items */
+  ${props => props.isFirst && `
+    align-items: flex-start;
+    text-align: left;
+  `}
   
-  /* Scale active marker by PHI */
-  transform: ${(props: { isActive: boolean }) => props.isActive ? `scale(${PHI_INVERSE + 1})` : 'scale(1)'};
-`;
-
-/**
- * Label for each step
- * Font size consistent with the sacred typography scale
- */
-const StepLabel = styled.span<{ isActive: boolean; isCompleted: boolean }>`
-  font-size: 0.875rem;
-  font-weight: ${(props: { isActive: boolean; isCompleted: boolean }) => (props.isActive || props.isCompleted) ? '600' : '400'};
-  color: ${(props: { isActive: boolean; isCompleted: boolean; theme: DefaultTheme }) => {
-    if (props.isActive) {
-      return props.theme.colors.text.dark;
-    } else if (props.isCompleted) {
-      return props.theme.colors.accent.dark;
-    }
-    return props.theme.colors.text.light;
-  }};
-  transition: all ${getFibonacciByIndex(6) * 10}ms ease-in-out;
-  max-width: ${SACRED_SPACING.xxl}px;
+  ${props => props.isLast && `
+    align-items: flex-end;
+    text-align: right;
+  `}
 `;
 
 /**
  * ProgressIndicator component
- * Visual indicator of the booking process progress with step markers
- * Implements sacred geometry principles throughout
  */
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
+  steps,
   currentStep,
-  totalSteps,
-  stepLabels,
+  completedSteps,
+  className
 }) => {
-  // Calculate the fill percentage based on the current step
-  // Using PHI_INVERSE (0.618) for a more natural progression
-  const fillPercentage = (currentStep / (totalSteps - 1)) * 100;
+  // Convert steps to array if needed
+  const stepsArray: BookingStepMeta[] = Array.isArray(steps) ? steps : Object.values(steps);
   
+  // Sort steps by their order property
+  const sortedSteps = [...stepsArray].sort((a, b) => a.order - b.order);
+  
+  // Find the index of the current step in the sorted array
+  const currentStepIndex = sortedSteps.findIndex(step => step.id === currentStep);
+  
+  // Calculate the total number of steps
+  const totalSteps = sortedSteps.length;
+  
+  // Calculate the fill percentage based on the current step
+  const fillPercentage = currentStepIndex >= 0 
+    ? (currentStepIndex / (totalSteps - 1)) * 100
+    : 0;
+
   return (
-    <ProgressContainer>
+    <ProgressContainer className={className}>
       <ProgressTrack>
-        <ProgressFill fillPercentage={fillPercentage} />
+        <div 
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            height: '100%',
+            width: `${fillPercentage}%`,
+            backgroundColor: '#9B8579', // accent.main color
+            borderRadius: `${getFibonacciByIndex(4)}px`,
+            transition: `width ${getFibonacciByIndex(7) * 10}ms ease-in-out`
+          }}
+        />
       </ProgressTrack>
       
       <StepMarkersContainer>
-        {stepLabels.map((label, index) => {
-          const isActive = index === currentStep;
-          const isCompleted = index < currentStep;
+        {sortedSteps.map((step, index) => {
+          const isActive = step.id === currentStep;
+          const isCompleted = completedSteps.has(step.id);
+          const isFirst = index === 0;
+          const isLast = index === totalSteps - 1;
           
           return (
             <StepMarker 
-              key={`step-${index}`} 
-              isActive={isActive}
-              isCompleted={isCompleted}
-              index={index}
-              totalSteps={totalSteps}
+              key={`step-${step.id}`}
+              isFirst={isFirst}
+              isLast={isLast}
             >
-              <Marker isActive={isActive} isCompleted={isCompleted} />
-              <StepLabel isActive={isActive} isCompleted={isCompleted}>
-                {label}
-              </StepLabel>
+              <div
+                style={{
+                  width: isActive ? `${getFibonacciByIndex(6)}px` : `${getFibonacciByIndex(5)}px`,
+                  height: isActive ? `${getFibonacciByIndex(6)}px` : `${getFibonacciByIndex(5)}px`,
+                  borderRadius: '50%',
+                  backgroundColor: isCompleted || isActive ? '#9B8579' : '#E2E8F0',
+                  marginBottom: `${SACRED_SPACING.xxs}px`,
+                  transition: `all ${getFibonacciByIndex(6) * 10}ms ease-in-out`,
+                  transform: isActive ? `scale(${PHI_INVERSE + 1})` : 'scale(1)'
+                }}
+              />
+              <span
+                style={{
+                  fontSize: '0.875rem',
+                  fontWeight: (isActive || isCompleted) ? 600 : 400,
+                  color: isActive ? '#2D3748' : isCompleted ? '#7D6B5D' : '#718096',
+                  transition: `all ${getFibonacciByIndex(6) * 10}ms ease-in-out`,
+                  maxWidth: `${SACRED_SPACING.xxl}px`
+                }}
+              >
+                {step.title}
+              </span>
             </StepMarker>
           );
         })}

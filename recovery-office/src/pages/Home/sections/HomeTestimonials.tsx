@@ -258,9 +258,9 @@ const HomeTestimonials: React.FC = () => {
 
   return (
     <Section
-      backgroundStyle="light"
-      paddingTop={SACRED_SPACING.xxl}
-      paddingBottom={SACRED_SPACING.xxl}
+      variant="light"
+      pt={SACRED_SPACING.xxl}
+      pb={SACRED_SPACING.xxl}
       id="testimonials"
     >
       <Container>
@@ -278,10 +278,9 @@ const HomeTestimonials: React.FC = () => {
           <ScrollReveal>
             <SectionHeading
               title="Client Testimonials"
-              subtitle="Hear from those we've helped recover their financial assets"
-              alignment="center"
+              subtitle="What our clients say about their recovery journey with us"
+              align="center"
               size="large"
-              decoration="line"
               marginBottom={SACRED_SPACING.xl}
             />
           </ScrollReveal>

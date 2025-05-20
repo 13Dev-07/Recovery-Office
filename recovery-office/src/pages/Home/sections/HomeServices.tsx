@@ -15,7 +15,7 @@ import { Card } from '../../../design-system/components/data-display';
 import { Section, SectionHeading } from '../../../components/section';
 import { FadeIn, ScrollReveal, ScaleFade } from '../../../animation';
 import { FlowerOfLife, OliveBranch } from '../../../design-system/botanical';
-import { SACRED_SPACING, PHI, PHI_INVERSE, ANIMATION_TIMING } from '../constants/sacred-geometry';
+import { SACRED_SPACING, PHI, PHI_INVERSE, ANIMATION_TIMING } from '../../../constants/sacred-geometry';
 
 
 // Service type definition
@@ -126,9 +126,9 @@ const HomeServices: React.FC = () => {
 
   return (
     <Section
-      backgroundStyle="light"
-      paddingTop={SACRED_SPACING.xxl}
-      paddingBottom={SACRED_SPACING.xxl}
+      variant="light"
+      pt={SACRED_SPACING.xxl}
+      pb={SACRED_SPACING.xxl}
       id="services"
     >
       <Container>
@@ -147,9 +147,8 @@ const HomeServices: React.FC = () => {
             <SectionHeading
               title="Our Services"
               subtitle="Expert financial recovery solutions guided by sacred principles"
-              alignment="center"
+              align="center"
               size="large"
-              decoration="botanical"
               marginBottom={SACRED_SPACING.xl}
             />
           </ScrollReveal>

@@ -9,11 +9,12 @@
  */
 
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { DefaultTheme } from 'styled-components';
 
 import { ButtonProps, Button } from './Button';
 import { Box } from '../layout';
+import { PHI_INVERSE } from '../../../constants/sacred-geometry';
 
 /**
  * IconButton component props
@@ -43,9 +44,9 @@ export interface IconButtonProps extends Omit<ButtonProps, 'leftIcon' | 'rightIc
 const getSizeStyles = (size: 'sm' | 'md' | 'lg', theme: DefaultTheme) => {
   // Base dimensions follow Fibonacci sequence
   const dimensions = {
-    sm: theme.spacing.md, // 21px
-    md: theme.spacing.lg, // 34px
-    lg: theme.spacing.xl, // 55px
+    sm: theme.spacing?.md || 21, // 21px
+    md: theme.spacing?.lg || 34, // 34px
+    lg: theme.spacing?.xl || 55, // 55px
   }[size];
   
   // Icon size follows golden ratio proportion to button size
@@ -79,7 +80,7 @@ const StyledIconButton = styled(Button)<IconButtonProps & { dimensions: string }
   // Golden ratio-based focus ring
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px ${props => props.theme.colors.primary[300] ?? 1};
+    box-shadow: 0 0 0 3px ${props => props.theme.colors.primary[300] ?? "#4299e1"};
   }
 `;
 
@@ -97,10 +98,13 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
     'aria-label': ariaLabel,
     ...rest 
   }, ref) => {
-    // Get size-specific styles based on theme
+    // Get theme from styled-components context
+    const theme = useTheme() as DefaultTheme;
+    
+    // Get size-specific styles
     const { dimensions, iconSize } = getSizeStyles(
       size as 'sm' | 'md' | 'lg',
-      rest.theme || {}
+      theme
     );
     
     return (

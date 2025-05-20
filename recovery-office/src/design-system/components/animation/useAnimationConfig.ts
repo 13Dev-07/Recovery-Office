@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';;
-import { AnimationProps } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { AnimationProps, Transition } from 'framer-motion';
 import { prefersReducedMotion } from '../../../utils/animation';
+import { PHI_INVERSE } from '../../../constants/sacred-geometry';
 
-import { SlideDirection } from './animation.d';
+import { SlideDirection, AnimationConfigOptions, EasingValue, CustomEasingFunction } from '../../types/animation.types';
 
 // Define these constants here since they're used in this file
 export const sacredEasing = {
@@ -14,7 +15,13 @@ export const sacredEasing = {
   easeOut: [0, 0, 0.618, 1],
   easeInOut: [0.618, 0, 0.382, 1],
   bounce: [0.618, -0.185, 0.7, 1.3],
-  anticipate: [0.8, -0.498, 0.2, 1.2]
+  anticipate: [0.8, -0.498, 0.2, 1.2],
+  botanical: [0.175, 0.885, 0.32, 1.275],
+  goldenEaseIn: (t: number) => 1 - Math.pow(1 - t, PHI_INVERSE),
+  goldenEaseOut: (t: number) => Math.pow(t, PHI_INVERSE),
+  goldenEaseInOut: (t: number) => t < 0.5
+    ? (1 - Math.pow(1 - t * 2, PHI_INVERSE)) / 2
+    : 0.5 + Math.pow((t - 0.5) * 2, PHI_INVERSE) / 2
 } as const;
 
 export const sacredDurations = {
@@ -22,21 +29,13 @@ export const sacredDurations = {
   fast: 0.124,
   standard: 0.309,
   slow: 0.618,
-  verySlow: 1.0
+  verySlow: 1.0,
+  quick: 0.2,
+  stagger: 0.05
 } as const;
 
-// Animation config types
-type AnimationConfigType = 'fadeIn' | 'fadeOut' | 'scaleIn' | 'scaleOut' | 'slideIn' | 'slideOut' | 'rotate' | 'path';
-
-interface AnimationConfigOptions {
-  type: AnimationConfigType;
-  direction?: SlideDirection;
-  duration?: keyof typeof sacredDurations | number;
-  easing?: keyof typeof sacredEasing;
-  distance?: number;
-  initialScale?: number;
-  reducedMotionConfig?: Partial<AnimationProps>;
-}
+// Define type for duration keys for type safety
+type DurationKeys = keyof typeof sacredDurations;
 
 /**
  * Custom hook for creating sacred geometry based animations
@@ -60,10 +59,16 @@ export const useAnimationConfig = (options: AnimationConfigOptions): AnimationPr
   } = options;
   
   // Calculate duration value from named duration or use number directly
-  const durationValue = typeof duration === 'string' ? sacredDurations[duration] ?? 1 : duration;
+  const durationValue = typeof duration === 'string' 
+    ? (sacredDurations[duration as DurationKeys] ?? sacredDurations.standard) 
+    : duration;
   
-  // Get easing value
-  const easingValue = sacredEasing[easing] ?? 1;
+  // Get easing value - properly handle both string keys and functions
+  const easingValue = typeof easing === 'function' 
+    ? easing  // It's a custom function
+    : typeof easing === 'string' && easing in sacredEasing
+      ? sacredEasing[easing as keyof typeof sacredEasing]  
+      : sacredEasing.standard;  // Fallback to standard
   
   // Base configuration for all animations
   const baseConfig: AnimationProps = {
@@ -124,8 +129,7 @@ export const useAnimationConfig = (options: AnimationConfigOptions): AnimationPr
       case 'path':
         // Path animations are handled through SVG path properties
         baseConfig.transition = {
-          ...baseConfig.transition,
-          duration: durationValue * 1.5 // Path animations look better with slightly longer duration
+          duration: durationValue * 1.5
         };
         break;
     }
@@ -141,8 +145,7 @@ export const useAnimationConfig = (options: AnimationConfigOptions): AnimationPr
       baseConfig.animate = { opacity: 1 };
       baseConfig.exit = { opacity: 0 };
       baseConfig.transition = {
-        ...baseConfig.transition,
-        duration: durationValue * 0.5 // Shorter duration for reduced motion
+        duration: durationValue * 0.5
       };
     }
   }

@@ -12,7 +12,10 @@ import {
   FIBONACCI,
   GOLDEN_SECTIONS,
   ANIMATION_TIMING,
-  SACRED_EASINGS
+  SACRED_EASINGS,
+  goldenEaseIn,
+  goldenEaseOut,
+  goldenEaseInOut
 } from "../../constants/sacred-geometry";
 
 import {
@@ -44,8 +47,10 @@ export const lightTheme: RecoveryOfficeTheme = {
       700: colors.SEMANTIC_COLORS.background.dark,
       800: '#18231A',
       900: '#0F160F',
-      950: '#070B07'
+      950: '#070B07',
+      paper: (colors.SEMANTIC_COLORS.background as any).paper || colors.SEMANTIC_COLORS.background.brand,
     },
+    white: '#FFFFFF',
     text: {
       primary: colors.SEMANTIC_COLORS.text.primary,
       secondary: colors.SEMANTIC_COLORS.text.secondary,
@@ -54,12 +59,18 @@ export const lightTheme: RecoveryOfficeTheme = {
       dark: colors.SEMANTIC_COLORS.text.primary,
       disabled: colors.SEMANTIC_COLORS.text.disabled
     },
+    divider: colors.SEMANTIC_COLORS.border.light,
     accent: {
       gold: colors.BASE_COLORS.earth[500] ?? 1,
       copper: colors.BASE_COLORS.sunrise[600] ?? 1,
       teal: colors.BASE_COLORS.water[500] ?? 1,
       lavender: '#A992E2',
       rose: '#E27992'
+    },
+    success: {
+      light: colors.SEMANTIC_COLORS.state.success || '#4CAF50',
+      main: colors.SEMANTIC_COLORS.state.success || '#2E7D32',
+      dark: colors.BASE_COLORS.green[700] ?? '#1B5E20'
     },
     feedback: {
       success: {
@@ -97,7 +108,7 @@ export const lightTheme: RecoveryOfficeTheme = {
       minimal: 0.12,
       ultraLight: 0.05
     }
-  } as ThemeColors,
+  } as any as ThemeColors,
   spacing: {
     none: spacing.spacing.none,
     xxxs: spacing.spacing.xxxs,
@@ -138,16 +149,67 @@ export const lightTheme: RecoveryOfficeTheme = {
       xxl: 'var(--spacing-xxl)',
       xxxl: 'var(--spacing-xxxl)'
     }
-  } as ThemeSpacing,
+  } as any as ThemeSpacing,
   typography: {
-    fontFamily: typography.fontFamily,
-    fontSize: typography.fontSize,
-    fontWeight: typography.fontWeight,
-    lineHeight: typography.lineHeight,
-    letterSpacing: typography.letterSpacing,
-    textTransform: typography.textTransform,
-    textDecoration: typography.textDecoration,
-    fontStyle: typography.fontStyle
+    fontFamily: {
+      heading: typography.fontFamily.secondary,
+      body: typography.fontFamily.primary,
+      mono: typography.fontFamily.mono
+    },
+    fontSize: {
+      xs: typography.fontSize.values.xs,
+      sm: typography.fontSize.values.sm,
+      base: typography.fontSize.values.base,
+      md: typography.fontSize.values.md,
+      lg: typography.fontSize.values.lg,
+      xl: typography.fontSize.values.xl,
+      xxl: typography.fontSize.values.xxl,
+      rem: {
+        xs: typography.fontSize.xs,
+        sm: typography.fontSize.sm,
+        base: typography.fontSize.base,
+        md: typography.fontSize.md,
+        lg: typography.fontSize.lg,
+        xl: typography.fontSize.xl,
+        xxl: typography.fontSize.xxl
+      }
+    },
+    fontWeight: {
+      light: typography.fontWeight.light,
+      regular: typography.fontWeight.regular,
+      medium: typography.fontWeight.medium,
+      semiBold: typography.fontWeight.semibold,
+      bold: typography.fontWeight.bold,
+      black: 900
+    },
+    lineHeight: {
+      tight: typography.lineHeight.tight,
+      base: typography.lineHeight.base,
+      relaxed: typography.lineHeight.relaxed,
+      spacious: typography.lineHeight.spacious
+    },
+    letterSpacing: {
+      tight: typography.letterSpacing.tight,
+      normal: typography.letterSpacing.normal,
+      wide: typography.letterSpacing.wide,
+      wider: typography.letterSpacing.wider,
+      widest: typography.letterSpacing.widest
+    },
+    textTransform: {
+      uppercase: 'uppercase',
+      lowercase: 'lowercase',
+      capitalize: 'capitalize',
+      none: 'none'
+    },
+    textDecoration: {
+      underline: 'underline',
+      lineThrough: 'line-through',
+      none: 'none'
+    },
+    fontStyle: {
+      normal: 'normal',
+      italic: 'italic'
+    }
   } as ThemeTypography,
   breakpoints: {
     values: breakpoints.breakpointValues,
@@ -160,8 +222,14 @@ export const lightTheme: RecoveryOfficeTheme = {
     hover: breakpoints.breakpoints.hover,
     reducedMotion: breakpoints.breakpoints.reducedMotion,
     prefersDark: breakpoints.breakpoints.prefersDark,
-    prefersLight: breakpoints.breakpoints.prefersLight
-  } as ThemeBreakpoints,
+    prefersLight: breakpoints.breakpoints.prefersLight,
+    xs: breakpoints.breakpointValues.xs,
+    sm: breakpoints.breakpointValues.sm,
+    md: breakpoints.breakpointValues.md,
+    lg: breakpoints.breakpointValues.lg,
+    xl: breakpoints.breakpointValues.xl,
+    xxl: breakpoints.breakpointValues.xxl
+  } as any as ThemeBreakpoints,
   radius: {
     none: radius.radius.none,
     xs: radius.radius.xs,
@@ -194,16 +262,31 @@ export const lightTheme: RecoveryOfficeTheme = {
       xl: 'var(--radius-xl)',
       circle: 'var(--radius-circle)'
     }
-  } as ThemeRadius,
-  shadows: shadows as ThemeShadows,
+  } as any as ThemeRadius,
+  shadows: shadows as any as ThemeShadows,
   sacredGeometry: {
     PHI,
     PHI_INVERSE,
     FIBONACCI,
     GOLDEN_SECTIONS,
-    ANIMATION_TIMING,
-    SACRED_EASINGS
-  } as ThemeSacredGeometry,
+    ANIMATION_TIMING: {
+      ...ANIMATION_TIMING,
+      stagger: {
+        quick: ANIMATION_TIMING.quick / 2,
+        standard: ANIMATION_TIMING.standard / 2,
+        slow: ANIMATION_TIMING.slow / 2
+      }
+    },
+    SACRED_EASINGS: {
+      standard: SACRED_EASINGS.standard as unknown as [number, number, number, number],
+      easeIn: [PHI_INVERSE, 0, 1, 1] as [number, number, number, number],
+      easeOut: [0, 0, 1 - PHI_INVERSE, 1] as [number, number, number, number],
+      botanical: [0.175, 0.885, 0.32, 1.275] as [number, number, number, number],
+      goldenEaseIn,
+      goldenEaseOut,
+      goldenEaseInOut
+    }
+  } as unknown as ThemeSacredGeometry,
   mode: 'light' as const
 };
 

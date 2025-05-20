@@ -8,7 +8,8 @@
  * animation timing and easing functions derived from sacred geometry.
  */
 
-import * as React from 'react';;
+import * as React from 'react';
+import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { 
   useAnimationDuration, 
@@ -17,7 +18,7 @@ import {
   useShouldAnimate,
   AnimationDuration,
   AnimationEasing
-} from '@context/AnimationContext';
+} from '../context/AnimationContext';
 
 export interface FadeInProps {
   children: React.ReactNode;

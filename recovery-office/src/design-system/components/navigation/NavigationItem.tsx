@@ -1,11 +1,10 @@
 // TODO: This file contains direct document access without SSR checks
 import * as React from 'react';
-import { useState, useEffect, useRef } from 'react';;
+import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 // Import sacred geometry constants
-
-
+import { PHI_INVERSE, getFibonacciByIndex } from '../../../constants/sacred-geometry';
 
 // Import Link component
 import Link from './Link';
@@ -15,7 +14,7 @@ export interface NavigationItemProps {
   /** The navigation item's label */
   label: string;
   /** The navigation item's URL */
-  path: string;
+  href: string;
   /** Whether the item is active (current page) */
   isActive?: boolean;
   /** Whether it's a primary action (e.g., Contact Us button) */
@@ -33,13 +32,13 @@ export interface NavigationItemProps {
   /** Optional subItems for dropdown menus */
   subItems?: Array<{
     label: string;
-    path: string;
+    href: string;
     isActive?: boolean;
   }>;
   /** Additional className */
   className?: string;
   /** Optional onClick handler */
-  onClick?: (event: React.MouseEvent) => void;
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 /**
@@ -50,7 +49,7 @@ export interface NavigationItemProps {
  */
 const NavigationItem: React.FC<NavigationItemProps> = ({
   label,
-  path,
+  href,
   isActive = false,
   isPrimary = false,
   isButton = false,
@@ -112,8 +111,8 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
     <Container 
       ref={dropdownRef}
       className={className}
-      $hasDropdown={hasDropdown}
-      $isOpen={isDropdownOpen}
+      $hasDropdown={hasDropdown || false}
+      $isOpen={isDropdownOpen || false}
     >
       {isButton ? (
         <ButtonStyled
@@ -125,13 +124,13 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
           $variant={variant}
           $withHoverEffect={withHoverEffect}
           $isActive={isActive}
-          $hasDropdown={hasDropdown}
+          $hasDropdown={hasDropdown || false}
         >
           {itemContent}
         </ButtonStyled>
       ) : (
         <Link
-          href={path}
+          href={href}
           isActive={isActive}
           variant={isPrimary ? 'accent' : 'navigation'}
           withHoverEffect={withHoverEffect}
@@ -154,7 +153,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
           {subItems?.map((item, index) => (
             <DropdownItem key={`${item.label}-${index}`}>
               <Link
-                href={item.path}
+                href={item.href}
                 isActive={item.isActive}
                 variant="subtle"
                 withHoverEffect={true}

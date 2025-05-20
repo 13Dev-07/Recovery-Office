@@ -10,102 +10,21 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
 
-
+import { PHI, PHI_INVERSE, getFibonacciByIndex } from '../../../constants/sacred-geometry';
 import { Box } from '../layout/Box';
 import { Section, SectionTitle } from '../layout/Section';
 import { Input } from '../form/Input';
 import { TextArea } from '../form/TextArea';
 import { Button } from '../button/Button';
 import { Text } from '../typography/Text';
-import { BotanicalElement, BotanicalPosition } from '../botanical';
+import { BotanicalElement } from '../botanical';
+import { BotanicalPosition } from '../botanical/botanicalUtils';
 import { FadeIn, SlideIn } from '../animation';
+import { ContactProps, ContactOption, ContactFormField } from '../../types/feature-sections.types';
+import { BotanicalDecoration } from '../../types/botanical.types';
 
-export interface ContactOption {
-  /** Icon for the contact option */
-  icon: React.ReactNode;
-  
-  /** Label for the contact option */
-  label: string;
-  
-  /** Value (e.g., email address, phone number) */
-  value: string;
-  
-  /** URL for clickable options (e.g., mailto:, tel:) */
-  url?: string;
-}
-
-export interface ContactFormField {
-  /** Field name/identifier */
-  name: string;
-  
-  /** Field label */
-  label: string;
-  
-  /** Type of field */
-  type: 'text' | 'email' | 'tel' | 'textarea';
-  
-  /** Whether the field is required */
-  required?: boolean;
-  
-  /** Placeholder text */
-  placeholder?: string;
-  
-  /** Help text displayed below the field */
-  helpText?: string;
-}
-
-export interface ContactProps {
-  /** Section title */
-  title: string;
-  
-  /** Optional section subtitle */
-  subtitle?: string;
-  
-  /** Form fields configuration */
-  formFields?: ContactFormField[];
-  
-  /** Contact information options */
-  contactOptions?: ContactOption[];
-  
-  /** Layout style for the form and contact information */
-  layout?: 'split' | 'stacked';
-  
-  /** Form submission URL */
-  formAction?: string;
-  
-  /** Submit button text */
-  submitText?: string;
-  
-  /** Background color or gradient */
-  backgroundColor?: string;
-  
-  /** Whether to add animation to section elements */
-  animated?: boolean;
-  
-  /** Botanical decoration configuration */
-  botanical?: {
-    /** Type of botanical element */
-    type: 'oliveBranch' | 'flowerOfLife' | 'vesicaPiscis' | 'fibonacciSpiral' | 'oliveLeaf';
-    
-    /** Position of the botanical element */
-    position: BotanicalPosition;
-    
-    /** Size of the botanical element */
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-    
-    /** Opacity of the botanical element */
-    opacity?: number;
-  };
-  
-  /** Optional additional class name */
-  className?: string;
-  
-  /** Optional inline styles */
-  style?: React.CSSProperties;
-  
-  /** Custom form submission handler */
-  onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
-}
+// Reexport the types for external use
+export type { ContactProps, ContactOption, ContactFormField } from '../../types/feature-sections.types';
 
 // Section container with background styling
 const ContactSection = styled(Section)<{ $backgroundColor?: string }>`
@@ -122,7 +41,7 @@ const SplitContainer = styled.div`
   gap: ${getFibonacciByIndex(6)}px;
   margin-top: ${getFibonacciByIndex(7)}px;
   
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
+  @media (max-width: ${props => props.theme.breakpoints.md}px) {
     grid-template-columns: 1fr;
   }
 `;
@@ -240,8 +159,10 @@ const Contact: React.FC<ContactProps> = ({
   animated = true,
   botanical,
   className,
-  style,
   onSubmit,
+  minHeight,
+  textAlign,
+  ...boxProps
 }) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     if (onSubmit) {
@@ -363,30 +284,41 @@ const Contact: React.FC<ContactProps> = ({
     );
   };
   
+  // Convert textAlign to allowed values
+  const sectionTextAlign = textAlign === 'justify' ? 'left' : textAlign;
+
   return (
-    <ContactSection 
-      $backgroundColor={backgroundColor}
+    <Section 
+      backgroundColor={backgroundColor}
       className={className}
-      style={style}
+      minHeight={typeof minHeight === 'number' ? minHeight : undefined}
+      textAlign={sectionTextAlign as 'left' | 'center' | 'right' | undefined}
+      {...boxProps}
     >
-      {botanical && (
+      {botanical && typeof botanical !== 'boolean' && (
         <BotanicalElement
-          type={botanical.type}
-          position={botanical.position}
-          size={botanical.size}
-          opacity={botanical.opacity}
+          variant={botanical.type}
+          size={botanical.size || 'lg'}
+          opacity={botanical.opacity || 0.1}
+        />
+      )}
+      
+      {botanical && typeof botanical === 'boolean' && (
+        <BotanicalElement
+          variant="oliveBranch"
+          size="lg"
+          opacity={0.1}
         />
       )}
       
       <SectionTitle
         title={title}
         subtitle={subtitle}
-        centered
-        animated={animated}
+        align="center"
       />
       
       {renderContent()}
-    </ContactSection>
+    </Section>
   );
 };
 

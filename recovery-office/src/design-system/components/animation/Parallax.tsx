@@ -14,41 +14,9 @@ import { useMemo } from 'react';;
 import styled from 'styled-components';
 
 import Box from '../layout/Box';
-import type { BoxProps } from '../../types';
+import { ParallaxProps } from '../../types/animation.types';
 import { prefersReducedMotion } from '../../../utils/animation';
-import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
-
-export interface ParallaxProps extends BoxProps {
-  /**
-   * Whether to enable the parallax effect.
-   * When disabled, all layers will move at normal scroll speed.
-   * @default true
-   */
-  enabled?: boolean;
-  
-  /**
-   * Whether to use sacred geometry proportions for calculating depths
-   * @default true
-   */
-  useSacredGeometry?: boolean;
-  
-  /**
-   * Whether to apply golden ratio principles to the parallax effect
-   * @default true
-   */
-  useGoldenRatio?: boolean;
-  
-  /**
-   * Custom perspective value for 3D effect (in pixels)
-   * If not provided, a Fibonacci-based value will be used
-   */
-  perspective?: number;
-  
-  /**
-   * Children elements, typically ParallaxLayer components
-   */
-  children: React.ReactNode;
-}
+import { PHI, getFibonacciByIndex } from '../../../constants/sacred-geometry';
 
 /**
  * Styled container for the parallax effect

@@ -13,34 +13,34 @@ import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
 import { Box } from '../layout';
 import { FormControlProps } from '../../types';
-import { spacing } from '../../tokens';
+import { PHI_INVERSE, SACRED_SPACING } from '../../../constants/sacred-geometry';
 
 import FormLabel from './FormLabel';
 import FormError from './FormError';
 
 /**
- * Generate size-specific spacing
+ * Generate size-specific spacing using Fibonacci-based values
  */
 const getSizeSpacing = (size: 'sm' | 'md' | 'lg') => {
   switch (size) {
     case 'sm':
       return {
-        labelSpacing: spacing.xxs, // 5px
-        helperSpacing: spacing.xxs, // 5px
-        errorSpacing: spacing.xxs,  // 5px
+        labelSpacing: SACRED_SPACING.xxs, // 2px
+        helperSpacing: SACRED_SPACING.xxs, // 2px
+        errorSpacing: SACRED_SPACING.xxs,  // 2px
       };
     case 'lg':
       return {
-        labelSpacing: spacing.sm,   // 13px
-        helperSpacing: spacing.xs,  // 8px
-        errorSpacing: spacing.xs,   // 8px
+        labelSpacing: SACRED_SPACING.sm,   // 5px
+        helperSpacing: SACRED_SPACING.xs,  // 3px
+        errorSpacing: SACRED_SPACING.xs,   // 3px
       };
     case 'md':
     default:
       return {
-        labelSpacing: spacing.xs,   // 8px
-        helperSpacing: spacing.xxs, // 5px
-        errorSpacing: spacing.xxs,  // 5px
+        labelSpacing: SACRED_SPACING.xs,   // 3px
+        helperSpacing: SACRED_SPACING.xxs, // 2px
+        errorSpacing: SACRED_SPACING.xxs,  // 2px
       };
   }
 };
@@ -54,6 +54,13 @@ const StyledFormControl = styled(Box)<{ isDisabled?: boolean }>`
     opacity: ${PHI_INVERSE}; // Use golden ratio inverse (0.618) for reduced opacity
     cursor: not-allowed;
   `}
+`;
+
+// Styled helper text component
+const HelperText = styled(Box)`
+  color: ${props => props.theme.colors.text.secondary};
+  font-size: ${props => props.theme.typography.fontSize.sm}px;
+  opacity: ${PHI_INVERSE}; // Use golden ratio inverse for subtle text
 `;
 
 /**
@@ -92,7 +99,7 @@ export const FormControl = React.forwardRef<HTMLDivElement, FormControlProps>(
           isInvalid,
           isValidating,
           size,
-        });
+        } as React.HTMLAttributes<HTMLElement>);
       }
       return child;
     });
@@ -124,14 +131,9 @@ export const FormControl = React.forwardRef<HTMLDivElement, FormControlProps>(
         
         {/* Helper text with sacred spacing */}
         {helperText && !isInvalid && (
-          <Box 
-            mt={helperSpacing}
-            fontSize="sm"
-            color="text.secondary"
-            opacity={PHI_INVERSE} // Use golden ratio inverse for subtle text
-          >
+          <HelperText mt={helperSpacing}>
             {helperText}
-          </Box>
+          </HelperText>
         )}
         
         {/* Error message with sacred spacing */}

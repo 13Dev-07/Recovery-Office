@@ -3,6 +3,7 @@ import styled, { css, DefaultTheme } from 'styled-components';
 
 import Box from '../Box';
 import Container from '../Container';
+import { PHI, PHI_INVERSE } from '../../../../constants/sacred-geometry';
 
 /**
  * Botanical element positioning options for Section component
@@ -63,7 +64,7 @@ export interface SectionProps {
   botanicalElement?: React.ReactNode;
   
   /** Text alignment within the section */
-  textAlign?: 'left' | 'center' | 'right';
+  textAlign?: 'left' | 'center' | 'right' | 'justify';
   
   /** Section background image URL */
   backgroundImage?: string;
@@ -213,7 +214,7 @@ interface StyledSectionProps {
   minHeight?: number;
   fullWidth: boolean;
   maxWidth?: string | number;
-  textAlign: 'left' | 'center' | 'right';
+  textAlign: 'left' | 'center' | 'right' | 'justify';
   backgroundImage?: string;
   backgroundColor?: string;
   pt?: string | number;

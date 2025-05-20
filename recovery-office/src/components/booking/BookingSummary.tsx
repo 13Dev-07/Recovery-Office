@@ -1,8 +1,9 @@
 import * as React from 'react';
-import styled from 'styled-components';
-import { DefaultTheme } from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 import { format } from 'date-fns';
-import { useBooking } from '@context/BookingContext';
+import { useBooking } from '../../context/BookingContext';
+import { getFibonacciByIndex } from '../../utils/getFibonacciByIndex';
+import { BookingTimeSlot, ServiceOption, ClientInformation } from '../../types/booking.types';
 
 
 
@@ -12,7 +13,7 @@ const Container = styled.div`
   max-width: ${getFibonacciByIndex(13)}px;
   margin: 0 auto;
   padding: ${getFibonacciByIndex(8)}px;
-  background-color: ${(props: { theme: DefaultTheme }) => props.theme.colors.background.paper};
+  background-color: ${(props) => props.theme.colors.background.light};
   border-radius: ${getFibonacciByIndex(5)}px;
   box-shadow: 0 ${getFibonacciByIndex(4)}px ${getFibonacciByIndex(6)}px rgba(0, 0, 0, 0.1);
 `;
@@ -20,7 +21,7 @@ const Container = styled.div`
 const Section = styled.div`
   margin-bottom: ${getFibonacciByIndex(8)}px;
   padding-bottom: ${getFibonacciByIndex(7)}px;
-  border-bottom: 1px solid ${(props: { theme: DefaultTheme }) => props.theme.colors.divider};
+  border-bottom: 1px solid ${(props) => props.theme.colors.border.light};
   
   &:last-child {
     margin-bottom: 0;
@@ -32,7 +33,7 @@ const Section = styled.div`
 const SectionTitle = styled.h3`
   font-size: ${getFibonacciByIndex(7)}px;
   margin: 0 0 ${getFibonacciByIndex(6)}px 0;
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.text.primary};
+  color: ${(props) => props.theme.colors.text.primary};
   font-weight: 600;
 `;
 
@@ -48,21 +49,21 @@ const ContentRow = styled.div`
 
 const Label = styled.span`
   font-weight: 500;
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.text.secondary};
+  color: ${(props) => props.theme.colors.text.secondary};
   flex: 0 0 38.2%; /* Based on inverse PHI ratio (1 - 1/PHI) */
 `;
 
 const Value = styled.span`
   flex: 0 0 61.8%; /* Based on PHI ratio (1/PHI) */
   text-align: right;
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.text.primary};
+  color: ${(props) => props.theme.colors.text.primary};
 `;
 
 const ServiceItem = styled.div`
   display: flex;
   justify-content: space-between;
   padding: ${getFibonacciByIndex(5)}px 0;
-  border-bottom: 1px dashed ${(props: { theme: DefaultTheme }) => props.theme.colors.divider};
+  border-bottom: 1px dashed ${(props) => props.theme.colors.border.light};
   
   &:last-child {
     border-bottom: none;
@@ -82,7 +83,7 @@ const TotalRow = styled.div`
   justify-content: space-between;
   padding-top: ${getFibonacciByIndex(6)}px;
   margin-top: ${getFibonacciByIndex(6)}px;
-  border-top: 2px solid ${(props: { theme: DefaultTheme }) => props.theme.colors.primary[500]};
+  border-top: 2px solid ${(props) => props.theme.colors.primary[500]};
   font-size: ${getFibonacciByIndex(6)}px;
   font-weight: 700;
 `;
@@ -91,31 +92,39 @@ const ConfirmationMessage = styled.div`
   text-align: center;
   margin: ${getFibonacciByIndex(8)}px 0;
   padding: ${getFibonacciByIndex(7)}px;
-  background-color: ${(props: { theme: DefaultTheme }) => props.theme.colors.success.light};
-  color: ${(props: { theme: DefaultTheme }) => props.theme.colors.success.dark};
+  background-color: ${(props) => props.theme.colors.primary[100]};
+  color: ${(props) => props.theme.colors.primary[700]};
   border-radius: ${getFibonacciByIndex(5)}px;
   font-size: ${getFibonacciByIndex(6)}px;
   font-weight: 600;
 `;
 
 const BookingSummary: React.FC = () => {
-  const { 
-    selectedServices, 
-    selectedDate, 
-    selectedTime,
-    customerInfo,
-    bookingComplete,
-    bookingReference
+  const {
+    state: {
+      selectedService,
+      selectedDate,
+      selectedTimeSlot,
+      clientInfo,
+      bookingComplete,
+      bookingReference
+    }
   } = useBooking();
   
   // Calculate total price of all selected services
-  const totalPrice = selectedServices.reduce((sum, service) => sum + service.price, 0);
+  const totalPrice = selectedService ? (selectedService.price || 0) : 0;
   
   // Format date for display
   const formattedDate = selectedDate 
     ? format(selectedDate, 'EEEE, MMMM do, yyyy')
     : 'Not selected';
     
+  // For time, use selectedTimeSlot?.startTime
+  const formattedTime = selectedTimeSlot ? new Date(selectedTimeSlot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Not selected';
+  
+  // For services, use selectedService as an array if needed
+  const selectedServices = selectedService ? [selectedService] : [];
+  
   if (bookingComplete && bookingReference) {
     return (
       <Container>
@@ -129,7 +138,7 @@ const BookingSummary: React.FC = () => {
           {selectedServices.map(service => (
             <ServiceItem key={service.id}>
               <ServiceName>{service.name}</ServiceName>
-              <ServicePrice>${service.price.toFixed(2)}</ServicePrice>
+              <ServicePrice>${service.price?.toFixed(2) || 'N/A'}</ServicePrice>
             </ServiceItem>
           ))}
           <TotalRow>
@@ -146,37 +155,25 @@ const BookingSummary: React.FC = () => {
           </ContentRow>
           <ContentRow>
             <Label>Time:</Label>
-            <Value>{selectedTime || 'Not selected'}</Value>
+            <Value>{formattedTime}</Value>
           </ContentRow>
         </Section>
         
-        {customerInfo && (
+        {clientInfo && (
           <Section>
             <SectionTitle>Your Information</SectionTitle>
             <ContentRow>
               <Label>Name:</Label>
-              <Value>{`${customerInfo.firstName} ${customerInfo.lastName}`}</Value>
+              <Value>{`${clientInfo.firstName} ${clientInfo.lastName}`}</Value>
             </ContentRow>
             <ContentRow>
               <Label>Email:</Label>
-              <Value>{customerInfo.email}</Value>
+              <Value>{clientInfo.email}</Value>
             </ContentRow>
             <ContentRow>
               <Label>Phone:</Label>
-              <Value>{customerInfo.phone}</Value>
+              <Value>{clientInfo.phone}</Value>
             </ContentRow>
-            {customerInfo.address && (
-              <ContentRow>
-                <Label>Address:</Label>
-                <Value>{customerInfo.address}</Value>
-              </ContentRow>
-            )}
-            {customerInfo.notes && (
-              <ContentRow>
-                <Label>Additional Notes:</Label>
-                <Value>{customerInfo.notes}</Value>
-              </ContentRow>
-            )}
           </Section>
         )}
       </Container>
@@ -196,7 +193,7 @@ const BookingSummary: React.FC = () => {
             {selectedServices.map(service => (
               <ServiceItem key={service.id}>
                 <ServiceName>{service.name}</ServiceName>
-                <ServicePrice>${service.price.toFixed(2)}</ServicePrice>
+                <ServicePrice>${service.price?.toFixed(2) || 'N/A'}</ServicePrice>
               </ServiceItem>
             ))}
             <TotalRow>
@@ -215,37 +212,25 @@ const BookingSummary: React.FC = () => {
         </ContentRow>
         <ContentRow>
           <Label>Time:</Label>
-          <Value>{selectedTime || 'Not selected'}</Value>
+          <Value>{formattedTime}</Value>
         </ContentRow>
       </Section>
       
-      {customerInfo && (
+      {clientInfo && (
         <Section>
           <SectionTitle>Your Information</SectionTitle>
           <ContentRow>
             <Label>Name:</Label>
-            <Value>{`${customerInfo.firstName} ${customerInfo.lastName}`}</Value>
+            <Value>{`${clientInfo.firstName} ${clientInfo.lastName}`}</Value>
           </ContentRow>
           <ContentRow>
             <Label>Email:</Label>
-            <Value>{customerInfo.email}</Value>
+            <Value>{clientInfo.email}</Value>
           </ContentRow>
           <ContentRow>
             <Label>Phone:</Label>
-            <Value>{customerInfo.phone}</Value>
+            <Value>{clientInfo.phone}</Value>
           </ContentRow>
-          {customerInfo.address && (
-            <ContentRow>
-              <Label>Address:</Label>
-              <Value>{customerInfo.address}</Value>
-            </ContentRow>
-          )}
-          {customerInfo.notes && (
-            <ContentRow>
-              <Label>Additional Notes:</Label>
-              <Value>{customerInfo.notes}</Value>
-            </ContentRow>
-          )}
         </Section>
       )}
     </Container>

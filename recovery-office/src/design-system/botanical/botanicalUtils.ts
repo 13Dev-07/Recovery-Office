@@ -1,10 +1,7 @@
-
 import { CSSProperties } from 'react';
-
 import { css } from 'styled-components';
-
-
-
+import { PHI, PHI_INVERSE } from '../../constants/sacred-geometry';
+import { getFibonacciByIndex } from '../../utils/getFibonacciByIndex';
 
 /**
  * Botanical Utilities
@@ -361,12 +358,22 @@ export const createBotanicalContainer = (
   
   &::after {
     content: '';
-    ${props => getBotanicalPositionStyles({ position })}
+    position: ${position === 'center' ? 'absolute' : 'absolute'};
+    ${position === 'topLeft' || position === 'leftCenter' || position === 'bottomLeft' || position === 'goldenLeft' ? `left: 0;` : ''}
+    ${position === 'topRight' || position === 'rightCenter' || position === 'bottomRight' || position === 'goldenRight' ? `right: 0;` : ''}
+    ${position === 'topLeft' || position === 'topCenter' || position === 'topRight' || position === 'goldenTop' ? `top: 0;` : ''}
+    ${position === 'bottomLeft' || position === 'bottomCenter' || position === 'bottomRight' || position === 'goldenBottom' ? `bottom: 0;` : ''}
+    ${position === 'center' ? `top: 50%; left: 50%; transform: translate(-50%, -50%);` : ''}
+    ${position === 'topCenter' || position === 'bottomCenter' ? `left: 50%; transform: translateX(-50%);` : ''}
+    ${position === 'leftCenter' || position === 'rightCenter' ? `top: 50%; transform: translateY(-50%);` : ''}
+    ${position === 'goldenLeft' || position === 'goldenRight' ? `top: ${PHI_INVERSE * 100}%; transform: translateY(-50%);` : ''}
+    ${position === 'goldenTop' || position === 'goldenBottom' ? `left: ${PHI_INVERSE * 100}%; transform: translateX(-50%);` : ''}
     width: ${getBotanicalSize(size)}px;
     height: ${getBotanicalSize(size)}px;
     background-image: url("data:image/svg+xml,..."); /* SVG content */
     background-size: contain;
     background-repeat: no-repeat;
+    z-index: 0;
     ${accessibleBotanical.decorative}
   }
 `; 

@@ -7,6 +7,7 @@ import { Container } from '../../../design-system/components/layout';
 import { Card } from '../../../design-system/components/data-display';
 import { FlowerOfLife } from '../../../design-system/botanical';
 import { Heading, Paragraph } from '../../../design-system/components/typography';
+import { getFibonacciByIndex } from '../../../utils/getFibonacciByIndex';
 import type { Service } from './ServicesOverview';
 
 /**

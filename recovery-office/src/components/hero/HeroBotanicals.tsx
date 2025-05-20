@@ -7,19 +7,31 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import { Box } from '../design-system/components/layout/Box';
-import { OliveBranch } from '../design-system/botanical/OliveBranch';
-import { FibonacciSpiral } from '../design-system/botanical/FibonacciSpiral';
-import { VesicaPiscis } from '../design-system/botanical/VesicaPiscis';
+import { Box } from '@design-system/components/layout/Box';
+import { OliveBranch } from '@design-system/botanical/OliveBranch';
+import { FibonacciSpiral } from '@design-system/botanical/FibonacciSpiral';
+import { VesicaPiscis } from '@design-system/botanical/VesicaPiscis';
 import { 
   SACRED_SPACING, 
-  PHI, 
-  SACRED_TIMING, 
-  SACRED_ANGLES 
-} from '../constants/sacred-geometry';
-import { colors } from '../design-system/tokens/colors';
-import { FadeIn } from "@animation/FadeIn";
-import { ParallaxLayer } from "@animation/ParallaxLayer";
+  PHI
+} from '@constants/sacred-geometry';
+import { BASE_COLORS } from '@design-system/tokens/colors';
+import { FadeIn } from "@design-system/components/animation/FadeIn";
+import { ParallaxLayer } from "@design-system/components/animation/ParallaxLayer";
+
+// Define missing constants
+const PHI_INVERSE = 1 / PHI;
+const SACRED_ANGLES = {
+  goldenAngle: 137.5,
+  rightAngle: 90,
+  complementaryAngle: 137.5
+};
+const SACRED_TIMING = {
+  fast: 300,
+  medium: 500,
+  slow: 800,
+  slower: 1200
+};
 
 const BotanicalsWrapper = styled(Box)`
   position: relative;
@@ -56,9 +68,6 @@ const VesicaWrapper = styled(Box)`
   z-index: 1;
 `;
 
-// Derived constants
-const PHI_INVERSE = 1 / PHI;
-
 interface HeroBotanicalsProps {
   /**
    * Additional CSS class
@@ -78,13 +87,12 @@ export const HeroBotanicals: React.FC<HeroBotanicalsProps> = ({ className }) => 
       {/* Olive Branch */}
       <ParallaxLayer 
         speed={-0.2} 
-        direction="vertical"
       >
         <FadeIn delay={SACRED_TIMING.medium} duration={SACRED_TIMING.slower}>
           <OliveBranchWrapper>
             <OliveBranch 
               width={350} 
-              color={colors.primary[300] ?? 1} 
+              color={BASE_COLORS.green[300] ?? 1} 
               opacity={0.8}
             />
           </OliveBranchWrapper>
@@ -94,7 +102,6 @@ export const HeroBotanicals: React.FC<HeroBotanicalsProps> = ({ className }) => 
       {/* Fibonacci Spiral */}
       <ParallaxLayer 
         speed={0.1} 
-        direction="horizontal"
       >
         <FadeIn delay={SACRED_TIMING.slow} duration={SACRED_TIMING.slower}>
           <SpiralWrapper>
@@ -102,7 +109,7 @@ export const HeroBotanicals: React.FC<HeroBotanicalsProps> = ({ className }) => 
               iterations={5} 
               startSize={100}
               showSquares={false}
-              color={colors.primary[400] ?? 1} 
+              color={BASE_COLORS.green[400] ?? 1} 
               opacity={0.3} 
             />
           </SpiralWrapper>
@@ -112,14 +119,13 @@ export const HeroBotanicals: React.FC<HeroBotanicalsProps> = ({ className }) => 
       {/* Vesica Piscis */}
       <ParallaxLayer 
         speed={0.05} 
-        direction="vertical"
       >
         <FadeIn delay={SACRED_TIMING.fast} duration={SACRED_TIMING.slow}>
           <VesicaWrapper>
             <VesicaPiscis 
               width={200}
               rotation={45}
-              color={colors.primary[300] ?? 1} 
+              color={BASE_COLORS.green[300] ?? 1} 
               opacity={0.4}
             />
           </VesicaWrapper>

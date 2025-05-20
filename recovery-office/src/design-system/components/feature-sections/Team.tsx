@@ -9,113 +9,22 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { DefaultTheme } from 'styled-components';
-import { getFibonacciByIndex } from '../utils';
+import { getFibonacciByIndex } from '../../../constants/sacred-geometry';
 import { PHI, PHI_INVERSE, FIBONACCI } from '../../../constants/sacred-geometry';
 import { Box } from '../layout/Box';
 import { Section, SectionTitle } from '../layout/Section';
-import { Card } from '../data-display/Card';
+import Card from '../data-display/Card';
 import { Text } from '../typography/Text';
 import { Heading } from '../typography/Heading';
-import { BotanicalElement, BotanicalPosition } from '../botanical';
+import { BotanicalElement } from '../botanical';
+import { BotanicalPosition } from '../botanical/botanicalUtils';
 import { FadeIn, ScaleFade } from '../animation';
 import { Button } from '../button/Button';
+import { TeamProps, TeamMember, FeatureCTA } from '../../types/feature-sections.types';
+import { BotanicalDecoration, BotanicalElementType } from '../../types/botanical.types';
 
-export interface TeamMember {
-  /** Unique identifier for the team member */
-  id: string;
-  
-  /** Team member's name */
-  name: string;
-  
-  /** Team member's role or position */
-  role: string;
-  
-  /** Team member's photo URL */
-  photoUrl: string;
-  
-  /** Team member's bio/description */
-  bio?: string;
-  
-  /** Optional contact/social links */
-  links?: {
-    /** Link type (e.g., linkedin, email, website) */
-    type: 'linkedin' | 'email' | 'website' | 'twitter' | 'instagram';
-    
-    /** URL or email address */
-    url: string;
-    
-    /** Optional label */
-    label?: string;
-  }[];
-  
-  /** Optional accent color for the team member card */
-  accentColor?: string;
-  
-  /** Optional specialties or areas of expertise */
-  specialties?: string[];
-  
-  /** Optional certifications or credentials */
-  credentials?: string[];
-}
-
-export interface TeamProps {
-  /** Section title */
-  title: string;
-  
-  /** Optional section subtitle */
-  subtitle?: string;
-  
-  /** Array of team members to display */
-  members: TeamMember[];
-  
-  /** Style of team display */
-  displayStyle?: 'grid' | 'list' | 'featured';
-  
-  /** Number of columns for grid layout (defaults to Fibonacci-based responsive grid) */
-  columns?: 2 | 3 | 4;
-  
-  /** Background color or gradient */
-  backgroundColor?: string;
-  
-  /** Whether to show detailed bio information */
-  showDetailedBio?: boolean;
-  
-  /** Whether to add animation to team member cards */
-  animated?: boolean;
-  
-  /** Botanical decoration configuration */
-  botanical?: {
-    /** Type of botanical element */
-    type: 'oliveBranch' | 'flowerOfLife' | 'vesicaPiscis' | 'fibonacciSpiral' | 'oliveLeaf';
-    
-    /** Position of the botanical element */
-    position: BotanicalPosition;
-    
-    /** Size of the botanical element */
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-    
-    /** Opacity of the botanical element */
-    opacity?: number;
-  };
-  
-  /** Call-to-action button */
-  cta?: {
-    /** Button text */
-    label: string;
-    
-    /** Button URL */
-    url: string;
-    
-    /** Button variant */
-    variant?: 'primary' | 'secondary' | 'accent' | 'outline';
-  };
-  
-  /** Optional additional class name */
-  className?: string;
-  
-  /** Optional inline styles */
-  style?: React.CSSProperties;
-}
+// Reexport the types for external use
+export type { TeamProps, TeamMember } from '../../types/feature-sections.types';
 
 // Section container with background styling
 const TeamSection = styled(Section)<{ $backgroundColor?: string }>`
@@ -132,11 +41,11 @@ const TeamGrid = styled.div<{ $columns: number }>`
   gap: ${getFibonacciByIndex(6)}px;
   margin-top: ${getFibonacciByIndex(7)}px;
   
-  @media (max-width: ${props => props.theme.breakpoints.lg}) {
+  @media (max-width: ${props => props.theme.breakpoints.lg}px) {
     grid-template-columns: repeat(${props => Math.min(props.$columns - 1, 2)}, 1fr);
   }
   
-  @media (max-width: ${props => props.theme.breakpoints.md}) {
+  @media (max-width: ${props => props.theme.breakpoints.md}px) {
     grid-template-columns: repeat(1, 1fr);
     gap: ${getFibonacciByIndex(5)}px;
   }
@@ -614,16 +523,23 @@ const Team: React.FC<TeamProps> = ({
       className={className}
       style={style}
     >
-      {botanical && (
+      {botanical && typeof botanical !== 'boolean' && (
         <BotanicalElement
-          type={botanical.type}
-          position={botanical.position}
-          size={botanical.size}
-          opacity={botanical.opacity}
+          variant={botanical.type}
+          size={botanical.size || 'lg'}
+          opacity={botanical.opacity || 0.1}
         />
       )}
       
-      <SectionTitle title={title} subtitle={subtitle} centered animated={animated} />
+      {botanical && typeof botanical === 'boolean' && (
+        <BotanicalElement
+          variant="oliveBranch"
+          size="lg"
+          opacity={0.1}
+        />
+      )}
+      
+      <SectionTitle title={title} subtitle={subtitle} align="center" />
       
       {renderTeam()}
       

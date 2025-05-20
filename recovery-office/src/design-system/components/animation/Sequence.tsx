@@ -7,12 +7,16 @@
  */
 
 import * as React from 'react';
-import { useState, useEffect } from 'react';;
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence, Variants, Transition } from 'framer-motion';
+import styled from 'styled-components';
 import { PHI, PHI_INVERSE, FIBONACCI, SACRED_EASINGS } from '../../../constants/sacred-geometry';
 import { Box } from '../layout';
 import type { BoxProps } from '../../types';
-import { SequenceProps, SequenceVariant } from './animation.d';
+import type { SequenceProps, SequenceVariant, EasingValue } from '../../types/animation.types';
+
+// Create styled motion.div that inherits Box styling system
+const StyledMotionDiv = styled(motion.div)``;
 
 /**
  * Sequence component with ref forwarding
@@ -33,6 +37,7 @@ export const Sequence = React.forwardRef<HTMLDivElement, SequenceProps>(
     allowOverlap = false,
     disableAnimation = false,
     direction = 'forward',
+    style,
     ...rest
   }, ref) => {
     // Track whether the component has mounted
@@ -61,8 +66,13 @@ export const Sequence = React.forwardRef<HTMLDivElement, SequenceProps>(
       },
     };
     
+    // Handle custom easing function or use predefined sacred easing
+    const easingValue = typeof easing === 'function' 
+      ? easing 
+      : (SACRED_EASINGS[easing as keyof typeof SACRED_EASINGS] || SACRED_EASINGS.standard);
+    
     // Get variants for the animation type
-    const childVariants = getVariants(variant, distance, duration, SACRED_EASINGS[easing as keyof typeof SACRED_EASINGS] || SACRED_EASINGS.standard);
+    const childVariants = getVariants(variant, distance, typeof duration === 'string' ? 0.5 : duration, easingValue);
     
     // Create a function to modify the delay for each child
     const getCustomDelay = (index: number) => {
@@ -89,10 +99,14 @@ export const Sequence = React.forwardRef<HTMLDivElement, SequenceProps>(
         ...childVariants,
         visible: {
           ...childVariants.visible,
-          transition: {
-            ...(childVariants.visible?.transition || {}),
-            delay,
-          },
+          transition: typeof childVariants.visible === 'function' 
+            ? undefined 
+            : {
+                ...(childVariants.visible && 'transition' in childVariants.visible 
+                  ? childVariants.visible.transition 
+                  : {}),
+                delay,
+              },
         },
       };
       
@@ -116,21 +130,25 @@ export const Sequence = React.forwardRef<HTMLDivElement, SequenceProps>(
     });
     
     return (
-      <Box
-        as={motion.div}
+      <StyledMotionDiv
         ref={ref}
         variants={containerVariants}
         initial="hidden"
         animate={isVisible && shouldAnimate ? "visible" : "hidden"}
+        style={{
+          ...style
+        }}
         {...rest}
       >
         <AnimatePresence mode="wait">
           {isVisible && processedChildren}
         </AnimatePresence>
-      </Box>
+      </StyledMotionDiv>
     );
   }
 );
+
+Sequence.displayName = 'Sequence';
 
 /**
  * Calculate stagger delay for each child element
@@ -258,8 +276,6 @@ const getVariants = (variant: SequenceVariant, distance: number, duration: numbe
       };
   }
 };
-
-Sequence.displayName = 'Sequence';
 
 export default Sequence; 
 

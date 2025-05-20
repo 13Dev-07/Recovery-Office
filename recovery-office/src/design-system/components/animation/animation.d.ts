@@ -8,6 +8,12 @@
 import type { BoxProps } from '../../types';
 import { SACRED_EASINGS } from '../../../constants/sacred-geometry';
 
+// Custom easing function type
+export type CustomEasingFunction = (t: number) => number;
+
+// Combined easing type - can be a string key or a function
+export type EasingValue = keyof typeof SACRED_EASINGS | CustomEasingFunction;
+
 /**
  * FadeIn component props
  */
@@ -39,7 +45,7 @@ export interface FadeInProps extends Omit<BoxProps, 'as' | 'ref'> {
    * Easing function to use
    * @default 'standard'
    */
-  easing?: keyof typeof SACRED_EASINGS;
+  easing?: EasingValue;
   
   /**
    * Whether to use golden ratio applied to duration
@@ -97,7 +103,7 @@ export interface ScaleFadeProps extends Omit<BoxProps, 'as' | 'ref'> {
    * Easing function to use
    * @default 'standard'
    */
-  easing?: keyof typeof SACRED_EASINGS;
+  easing?: EasingValue;
   
   /**
    * Initial scale factor when hidden
@@ -185,7 +191,7 @@ export interface SlideInProps extends Omit<BoxProps, 'as' | 'ref'> {
    * Easing function to use
    * @default 'standard'
    */
-  easing?: keyof typeof SACRED_EASINGS;
+  easing?: EasingValue;
   
   /**
    * Whether to fade in/out during slide
@@ -243,7 +249,7 @@ export interface ScrollRevealProps extends Omit<BoxProps, 'as' | 'ref'> {
    * Easing function to use
    * @default 'standard'
    */
-  easing?: keyof typeof SACRED_EASINGS;
+  easing?: EasingValue;
   
   /**
    * Threshold for when element is considered in view (0-1)
@@ -422,7 +428,7 @@ export interface SequenceProps extends Omit<BoxProps, 'as' | 'ref'> {
    * Easing function to use
    * @default 'standard'
    */
-  easing?: keyof typeof SACRED_EASINGS;
+  easing?: EasingValue;
   
   /**
    * Distance to move when using slide variants (in pixels)
@@ -492,7 +498,7 @@ export interface MorphProps extends Omit<BoxProps, 'as' | 'ref'> {
    * Easing function to use
    * @default 'standard'
    */
-  easing?: keyof typeof SACRED_EASINGS;
+  easing?: EasingValue;
   
   /**
    * Whether to fill the SVG

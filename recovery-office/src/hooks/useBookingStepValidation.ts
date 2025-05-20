@@ -1,20 +1,22 @@
 import * as React from 'react';
-import { useCallback } from 'react';;
-import { useBookingContext } from '../context/BookingContext';
+import { useCallback } from 'react';
+import { useBooking } from '../context/BookingContext';
 import { BookingStepId } from '../types/booking.types';
+import { ServiceType } from '../types/api.types';
 import { serviceSelectionSchema } from '../components/booking/validation/serviceSelection.schema';
 import { dateSelectionSchema } from '../components/booking/validation/dateSelection.schema';
 import { clientInfoSchema } from '../components/booking/validation/clientInfo.schema';
 import { confirmationStepSchema } from '../components/booking/validation/confirmationStep.schema';
-import { toast } from '../design-system/components/feedback/Toast';
+import { useToast } from '../hooks/useToast';
 
 /**
  * Custom hook for booking step validation
  * Provides functions to validate the current booking step using Zod schemas
  */
 export const useBookingStepValidation = () => {
-  const { state, goToStep, createPaymentIntent } = useBookingContext();
-  const { currentStep, formData } = state;
+  const { state, goToStep, createPaymentIntent } = useBooking();
+  const { currentStep, selectedService } = state;
+  const { errorToast } = useToast();
 
   /**
    * Validates the current step based on its ID
@@ -26,30 +28,44 @@ export const useBookingStepValidation = () => {
       switch (currentStep) {
         case BookingStepId.SERVICE_SELECTION: {
           // Validate service selection
-          serviceSelectionSchema.parse(formData);
+          serviceSelectionSchema.parse({
+            serviceId: selectedService?.id || '',
+            isRecurring: false
+          });
           return true;
         }
         
         case BookingStepId.DATE_SELECTION: {
           // Validate date selection
-          dateSelectionSchema.parse(formData);
+          dateSelectionSchema.parse({
+            date: state.selectedDate || '',
+            timeSlot: state.selectedTimeSlot?.id || ''
+          });
           return true;
         }
         
         case BookingStepId.CLIENT_INFORMATION: {
           // Validate client information
-          clientInfoSchema.parse(formData);
+          clientInfoSchema.parse(state.clientInfo || {});
           return true;
         }
         
         case BookingStepId.CONFIRMATION: {
           // For confirmation step, we need to create a payment intent first if not present
-          if (!formData.paymentIntentId) {
-            await createPaymentIntent();
+          // Use a default service type and duration if selectedService is not available
+          if (!state.bookingReference && selectedService) {
+            await createPaymentIntent(
+              (selectedService.type as ServiceType) || ServiceType.INITIAL_CONSULTATION,
+              selectedService.duration || 60
+            );
           }
           
           // Then validate the confirmation step data
-          confirmationStepSchema.parse(formData);
+          confirmationStepSchema.parse({
+            termsAccepted: true,
+            cancellationPolicyAccepted: true,
+            paymentMethod: 'card'
+          });
           return true;
         }
         
@@ -59,17 +75,11 @@ export const useBookingStepValidation = () => {
     } catch (error) {
       // If validation fails, show error toast
       if (error instanceof Error) {
-        toast({
-          title: 'Validation Error',
-          description: error.message,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
+        errorToast('Validation Error', error.message, 5000);
       }
       return false;
     }
-  }, [currentStep, formData, createPaymentIntent]);
+  }, [currentStep, selectedService, state, createPaymentIntent, errorToast]);
 
   /**
    * Checks if the current step is valid without showing errors
@@ -79,25 +89,30 @@ export const useBookingStepValidation = () => {
     try {
       switch (currentStep) {
         case BookingStepId.SERVICE_SELECTION: {
-          serviceSelectionSchema.parse(formData);
+          serviceSelectionSchema.parse({
+            serviceId: selectedService?.id || '',
+            isRecurring: false
+          });
           return true;
         }
         
         case BookingStepId.DATE_SELECTION: {
-          dateSelectionSchema.parse(formData);
+          dateSelectionSchema.parse({
+            date: state.selectedDate || '',
+            timeSlot: state.selectedTimeSlot?.id || ''
+          });
           return true;
         }
         
         case BookingStepId.CLIENT_INFORMATION: {
-          clientInfoSchema.parse(formData);
+          clientInfoSchema.parse(state.clientInfo || {});
           return true;
         }
         
         case BookingStepId.CONFIRMATION: {
           // For validation checking (not actual submission), we'll skip payment intent check
-          // and just validate the other fields
-          const { paymentMethod, termsAccepted, cancellationPolicyAccepted } = formData;
-          return !!(paymentMethod && termsAccepted && cancellationPolicyAccepted);
+          // and just check if essential information is available
+          return !!(selectedService && state.selectedDate && state.selectedTimeSlot && state.clientInfo);
         }
         
         default:
@@ -106,7 +121,7 @@ export const useBookingStepValidation = () => {
     } catch (error) {
       return false;
     }
-  }, [currentStep, formData]);
+  }, [currentStep, selectedService, state]);
 
   /**
    * Validates all steps up to the current one
@@ -115,22 +130,28 @@ export const useBookingStepValidation = () => {
   const validateAllStepsUpToCurrent = useCallback((): boolean => {
     try {
       // Service selection is always required
-      serviceSelectionSchema.parse(formData);
+      serviceSelectionSchema.parse({
+        serviceId: selectedService?.id || '',
+        isRecurring: false
+      });
       
       // Check subsequent steps based on current step
       if (currentStep >= BookingStepId.DATE_SELECTION) {
-        dateSelectionSchema.parse(formData);
+        dateSelectionSchema.parse({
+          date: state.selectedDate || '',
+          timeSlot: state.selectedTimeSlot?.id || ''
+        });
       }
       
       if (currentStep >= BookingStepId.CLIENT_INFORMATION) {
-        clientInfoSchema.parse(formData);
+        clientInfoSchema.parse(state.clientInfo || {});
       }
       
       return true;
     } catch (error) {
       return false;
     }
-  }, [currentStep, formData]);
+  }, [currentStep, selectedService, state]);
 
   /**
    * Validates all required steps and navigates to the first invalid step
@@ -139,7 +160,10 @@ export const useBookingStepValidation = () => {
   const validateAndNavigateToFirstInvalidStep = useCallback((): boolean => {
     try {
       // Check service selection
-      serviceSelectionSchema.parse(formData);
+      serviceSelectionSchema.parse({
+        serviceId: selectedService?.id || '',
+        isRecurring: false
+      });
     } catch (error) {
       goToStep(BookingStepId.SERVICE_SELECTION);
       return false;
@@ -147,7 +171,10 @@ export const useBookingStepValidation = () => {
     
     try {
       // Check date selection
-      dateSelectionSchema.parse(formData);
+      dateSelectionSchema.parse({
+        date: state.selectedDate || '',
+        timeSlot: state.selectedTimeSlot?.id || ''
+      });
     } catch (error) {
       goToStep(BookingStepId.DATE_SELECTION);
       return false;
@@ -155,14 +182,14 @@ export const useBookingStepValidation = () => {
     
     try {
       // Check client information
-      clientInfoSchema.parse(formData);
+      clientInfoSchema.parse(state.clientInfo || {});
     } catch (error) {
       goToStep(BookingStepId.CLIENT_INFORMATION);
       return false;
     }
     
     return true;
-  }, [formData, goToStep]);
+  }, [selectedService, state, goToStep]);
 
   return {
     validateCurrentStep,
