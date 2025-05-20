@@ -387,7 +387,7 @@ export interface RecoveryOfficeTheme {
   radius: ThemeRadius;
   shadows: ThemeShadows;
   sacredGeometry: ThemeSacredGeometry;
-  mode: 'light' | 'dark';
+  mode: 'light' | 'dark' | 'premium';
 }
 
 // Extend the DefaultTheme from styled-components to use our custom theme

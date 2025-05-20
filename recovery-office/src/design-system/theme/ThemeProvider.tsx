@@ -5,11 +5,23 @@
  * It uses styled-components' ThemeProvider to inject the theme into the component tree.
  */
 
-import * as React from 'react';
-import { ReactNode } from 'react';
-import { ThemeProvider as StyledThemeProvider, DefaultTheme } from 'styled-components';
-import lightTheme, { darkTheme } from './theme';
+import React, { createContext, useContext, useMemo } from 'react';
+import { ThemeProvider as StyledThemeProvider } from 'styled-components';
+import { lightTheme, darkTheme } from './theme';
+import { premiumTheme } from './theme.premium';
+import { RecoveryOfficeTheme } from '../types';
 import GlobalStyles from './globalStyles';
+
+// Theme context with default
+export const ThemeContext = createContext<{
+  theme: RecoveryOfficeTheme;
+  toggleTheme: () => void;
+  setMode: (mode: 'light' | 'dark' | 'premium') => void;
+}>({
+  theme: lightTheme,
+  toggleTheme: () => {},
+  setMode: () => {},
+});
 
 /**
  * Props for the ThemeProvider component
@@ -18,13 +30,13 @@ interface ThemeProviderProps {
   /**
    * The children components to render within the theme provider
    */
-  children: ReactNode;
+  children: React.ReactNode;
   
   /**
-   * Optional theme mode (light or dark)
+   * Optional initial mode (light, dark, or premium)
    * @default 'light'
    */
-  mode?: 'light' | 'dark';
+  initialMode?: 'light' | 'dark' | 'premium';
 }
 
 /**
@@ -35,18 +47,46 @@ interface ThemeProviderProps {
  */
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   children,
-  mode = 'light'
+  initialMode = 'light'
 }) => {
-  // Select the theme based on the provided mode
-  const theme: DefaultTheme = mode === 'light' ? lightTheme : darkTheme;
-  
+  // Store the current theme mode in state
+  const [mode, setMode] = React.useState<'light' | 'dark' | 'premium'>(initialMode);
+
+  // Memoize the theme object
+  const theme = useMemo(() => {
+    switch (mode) {
+      case 'dark':
+        return darkTheme;
+      case 'premium':
+        return premiumTheme;
+      default:
+        return lightTheme;
+    }
+  }, [mode]);
+
+  // Toggle between light and dark modes
+  const toggleTheme = () => {
+    setMode((prevMode) => {
+      // Skip the premium mode when toggling
+      if (prevMode === 'light') return 'dark';
+      if (prevMode === 'dark') return 'light';
+      return 'light';
+    });
+  };
+
+  // Render the provider with the current theme
   return (
-    <StyledThemeProvider theme={theme}>
-      <GlobalStyles />
-      {children}
-    </StyledThemeProvider>
+    <ThemeContext.Provider value={{ theme, toggleTheme, setMode }}>
+      <StyledThemeProvider theme={theme}>
+        <GlobalStyles />
+        {children}
+      </StyledThemeProvider>
+    </ThemeContext.Provider>
   );
 };
+
+// Custom hook to use the theme
+export const useTheme = () => useContext(ThemeContext);
 
 export default ThemeProvider; 
 
