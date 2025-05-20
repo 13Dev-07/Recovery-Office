@@ -4,6 +4,9 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './design-system/theme/globalStyles';
 
+// Disable styled-components 'eval' path for strict CSP
+;(window as any).SC_DISABLE_SPEEDY = true
+
 /**
  * Main entry point for the Recovery Office application.
  * 
