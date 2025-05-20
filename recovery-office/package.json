@@ -32,7 +32,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "set \"DISABLE_ESLINT_PLUGIN=true\" && set \"CI=false\" && set \"TSC_COMPILE_ON_ERROR=true\" && react-scripts build",
-    "build:netlify": "set \"DISABLE_ESLINT_PLUGIN=true\" && set \"CI=false\" && set \"TSC_COMPILE_ON_ERROR=true\" && react-scripts build && copy public\\_headers build\\_headers && copy public\\_redirects build\\_redirects",
+    "build:netlify": "rimraf build && set \"DISABLE_ESLINT_PLUGIN=true\" && set \"CI=false\" && set \"TSC_COMPILE_ON_ERROR=true\" && react-scripts build && copy public\\_headers build\\_headers && copy public\\_redirects build\\_redirects",
     "build:quick": "set \"DISABLE_ESLINT_PLUGIN=true\" && set \"CI=false\" && set \"TSC_COMPILE_ON_ERROR=true\" && set \"SKIP_TYPESCRIPT_CHECK=true\" && react-scripts build",
     "deploy": "node deploy.js",
     "deploy:final": "node deploy-final.js",
@@ -68,6 +68,7 @@
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.1.0",
+    "rimraf": "^5.0.10",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.32.1"
   }
